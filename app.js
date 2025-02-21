@@ -5,14 +5,13 @@ const createHttpError = require("http-errors");
 const cors = require("cors");
 require("dotenv").config();
 
-const {errorResponse} = require("./controllers/responseController.js")
+const {errorResponse} = require("./controllers/responseController.js");
+const bookRouter = require("./routes/bookRoute.js");
 
-const userRoutes = require("./routes/userRoutes");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const clientUrl = process.env.clientUrl;
-
 
 app.use(
   cors({
@@ -23,8 +22,7 @@ app.use(
 
 app.use(cookieParser());
 
-
-app.use("/api", userRoutes); // Add the user routes
+app.use("/api/book", bookRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({

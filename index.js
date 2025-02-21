@@ -1,6 +1,6 @@
 const app = require("./app");
 require("dotenv").config();
-const prisma = require("./config/prismaClient"); // Import Prisma Client
+const connectDB = require("./config/db");
 
 process.on("uncaughtException", (err) => {
   console.log(`Error: ${err.message}`);
@@ -8,13 +8,12 @@ process.on("uncaughtException", (err) => {
   process.exit(1);
 });
 
+
 app.listen(process.env.PORT, async () => {
   try {
-    await prisma.$connect();
-    console.log("Database connected successfully");
+    await connectDB();
     console.log("Server is running at http://localhost:" + process.env.PORT);
   } catch (error) {
-    console.error("Database connection failed:", error.message);
     process.exit(1);
   }
 });
