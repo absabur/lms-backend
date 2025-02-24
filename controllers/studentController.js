@@ -19,7 +19,7 @@ exports.SignUpVerifyStudent = async (req, res, next) => {
     const verificationCode = crypto.randomInt(100000, 999999).toString();
 
     const createDate = localTime();
-    const expireDate = localTime(5);
+    const expireDate = localTime(10);
 
     const otpExists = await Otp.findOne({ email });
     if (otpExists) {
@@ -37,13 +37,13 @@ exports.SignUpVerifyStudent = async (req, res, next) => {
       email,
       subject: "Verify Your Email - Library Management System",
       html: `
-          <div style="background-color: #f4f4f4; width: 100%; min-width: 350px; padding: 20px; box-sizing: border-box; font-family: Arial, sans-serif;">
-            <div style="max-width: 500px; margin: 0 auto; background: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);">
-              <h1 style="text-align: center; color: #d9534f; margin-bottom: 10px;">Library Management System</h1>
+          <div style="background-color: #f4f4f4; width: 100%; min-width: 350px; padding: 10px; box-sizing: border-box; font-family: Arial, sans-serif;">
+            <div style="max-width: 500px; margin: 0 auto; background: #ffffff; padding: 10px; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);">
+              <h1 style="text-align: center; color: #d9534f; margin-bottom: 5px;">Library Management System</h1>
               <h2 style="text-align: center; color: #5cb85c;">Hello There,</h2>
               <p style="text-align: center; font-size: 18px; color: #333;">Use the following verification code to verify your email:</p>
               
-              <div style="text-align: center; margin: 20px 0;">
+              <div style="text-align: center; margin: 10px 0;">
                 <span style="display: inline-block; font-size: 28px; font-weight: bold; color: #0275d8; background: #e9ecef; padding: 10px 20px; border-radius: 5px; letter-spacing: 2px;">
                   ${verificationCode}
                 </span>
@@ -53,7 +53,7 @@ exports.SignUpVerifyStudent = async (req, res, next) => {
                 This code will expire in <strong style="color: #d9534f;">${expireDate.expireTime}</strong>.
               </p>
       
-              <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+              <hr style="border: none; border-top: 1px solid #ddd; margin: 10px 0;">
               <p style="text-align: center; font-size: 14px; color: #777;">
                 If you did not request this verification, you can ignore this email.
               </p>
@@ -189,8 +189,8 @@ exports.registerStudent = async (req, res, next) => {
       subject:
         "Welcome to Library Management System - Account Created Successfully",
       html: `
-          <div style="background-color: #f4f4f4; width: 100%; min-width: 350px; padding: 20px; box-sizing: border-box; font-family: Arial, sans-serif;">
-            <div style="max-width: 500px; margin: 0 auto; background: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);">
+          <div style="background-color: #f4f4f4; width: 100%; min-width: 350px; padding: 10px; box-sizing: border-box; font-family: Arial, sans-serif;">
+            <div style="max-width: 500px; margin: 0 auto; background: #ffffff; padding: 10px; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);">
               <h1 style="text-align: center; color: #d9534f; margin-bottom: 10px;">Library Management System</h1>
               <h2 style="text-align: center; color: #5cb85c;">Account Created Successfully!</h2>
               
@@ -198,7 +198,7 @@ exports.registerStudent = async (req, res, next) => {
                 Congratulations, <strong>${student.name}</strong>! 🎉 Your account has been successfully created.
               </p>
       
-              <div style="text-align: center; margin: 20px 0;">
+              <div style="text-align: center; margin: 10px 0;">
                 <p style="font-size: 16px; color: #555;">You can now log in and start managing your library resources.</p>
                 <a href="${process.env.clientUrl}/login" 
                    style="display: inline-block; background-color: #0275d8; color: #ffffff; text-decoration: none; font-size: 18px; font-weight: bold; padding: 10px 20px; border-radius: 5px;">
@@ -210,7 +210,7 @@ exports.registerStudent = async (req, res, next) => {
                 If you did not create this account, please contact our support team immediately.
               </p>
       
-              <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+              <hr style="border: none; border-top: 1px solid #ddd; margin: 10px 0;">
               <p style="text-align: center; font-size: 14px; color: #777;">
                 Thank you for joining us! 📚<br> Library Management System Team
               </p>

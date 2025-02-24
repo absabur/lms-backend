@@ -1,15 +1,26 @@
 const express = require("express");
-const { SignUpVerifyStudent, registerStudent, loginStudent, logoutStudent } = require("../controllers/studentController");
+const {
+  SignUpVerifyStudent,
+  registerStudent,
+  loginStudent,
+  logoutStudent,
+} = require("../controllers/studentController");
 const upload = require("../utils/multer");
+const { limiter } = require("../utils/limiter");
 
 const studentRouter = express.Router();
 
-studentRouter.post("/signup", SignUpVerifyStudent);
+studentRouter.post("/signup", limiter, SignUpVerifyStudent);
 
-studentRouter.post("/register",  upload.single('image'), registerStudent);
+studentRouter.post(
+  "/register",
+  limiter,
+  upload.single("image"),
+  registerStudent
+);
 
-studentRouter.post("/login", loginStudent);
+studentRouter.post("/login", limiter, loginStudent);
 
-studentRouter.post("/logout", logoutStudent);
+studentRouter.post("/logout", limiter, logoutStudent);
 
 module.exports = studentRouter;
