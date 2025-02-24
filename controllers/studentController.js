@@ -5,9 +5,9 @@ const Student = require("../models/studentModel.js");
 const sendEmailWithNode = require("../config/nodemailer.js");
 const Otp = require("../models/otpModel.js");
 const cloudinary = require("../config/cloudinary.js");
-const upload = require("../utils/multer.js");
+const { jwtToken } = require("../utils/jwtToken.js");
 
-exports.SignUpVerify = async (req, res, next) => {
+exports.SignUpVerifyStudent = async (req, res, next) => {
   try {
     const { email } = req.body;
 
@@ -29,6 +29,7 @@ exports.SignUpVerify = async (req, res, next) => {
     const otp = await Otp.create({
       email,
       otp: verificationCode,
+      role: "student",
       createDate,
       expireDate,
     });
@@ -79,19 +80,27 @@ exports.SignUpVerify = async (req, res, next) => {
 exports.registerStudent = async (req, res, next) => {
   try {
     const {
+      password,
+      confirmPassword,
+      verificationCode,
       name,
+      banglaName,
+      fathersName,
+      mothersName,
       email,
       phone,
-      roll,
+      addmissionRoll,
+      boardRoll,
       registration,
-      department,
+      technology,
       session,
       shift,
       group,
-      password,
-      confirmPassword,
+      district,
+      upazila,
+      union,
+      village,
       address,
-      verificationCode,
     } = req.body;
 
     if (password !== confirmPassword) {
@@ -117,7 +126,7 @@ exports.registerStudent = async (req, res, next) => {
     const currentTime = new Date(`${createDate.date} ${createDate.time}`);
 
     if (currentTime > givenTime) {
-      await Otp.deleteOne({ email, otp: verificationCode });
+      await Otp.deleteOne({ email, otp: verificationCode, role: "student" });
       throw createError(400, "OTP has expired.");
     }
 
@@ -125,32 +134,44 @@ exports.registerStudent = async (req, res, next) => {
       public_id: "",
       url: "",
     };
-    
+
     if (req.file.path) {
-        await cloudinary.uploader.upload(req.file.path, { folder: "students" }, (err, res) => {
-            if (err) {
-                throw createError(500, "Failed to upload avatar to Cloudinary.");
-            }
-            
-            avatar.public_id = res.public_id;
-            avatar.url = res.secure_url;
-        });
+      await cloudinary.uploader.upload(
+        req.file.path,
+        { folder: "students" },
+        (err, res) => {
+          if (err) {
+            throw createError(500, "Failed to upload avatar to Cloudinary.");
+          }
+
+          avatar.public_id = res.public_id;
+          avatar.url = res.secure_url;
+        }
+      );
     } else {
-        throw createError(400, "Avatar image is required.");
+      throw createError(400, "Avatar image is required.");
     }
-    
+
     const student = await Student.create({
       name,
       email,
       phone,
-      roll,
       registration,
-      department,
       session,
       shift,
       group,
       password,
       avatar,
+      banglaName,
+      fathersName,
+      mothersName,
+      addmissionRoll,
+      boardRoll,
+      technology,
+      district,
+      upazila,
+      union,
+      village,
       address,
       createDate,
       updateDate,
@@ -207,6 +228,51 @@ exports.registerStudent = async (req, res, next) => {
     res.status(200).json({
       success: true,
       student,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+
+
+
+exports.loginStudent = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      throw createError(401, "Please enter email and password");
+    }
+    const student = await Student.findOne({ email }).select("+password");
+
+    if (!student) {
+      throw createError(401, "invalid email or password");
+    }
+    const isPasswordMatch = await student.comparedPassword(password);
+    if (!isPasswordMatch) {
+      throw createError(401, "invalid email or password");
+    }
+
+    const token = student.getJWTToken();
+    
+    await jwtToken(token, res);
+    
+    res.status(200).json({
+      success: true,
+      student,
+      token,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.logoutStudent = async (req, res, next) => {
+  try {
+    res.clearCookie("access_token");
+    res.status(200).json({
+      success: true,
     });
   } catch (error) {
     next(error);

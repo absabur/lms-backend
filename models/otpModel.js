@@ -14,6 +14,10 @@ const otpSchema = new Schema({
         type: Number,
         required: [true, "Please enter otp."],
     },
+    role: {
+        type: String,
+        required: [true, "Please enter role."],
+    },
     createDate: {
         type: Object,
     },

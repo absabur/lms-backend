@@ -8,6 +8,8 @@ require("dotenv").config();
 const {errorResponse} = require("./controllers/responseController.js");
 const bookRouter = require("./routes/bookRoute.js");
 const studentRouter = require("./routes/studentRoute.js");
+const teacherRouter = require("./routes/teacherRoute.js");
+const adminRouter = require("./routes/teacherRoute copy.js");
 
 
 app.use(express.json());
@@ -16,7 +18,7 @@ const clientUrl = process.env.clientUrl;
 
 app.use(
   cors({
-    origin: ["*"],
+    origin: ["http://localhost:3000", "*"],
     credentials: true,
   })
 );
@@ -24,9 +26,14 @@ app.use(
 
 app.use(cookieParser());
 
+app.use("/api/admin", adminRouter);
+
 app.use("/api/book", bookRouter);
 
 app.use("/api/student", studentRouter);
+
+app.use("/api/teacher", teacherRouter);
+
 
 app.get("/", (req, res) => {
   res.status(200).json({
