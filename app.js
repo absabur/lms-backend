@@ -7,6 +7,7 @@ require("dotenv").config();
 
 const {errorResponse} = require("./controllers/responseController.js");
 const bookRouter = require("./routes/bookRoute.js");
+const studentRouter = require("./routes/studentRoute.js");
 
 
 app.use(express.json());
@@ -20,9 +21,12 @@ app.use(
   })
 );
 
+
 app.use(cookieParser());
 
 app.use("/api/book", bookRouter);
+
+app.use("/api/student", studentRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({
