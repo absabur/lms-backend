@@ -9,7 +9,7 @@ const {errorResponse} = require("./controllers/responseController.js");
 const bookRouter = require("./routes/bookRoute.js");
 const studentRouter = require("./routes/studentRoute.js");
 const teacherRouter = require("./routes/teacherRoute.js");
-const adminRouter = require("./routes/teacherRoute copy.js");
+const adminRouter = require("./routes/adminRoute.js");
 
 
 app.use(express.json());

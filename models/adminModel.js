@@ -49,6 +49,10 @@ const adminSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  isSuperAdmin: {
+    type: Boolean,
+    default: false,
+  },
   isBan: {
     type: Boolean,
     default: false,

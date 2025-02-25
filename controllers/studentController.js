@@ -6,6 +6,8 @@ const sendEmailWithNode = require("../config/nodemailer.js");
 const Otp = require("../models/otpModel.js");
 const cloudinary = require("../config/cloudinary.js");
 const { jwtToken } = require("../utils/jwtToken.js");
+const { createJsonWebToken } = require("../utils/createToken.js");
+const jwt = require("jsonwebtoken");
 
 exports.SignUpVerifyStudent = async (req, res, next) => {
   try {
@@ -234,10 +236,6 @@ exports.registerStudent = async (req, res, next) => {
   }
 };
 
-
-
-
-
 exports.loginStudent = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -255,9 +253,9 @@ exports.loginStudent = async (req, res, next) => {
     }
 
     const token = student.getJWTToken();
-    
+
     await jwtToken(token, res);
-    
+
     res.status(200).json({
       success: true,
       student,
@@ -273,6 +271,349 @@ exports.logoutStudent = async (req, res, next) => {
     res.clearCookie("access_token");
     res.status(200).json({
       success: true,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getStudentProfile = async (req, res, next) => {
+  try {
+    const student = await Student.findById(req.student.id).select("-password");
+    if (!student) {
+      throw createError(404, "Student not found.");
+    }
+    res.status(200).json({
+      success: true,
+      student,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateStudentPassword = async (req, res, next) => {
+  try {
+    const { oldPassword, newPassword, confirmPassword } = req.body;
+    const student = await Student.findById(req.student.id).select("+password");
+
+    if (!student) {
+      throw createError(
+        400,
+        "Unable to update password. Student does not exists."
+      );
+    }
+
+    if (newPassword !== confirmPassword) {
+      throw createError(
+        402,
+        "New Password and Confirm New Password did not match."
+      );
+    }
+
+    const isPasswordMatch = await student.comparedPassword(oldPassword);
+
+    if (!isPasswordMatch) {
+      throw createError(401, "wrong old password.");
+    }
+
+    student.password = newPassword;
+    student.updateDate = localTime(0);
+
+    await student.save();
+    res.status(200).json({
+      success: true,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateStudentProfile = async (req, res, next) => {
+  try {
+    let {
+      name,
+      banglaName,
+      fathersName,
+      mothersName,
+      phone,
+      addmissionRoll,
+      boardRoll,
+      registration,
+      technology,
+      session,
+      shift,
+      group,
+      district,
+      upazila,
+      union,
+      village,
+      address,
+    } = req.body;
+
+    const student = await Student.findById(req.student.id);
+    if (!student) {
+      throw createError(
+        400,
+        "Unable to update Profile. Student does not exist."
+      );
+    }
+
+    // Preserve existing values if fields are empty
+    const updatedData = {
+      name: name || student.name,
+      banglaName: banglaName || student.banglaName,
+      fathersName: fathersName || student.fathersName,
+      mothersName: mothersName || student.mothersName,
+      phone: phone || student.phone,
+      addmissionRoll: addmissionRoll || student.addmissionRoll || "",
+      boardRoll: boardRoll || student.boardRoll || "",
+      registration: registration || student.registration || "",
+      technology: technology || student.technology,
+      session: session || student.session,
+      shift: shift || student.shift,
+      group: group || student.group,
+      district: district || student.district,
+      upazila: upazila || student.upazila,
+      union: union || student.union,
+      village: village || student.village,
+      address: address || student.address,
+      updateDate: localTime(0),
+    };
+
+    if (req.file.path) {
+      await cloudinary.uploader.upload(
+        req.file.path,
+        { folder: "students" },
+        async (err, res) => {
+          if (err) {
+            throw createError(500, "Failed to upload avatar to Cloudinary.");
+          }
+
+          await cloudinary.uploader.destroy(student.avatar.public_id);
+
+          updatedData.avatar = {
+            public_id: res.public_id,
+            url: res.secure_url,
+          };
+        }
+      );
+    }
+
+    const updatedStudent = await Student.findByIdAndUpdate(
+      req.student.id,
+      updatedData,
+      {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+      }
+    );
+
+    res.status(200).json({ success: true, student: updatedStudent });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.forgateStudentPassword = async (req, res, next) => {
+  const { email } = req.body;
+  if (!email) {
+    throw createError(400, "Email is required.");
+  }
+  const student = await Student.findOne({ email });
+  if (!student) {
+    throw createError(404, "Student not found.");
+  }
+  try {
+    const token = createJsonWebToken(
+      {
+        email: student.email,
+      },
+      process.env.JWT_PASSWORD_KEY,
+      "10m"
+    );
+
+    const time = localTime(10);
+
+    const emailData = {
+      email,
+      subject: "Reset Password",
+      html: `
+              <div style="background-color: rgba(175, 175, 175, 0.455); width: 100%; min-width: 350px; padding: 1rem; box-sizing: border-box;">
+                <p style="font-size: 25px; font-weight: 500; text-align: center; color: tomato;">ABS E-Commerce</p>
+                <h2 style="font-size: 30px; font-weight: 700; text-align: center; color: green;">Hello ${student.name}</h2>
+                <p style="margin: 0 auto; font-size: 22px; font-weight: 500; text-align: center; color: black;">This is a confirmation Email for reset password. We got a request from your Email address to reset password. <br /> If you are not this requested person then ignore this Email.</p>
+                <p style="text-align: center;">
+                  <a style="margin: 0 auto; text-align: center; background-color: #34eb34; font-size: 25px; box-shadow: 0 0 5px black; color: black; font-weight: 700; padding: 5px 10px; text-decoration: none;" href="${process.env.clientUrl}/reset-password/${token}" target="_blank">Click Here </a>
+                </p>
+                <p style="text-align: center; font-size: 18px; color: black;">to get reset password form.</p>
+                <p style="text-align: center;">
+                  <b style=" color: red; font-size: 20px; text-align: center;">This Email will expires in <span style="color: black;">${time.expireTime}</span>, Reset Password before <span style="color: black;">${time.expireTime}</span></b>
+                </p>
+              </div>
+            `,
+    };
+
+    try {
+      await sendEmailWithNode(emailData);
+    } catch (error) {
+      throw createError(500, "failed to send verification email.");
+    }
+
+    res.status(200).json({
+      success: true,
+      message:
+        "An email send to " +
+        student.email +
+        ". Please check the email and reset password from there.",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.resetStudentPassword = async (req, res, next) => {
+  try {
+    const { newPassword, confirmPassword, token } = req.body;
+    if (!token) throw createError(404, "token not found.");
+
+    if (newPassword !== confirmPassword) {
+      throw createError(402, "old password and new password did not match.");
+    }
+
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_PASSWORD_KEY);
+      if (!decoded)
+        throw createError(
+          401,
+          "Unable to verify student. token has been expire or wrong token"
+        );
+      const student = await Student.findOne({ email: decoded.email });
+
+      if (!student) {
+        throw createError(
+          400,
+          "Unable to reset password. Student does not exists."
+        );
+      }
+
+      student.password = newPassword;
+      student.updateDate = localTime(0);
+
+      await student.save();
+
+      res.status(201).json({
+        success: true,
+        message: "Password has been reset successfully",
+      });
+    } catch (error) {
+      if (error.name === "TokenExpiredError") {
+        throw createError(401, "Token has expired.");
+      } else if (error.name === "JsonWebTokenError") {
+        throw createError(401, "Invalid token.");
+      } else {
+        throw error;
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateStudentEmailRequest = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const data = await Student.findById(req.student.id).select("+password");
+
+    const isPasswordMatch = await data.comparedPassword(password);
+
+    if (!isPasswordMatch) {
+      throw createError(401, "wrong password.");
+    }
+
+    const student = await Student.findOne({ email });
+    if (student) {
+      throw createError(400, "Email already in use.");
+    }
+
+    const token = createJsonWebToken(
+      {
+        email,
+        id: req.student.id,
+      },
+      process.env.JWT_CHANGE_EMAIL_KEY,
+      "10m"
+    );
+
+    const time = localTime(10);
+
+    const emailData = {
+      email,
+      subject: "Verify Email",
+      html: `
+              <div style="background-color: rgba(175, 175, 175, 0.455); width: 100%; min-width: 350px; padding: 1rem; box-sizing: border-box;">
+                <p style="font-size: 25px; font-weight: 500; text-align: center; color: tomato;">ABS E-Commerce</p>
+                <h2 style="font-size: 30px; font-weight: 700; text-align: center; color: green;">Hello ${req.student.name}</h2>
+                <p style="margin: 0 auto; font-size: 22px; font-weight: 500; text-align: center; color: black;">This is a Email verification. We got a request to change Email from your Email address. <br /> If you are not this requested person then ignore this Email.</p>
+                <p style="text-align: center;">
+                  <a style="margin: 0 auto; text-align: center; background-color: #34eb34; font-size: 25px; box-shadow: 0 0 5px black; color: black; font-weight: 700; padding: 5px 10px; text-decoration: none;" href="${process.env.clientUrl}/mail-update/${token}" target="_blank">Click Here </a>
+                </p>
+                <p style="text-align: center; font-size: 18px; color: black;">to update email.</p>
+                <p style="text-align: center;">
+                  <b style="color: red; font-size: 20px; text-align: center;">This Email will expires in <span style="color: black;">${time.expireTime}</span>, Verify Email before <span style="color: black;">${time.expireTime}</span></b>
+                </p>
+              </div>
+            `,
+    };
+
+    try {
+      await sendEmailWithNode(emailData);
+    } catch (error) {
+      throw createError(500, "failed to send verification email.");
+    }
+
+    res.status(200).json({
+      success: true,
+      message:
+        "An email send to " +
+        email +
+        ". Please check the email and update from there.",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateStudentEmailConfirm = async (req, res, next) => {
+  try {
+    const { token } = req.body;
+    if (!token) throw createError(404, "token not found.");
+
+    const decoded = jwt.verify(token, process.env.JWT_CHANGE_EMAIL_KEY);
+    if (!decoded)
+      throw createError(
+        401,
+        "Unable to verify student. token has been expire or wrong token"
+      );
+    let updateDate = localTime(0);
+    const { email, id } = decoded;
+    const student = await Student.findByIdAndUpdate(
+      id,
+      { email, updateDate },
+      { new: true, runValidators: true, useFindAndModify: false }
+    );
+
+    if (!student) {
+      throw createError(
+        400,
+        "Unable to update email. Student does not exists."
+      );
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Email updated Successfully",
     });
   } catch (error) {
     next(error);

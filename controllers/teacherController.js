@@ -258,3 +258,327 @@ exports.logoutTeacher = async (req, res, next) => {
     next(error);
   }
 };
+
+
+exports.getTeacherProfile = async (req, res, next) => {
+  try {
+    const teacher = await Teacher.findById(req.teacher.id).select("-password");
+    if (!teacher) {
+      throw createError(404, "Teacher not found.");
+    }
+    res.status(200).json({
+      success: true,
+      teacher,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateTeacherPassword = async (req, res, next) => {
+  try {
+    const { oldPassword, newPassword, confirmPassword } = req.body;
+    const teacher = await Teacher.findById(req.teacher.id).select("+password");
+
+    if (!teacher) {
+      throw createError(
+        400,
+        "Unable to update password. Teacher does not exists."
+      );
+    }
+
+    if (newPassword !== confirmPassword) {
+      throw createError(
+        402,
+        "New Password and Confirm New Password did not match."
+      );
+    }
+
+    const isPasswordMatch = await teacher.comparedPassword(oldPassword);
+
+    if (!isPasswordMatch) {
+      throw createError(401, "wrong old password.");
+    }
+
+    teacher.password = newPassword;
+    teacher.updateDate = localTime(0);
+
+    await teacher.save();
+    res.status(200).json({
+      success: true,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateTeacherProfile = async (req, res, next) => {
+  try {
+    let {
+      name,
+      phone,
+      nId,
+      teacherId,
+      department,
+      post,
+      address,
+    } = req.body;
+
+    const teacher = await Teacher.findById(req.teacher.id);
+    if (!teacher) {
+      throw createError(
+        400,
+        "Unable to update Profile. Teacher does not exist."
+      );
+    }
+
+    // Preserve existing values if fields are empty
+    const updatedData = {
+      name: name || teacher.name,
+      phone: phone || teacher.phone,
+      nId: nId || teacher.nId,
+      teacherId: teacherId || teacher.teacherId,
+      department: department || teacher.department,
+      post: post || teacher.post,
+      address: address || teacher.address,
+      updateDate: localTime(0),
+    };
+
+    if (req.file.path) {
+      await cloudinary.uploader.upload(
+        req.file.path,
+        { folder: "teachers" },
+        async (err, res) => {
+          if (err) {
+            throw createError(500, "Failed to upload avatar to Cloudinary.");
+          }
+
+          await cloudinary.uploader.destroy(teacher.avatar.public_id);
+
+          updatedData.avatar = {
+            public_id: res.public_id,
+            url: res.secure_url,
+          };
+        }
+      );
+    }
+
+    const updatedTeacher = await Teacher.findByIdAndUpdate(
+      req.teacher.id,
+      updatedData,
+      {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+      }
+    );
+
+    res.status(200).json({ success: true, teacher: updatedTeacher });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.forgateTeacherPassword = async (req, res, next) => {
+  const { email } = req.body;
+  if (!email) {
+    throw createError(400, "Email is required.");
+  }
+  const teacher = await Teacher.findOne({ email });
+  if (!teacher) {
+    throw createError(404, "Teacher not found.");
+  }
+  try {
+    const token = createJsonWebToken(
+      {
+        email: teacher.email,
+      },
+      process.env.JWT_PASSWORD_KEY,
+      "10m"
+    );
+
+    const time = localTime(10);
+
+    const emailData = {
+      email,
+      subject: "Reset Password",
+      html: `
+              <div style="background-color: rgba(175, 175, 175, 0.455); width: 100%; min-width: 350px; padding: 1rem; box-sizing: border-box;">
+                <p style="font-size: 25px; font-weight: 500; text-align: center; color: tomato;">ABS E-Commerce</p>
+                <h2 style="font-size: 30px; font-weight: 700; text-align: center; color: green;">Hello ${teacher.name}</h2>
+                <p style="margin: 0 auto; font-size: 22px; font-weight: 500; text-align: center; color: black;">This is a confirmation Email for reset password. We got a request from your Email address to reset password. <br /> If you are not this requested person then ignore this Email.</p>
+                <p style="text-align: center;">
+                  <a style="margin: 0 auto; text-align: center; background-color: #34eb34; font-size: 25px; box-shadow: 0 0 5px black; color: black; font-weight: 700; padding: 5px 10px; text-decoration: none;" href="${process.env.clientUrl}/reset-password/${token}" target="_blank">Click Here </a>
+                </p>
+                <p style="text-align: center; font-size: 18px; color: black;">to get reset password form.</p>
+                <p style="text-align: center;">
+                  <b style=" color: red; font-size: 20px; text-align: center;">This Email will expires in <span style="color: black;">${time.expireTime}</span>, Reset Password before <span style="color: black;">${time.expireTime}</span></b>
+                </p>
+              </div>
+            `,
+    };
+
+    try {
+      await sendEmailWithNode(emailData);
+    } catch (error) {
+      throw createError(500, "failed to send verification email.");
+    }
+
+    res.status(200).json({
+      success: true,
+      message:
+        "An email send to " +
+        teacher.email +
+        ". Please check the email and reset password from there.",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.resetTeacherPassword = async (req, res, next) => {
+  try {
+    const { newPassword, confirmPassword, token } = req.body;
+    if (!token) throw createError(404, "token not found.");
+
+    if (newPassword !== confirmPassword) {
+      throw createError(402, "old password and new password did not match.");
+    }
+
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_PASSWORD_KEY);
+      if (!decoded)
+        throw createError(
+          401,
+          "Unable to verify teacher. token has been expire or wrong token"
+        );
+      const teacher = await Teacher.findOne({ email: decoded.email });
+
+      if (!teacher) {
+        throw createError(
+          400,
+          "Unable to reset password. Teacher does not exists."
+        );
+      }
+
+      teacher.password = newPassword;
+      teacher.updateDate = localTime(0);
+
+      await teacher.save();
+
+      res.status(201).json({
+        success: true,
+        message: "Password has been reset successfully",
+      });
+    } catch (error) {
+      if (error.name === "TokenExpiredError") {
+        throw createError(401, "Token has expired.");
+      } else if (error.name === "JsonWebTokenError") {
+        throw createError(401, "Invalid token.");
+      } else {
+        throw error;
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateTeacherEmailRequest = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const data = await Teacher.findById(req.teacher.id).select("+password");
+
+    const isPasswordMatch = await data.comparedPassword(password);
+
+    if (!isPasswordMatch) {
+      throw createError(401, "wrong password.");
+    }
+
+    const teacher = await Teacher.findOne({ email });
+    if (teacher) {
+      throw createError(400, "Email already in use.");
+    }
+
+    const token = createJsonWebToken(
+      {
+        email,
+        id: req.teacher.id,
+      },
+      process.env.JWT_CHANGE_EMAIL_KEY,
+      "10m"
+    );
+
+    const time = localTime(10);
+
+    const emailData = {
+      email,
+      subject: "Verify Email",
+      html: `
+              <div style="background-color: rgba(175, 175, 175, 0.455); width: 100%; min-width: 350px; padding: 1rem; box-sizing: border-box;">
+                <p style="font-size: 25px; font-weight: 500; text-align: center; color: tomato;">ABS E-Commerce</p>
+                <h2 style="font-size: 30px; font-weight: 700; text-align: center; color: green;">Hello ${req.teacher.name}</h2>
+                <p style="margin: 0 auto; font-size: 22px; font-weight: 500; text-align: center; color: black;">This is a Email verification. We got a request to change Email from your Email address. <br /> If you are not this requested person then ignore this Email.</p>
+                <p style="text-align: center;">
+                  <a style="margin: 0 auto; text-align: center; background-color: #34eb34; font-size: 25px; box-shadow: 0 0 5px black; color: black; font-weight: 700; padding: 5px 10px; text-decoration: none;" href="${process.env.clientUrl}/mail-update/${token}" target="_blank">Click Here </a>
+                </p>
+                <p style="text-align: center; font-size: 18px; color: black;">to update email.</p>
+                <p style="text-align: center;">
+                  <b style="color: red; font-size: 20px; text-align: center;">This Email will expires in <span style="color: black;">${time.expireTime}</span>, Verify Email before <span style="color: black;">${time.expireTime}</span></b>
+                </p>
+              </div>
+            `,
+    };
+
+    try {
+      await sendEmailWithNode(emailData);
+    } catch (error) {
+      throw createError(500, "failed to send verification email.");
+    }
+
+    res.status(200).json({
+      success: true,
+      message:
+        "An email send to " +
+        email +
+        ". Please check the email and update from there.",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateTeacherEmailConfirm = async (req, res, next) => {
+  try {
+    const { token } = req.body;
+    if (!token) throw createError(404, "token not found.");
+
+    const decoded = jwt.verify(token, process.env.JWT_CHANGE_EMAIL_KEY);
+    if (!decoded)
+      throw createError(
+        401,
+        "Unable to verify teacher. token has been expire or wrong token"
+      );
+    let updateDate = localTime(0);
+    const { email, id } = decoded;
+    const teacher = await Teacher.findByIdAndUpdate(
+      id,
+      { email, updateDate },
+      { new: true, runValidators: true, useFindAndModify: false }
+    );
+
+    if (!teacher) {
+      throw createError(
+        400,
+        "Unable to update email. Teacher does not exists."
+      );
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Email updated Successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};

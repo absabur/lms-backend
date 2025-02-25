@@ -250,3 +250,312 @@ exports.logoutAdmin = async (req, res, next) => {
     next(error);
   }
 };
+
+
+exports.getAdminProfile = async (req, res, next) => {
+  try{
+    const admin = await Admin.findById(req.admin.id).select("-password");
+    if (!admin) {
+      throw createError(404, "Admin not found.");
+    }
+    res.status(200).json({
+      success: true,
+      admin,
+    })
+  } catch (error) {
+    next(error);
+  }
+}
+
+exports.updateAdminPassword = async (req, res, next) => {
+  try {
+    const { oldPassword, newPassword, confirmPassword } = req.body;
+    const admin = await Admin.findById(req.admin.id).select("+password");
+
+    if (!admin) {
+      throw createError(
+        400,
+        "Unable to update password. Admin does not exists."
+      );
+    }
+
+    if (newPassword !== confirmPassword) {
+      throw createError(
+        402,
+        "New Password and Confirm New Password did not match."
+      );
+    }
+
+    const isPasswordMatch = await admin.comparedPassword(oldPassword);
+
+    if (!isPasswordMatch) {
+      throw createError(401, "wrong old password.");
+    }
+
+    admin.password = newPassword;
+    admin.updateDate = localTime(0);
+
+    await admin.save();
+    res.status(200).json({
+      success: true,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateAdminProfile = async (req, res, next) => {
+  try {
+    let {
+      name,
+      phone,
+      nId,
+    } = req.body;
+
+    const admin = await Admin.findById(req.admin.id);
+    if (!admin) {
+      throw createError(400, "Unable to update Profile. Admin does not exist.");
+    }
+
+    // Preserve existing values if fields are empty
+    const updatedData = {
+      name: name || admin.name,
+      phone: phone || admin.phone,
+      nId: nId || admin.nId,
+      updateDate: localTime(0),
+    };
+
+    // Handle avatar upload if file exists
+if (req.file.path) {
+      await cloudinary.uploader.upload(
+        req.file.path,
+        { folder: "admins" },
+        async (err, res) => {
+          if (err) {
+            throw createError(500, "Failed to upload avatar to Cloudinary.");
+          }
+
+          await cloudinary.uploader.destroy(admin.avatar.public_id);
+
+          updatedData.avatar = {
+            public_id: res.public_id,
+            url: res.secure_url,
+          };
+        }
+      );
+    }
+
+    const updatedAdmin = await Admin.findByIdAndUpdate(req.admin.id, updatedData, {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false,
+    });
+
+    res.status(200).json({ success: true, admin: updatedAdmin });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+exports.forgateAdminPassword = async (req, res, next) => {
+  const { email } = req.body;
+  if (!email) {
+    throw createError(400, "Email is required.");
+  }
+  const admin = await Admin.findOne({ email });
+  if (!admin) {
+    throw createError(404, "Admin not found.");
+  }
+  try {
+    const token = createJsonWebToken(
+      {
+        email: admin.email,
+      },
+      process.env.JWT_PASSWORD_KEY,
+      "10m"
+    );
+
+    const time =  localTime(10);
+
+    const emailData = {
+      email,
+      subject: "Reset Password",
+      html: `
+              <div style="background-color: rgba(175, 175, 175, 0.455); width: 100%; min-width: 350px; padding: 1rem; box-sizing: border-box;">
+                <p style="font-size: 25px; font-weight: 500; text-align: center; color: tomato;">ABS E-Commerce</p>
+                <h2 style="font-size: 30px; font-weight: 700; text-align: center; color: green;">Hello ${admin.name}</h2>
+                <p style="margin: 0 auto; font-size: 22px; font-weight: 500; text-align: center; color: black;">This is a confirmation Email for reset password. We got a request from your Email address to reset password. <br /> If you are not this requested person then ignore this Email.</p>
+                <p style="text-align: center;">
+                  <a style="margin: 0 auto; text-align: center; background-color: #34eb34; font-size: 25px; box-shadow: 0 0 5px black; color: black; font-weight: 700; padding: 5px 10px; text-decoration: none;" href="${process.env.clientUrl}/reset-password/${token}" target="_blank">Click Here </a>
+                </p>
+                <p style="text-align: center; font-size: 18px; color: black;">to get reset password form.</p>
+                <p style="text-align: center;">
+                  <b style=" color: red; font-size: 20px; text-align: center;">This Email will expires in <span style="color: black;">${time.expireTime}</span>, Reset Password before <span style="color: black;">${time.expireTime}</span></b>
+                </p>
+              </div>
+            `,
+    };
+
+    try {
+      await sendEmailWithNode(emailData);
+    } catch (error) {
+      throw createError(500, "failed to send verification email.");
+    }
+
+    res.status(200).json({
+      success: true,
+      message:
+        "An email send to " +
+        admin.email +
+        ". Please check the email and reset password from there.",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.resetAdminPassword = async (req, res, next) => {
+  try {
+    const { newPassword, confirmPassword, token } = req.body;
+    if (!token) throw createError(404, "token not found.");
+    
+    if (newPassword !== confirmPassword) {
+      throw createError(402, "old password and new password did not match.");
+    }
+
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_PASSWORD_KEY);
+      if (!decoded)
+        throw createError(
+          401,
+          "Unable to verify admin. token has been expire or wrong token"
+        );
+      const admin = await Admin.findOne({ email: decoded.email });
+
+      if (!admin) {
+        throw createError(
+          400,
+          "Unable to reset password. Admin does not exists."
+        );
+      }
+
+      admin.password = newPassword;
+      admin.updateDate = localTime(0);
+
+      await admin.save();
+
+      res.status(201).json({
+        success: true,
+        message: "Password has been reset successfully",
+      });
+    } catch (error) {
+      if (error.name === "TokenExpiredError") {
+        throw createError(401, "Token has expired.");
+      } else if (error.name === "JsonWebTokenError") {
+        throw createError(401, "Invalid token.");
+      } else {
+        throw error;
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+exports.updateAdminEmailRequest = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const data = await Admin.findById(req.admin.id).select("+password");
+
+    const isPasswordMatch = await data.comparedPassword(password);
+
+    if (!isPasswordMatch) {
+      throw createError(401, "wrong password.");
+    }
+
+    const admin = await Admin.findOne({ email });
+    if (admin) {
+      throw createError(400, "Email already in use.");
+    }
+
+    const token = createJsonWebToken(
+      {
+        email,
+        id: req.admin.id,
+      },
+      process.env.JWT_CHANGE_EMAIL_KEY,
+      "10m"
+    );
+
+    const time = localTime(10);
+
+    const emailData = {
+      email,
+      subject: "Verify Email",
+      html: `
+              <div style="background-color: rgba(175, 175, 175, 0.455); width: 100%; min-width: 350px; padding: 1rem; box-sizing: border-box;">
+                <p style="font-size: 25px; font-weight: 500; text-align: center; color: tomato;">ABS E-Commerce</p>
+                <h2 style="font-size: 30px; font-weight: 700; text-align: center; color: green;">Hello ${req.admin.name}</h2>
+                <p style="margin: 0 auto; font-size: 22px; font-weight: 500; text-align: center; color: black;">This is a Email verification. We got a request to change Email from your Email address. <br /> If you are not this requested person then ignore this Email.</p>
+                <p style="text-align: center;">
+                  <a style="margin: 0 auto; text-align: center; background-color: #34eb34; font-size: 25px; box-shadow: 0 0 5px black; color: black; font-weight: 700; padding: 5px 10px; text-decoration: none;" href="${process.env.clientUrl}/mail-update/${token}" target="_blank">Click Here </a>
+                </p>
+                <p style="text-align: center; font-size: 18px; color: black;">to update email.</p>
+                <p style="text-align: center;">
+                  <b style="color: red; font-size: 20px; text-align: center;">This Email will expires in <span style="color: black;">${time.expireTime}</span>, Verify Email before <span style="color: black;">${time.expireTime}</span></b>
+                </p>
+              </div>
+            `,
+    };
+
+    try {
+      await sendEmailWithNode(emailData);
+    } catch (error) {
+      throw createError(500, "failed to send verification email.");
+    }
+
+    res.status(200).json({
+      success: true,
+      message:
+        "An email send to " +
+        email +
+        ". Please check the email and update from there.",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateAdminEmailConfirm = async (req, res, next) => {
+  try {
+    const { token } = req.body;
+    if (!token) throw createError(404, "token not found.");
+
+    const decoded = jwt.verify(token, process.env.JWT_CHANGE_EMAIL_KEY);
+    if (!decoded)
+      throw createError(
+        401,
+        "Unable to verify admin. token has been expire or wrong token"
+      );
+    let updateDate = localTime(0);
+    const { email, id } = decoded;
+    const admin = await Admin.findByIdAndUpdate(
+      id,
+      { email, updateDate },
+      { new: true, runValidators: true, useFindAndModify: false }
+    );
+
+    if (!admin) {
+      throw createError(400, "Unable to update email. Admin does not exists.");
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Email updated Successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
