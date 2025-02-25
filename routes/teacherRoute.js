@@ -6,21 +6,21 @@ const {
   loginTeacher,
   logoutTeacher,
 } = require("../controllers/teacherController");
-const { limiter } = require("../utils/limiter");
+const { createLimiterAuth } = require("../utils/limiter");
 
 const teacherRouter = express.Router();
 
-teacherRouter.post("/signup", limiter, SignUpVerifyTeacher);
+teacherRouter.post("/signup", createLimiterAuth(), SignUpVerifyTeacher);
 
 teacherRouter.post(
   "/register",
-  limiter,
+  createLimiterAuth(),
   upload.single("image"),
   registerTeacher
 );
 
-teacherRouter.post("/login", limiter, loginTeacher);
+teacherRouter.post("/login", createLimiterAuth(), loginTeacher);
 
-teacherRouter.post("/logout", limiter, logoutTeacher);
+teacherRouter.post("/logout", createLimiterAuth(), logoutTeacher);
 
 module.exports = teacherRouter;

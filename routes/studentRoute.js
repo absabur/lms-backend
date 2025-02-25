@@ -6,21 +6,21 @@ const {
   logoutStudent,
 } = require("../controllers/studentController");
 const upload = require("../utils/multer");
-const { limiter } = require("../utils/limiter");
+const { createLimiterAuth } = require("../utils/limiter");
 
 const studentRouter = express.Router();
 
-studentRouter.post("/signup", limiter, SignUpVerifyStudent);
+studentRouter.post("/signup", createLimiterAuth(), SignUpVerifyStudent);
 
 studentRouter.post(
   "/register",
-  limiter,
+  createLimiterAuth(),
   upload.single("image"),
   registerStudent
 );
 
-studentRouter.post("/login", limiter, loginStudent);
+studentRouter.post("/login", createLimiterAuth(), loginStudent);
 
-studentRouter.post("/logout", limiter, logoutStudent);
+studentRouter.post("/logout", createLimiterAuth(), logoutStudent);
 
 module.exports = studentRouter;
