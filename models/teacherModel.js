@@ -64,9 +64,23 @@ const teacherSchema = new Schema({
       required: true,
     },
   },
+  isApporved: {
+    type: Boolean,
+    default: false,
+  },
   isBan: {
     type: Boolean,
     default: false,
+  },
+  createdBy: {
+    type: Schema.Types.ObjectId,
+    ref: "Admin",
+    default: null,
+  },
+  updatedBy: {
+    type: Schema.Types.ObjectId,
+    ref: "Admin",
+    default: null,
   },
   createDate: {
     type: Object,

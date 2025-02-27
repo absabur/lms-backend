@@ -582,3 +582,313 @@ exports.updateTeacherEmailConfirm = async (req, res, next) => {
     next(error);
   }
 };
+
+
+
+exports.getAllTeacher = async (req, res, next) => {
+  try {
+    const { 
+      isApproved, 
+      isBan, 
+      post, 
+      department,
+      search 
+    } = req.query;
+
+    const filter = {};
+
+    // Add filters if they exist in the query
+    if (isApproved !== undefined) filter.isApproved = isApproved === 'true';
+    if (isBan !== undefined) filter.isBan = isBan === 'true';
+    if (post) filter.post = post;
+    if (department) filter.department = department;
+
+    // Search filter (searching in multiple fields)
+    if (search) {
+      filter.$or = [
+        { teacherId: { $regex: search, $options: "i" } },
+        { nId: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+        { phone: { $regex: search, $options: "i" } }
+      ];
+    }
+
+    const teachers = await Teacher.find(filter);
+
+    if (!teachers || teachers.length === 0) {
+      throw createError(404, "Teachers not found.");
+    }
+
+    res.status(200).json({
+      success: true,
+      teachers,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+
+exports.getTeacherById = async (req, res, next) => {
+  try {
+    const teacher = await Teacher.findById(req.params.id);
+    if (!teacher) {
+      throw createError(404, "Teacher not found.");
+    }
+    res.status(200).json({
+      success: true,
+      teacher,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+
+
+exports.registerTeacherByAdmin = async (req, res, next) => {
+  try {
+    const {
+      password,
+      confirmPassword,
+      name,
+      email,
+      phone,
+      nId,
+      department,
+      post,
+      teacherId,
+      address,
+    } = req.body;
+
+    if (password !== confirmPassword) {
+      throw createError(400, "Password and Confirm Password did not match.");
+    }
+
+    const createDate = localTime(0);
+    const updateDate = localTime(0);
+
+    let avatar = {
+      public_id: "",
+      url: "",
+    };
+
+    if (req.file.path) {
+      await cloudinary.uploader.upload(
+        req.file.path,
+        { folder: "teachers" },
+        (err, res) => {
+          if (err) {
+            throw createError(500, "Failed to upload avatar to Cloudinary.");
+          }
+
+          avatar.public_id = res.public_id;
+          avatar.url = res.secure_url;
+        }
+      );
+    } else {
+      throw createError(400, "Avatar image is required.");
+    }
+
+    const teacher = await Teacher.create({
+      name,
+      email,
+      phone,
+      nId,
+      teacherId,
+      password,
+      avatar,
+      department,
+      post,
+      address,
+      createDate,
+      updateDate,
+      isApproved: true,
+      createdBy: req.admin.id,
+    });
+
+    if (!teacher) {
+      throw createError(401, "Unable to create teacher");
+    }
+
+    // Send success email
+    const emailData = {
+      email,
+      subject:
+        "Welcome to Library Management System - Account Created Successfully",
+      html: `
+          <div style="background-color: #f4f4f4; width: 100%; min-width: 350px; padding: 10px; box-sizing: border-box; font-family: Arial, sans-serif;">
+            <div style="max-width: 500px; margin: 0 auto; background: #ffffff; padding: 10px; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);">
+              <h1 style="text-align: center; color: #d9534f; margin-bottom: 10px;">Library Management System</h1>
+              <h2 style="text-align: center; color: #5cb85c;">Account Created Successfully!</h2>
+              
+              <p style="text-align: center; font-size: 18px; color: #333;">
+                Congratulations, <strong>${teacher.name}</strong>! 🎉 Your account has been successfully created.
+              </p>
+      
+              <div style="text-align: center; margin: 10px 0;">
+                <p style="font-size: 16px; color: #555;">You can now log in and start managing your library resources.</p>
+                <a href="${process.env.clientUrl}/login" 
+                   style="display: inline-block; background-color: #0275d8; color: #ffffff; text-decoration: none; font-size: 18px; font-weight: bold; padding: 10px 20px; border-radius: 5px;">
+                  Login Now
+                </a>
+              </div>
+      
+              <p style="text-align: center; font-size: 16px; color: #555;">
+                If you did not create this account, please contact our support team immediately.
+              </p>
+      
+              <hr style="border: none; border-top: 1px solid #ddd; margin: 10px 0;">
+              <p style="text-align: center; font-size: 14px; color: #777;">
+                Thank you for joining us! 📚<br> Library Management System Team
+              </p>
+            </div>
+          </div>
+        `,
+    };
+
+    try {
+      await sendEmailWithNode(emailData);
+    } catch (error) {
+      throw createError(500, "Failed to send verification email.");
+    }
+
+    res.status(200).json({
+      success: true,
+      teacher,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+exports.updateTeacherProfileByAdmin = async (req, res, next) => {
+  try {
+    let {
+      name,
+      phone,
+      email,
+      nId,
+      teacherId,
+      department,
+      post,
+      address,
+    } = req.body;
+
+    const teacher = await Teacher.findById(req.params.id);
+    if (!teacher) {
+      throw createError(
+        400,
+        "Unable to update Profile. Teacher does not exist."
+      );
+    }
+
+    // Preserve existing values if fields are empty
+    const updatedData = {
+      name: name || teacher.name,
+      email: email || teacher.email,email,
+      phone: phone || teacher.phone,
+      nId: nId || teacher.nId,
+      teacherId: teacherId || teacher.teacherId,
+      department: department || teacher.department,
+      post: post || teacher.post,
+      address: address || teacher.address,
+      updateDate: localTime(0),
+      isApproved: true,
+      updatedBy: req.admin.id,
+    };
+
+    if (req.file.path) {
+      await cloudinary.uploader.upload(
+        req.file.path,
+        { folder: "teachers" },
+        async (err, res) => {
+          if (err) {
+            throw createError(500, "Failed to upload avatar to Cloudinary.");
+          }
+
+          await cloudinary.uploader.destroy(teacher.avatar.public_id);
+
+          updatedData.avatar = {
+            public_id: res.public_id,
+            url: res.secure_url,
+          };
+        }
+      );
+    }
+
+    const updatedTeacher = await Teacher.findByIdAndUpdate(
+      req.teacher.id,
+      updatedData,
+      {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+      }
+    );
+
+    res.status(200).json({ success: true, teacher: updatedTeacher });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+
+
+exports.approveTeacher = async (req, res) => {
+  try {
+    const teacher = await Teacher.findByIdAndUpdate(
+      req.params.id,
+      { isApporved: true },
+      {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+      }
+    );
+    res.status(200).json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+
+exports.banTeacher = async (req, res) => {
+  try {
+    const teacher = await Teacher.findByIdAndUpdate(
+      req.params.id,
+      { isBan: true },
+      {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+      }
+    );
+    res.status(200).json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+exports.unbanTeacher = async (req, res) => {
+  try {
+    const teacher = await Teacher.findByIdAndUpdate(
+      req.params.id,
+      { isBan: false },
+      {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+      }
+    );
+    res.status(200).json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+}

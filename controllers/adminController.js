@@ -29,7 +29,7 @@ exports.SignUpVerifyAdmin = async (req, res, next) => {
     const otp = await Otp.create({
       email,
       otp: verificationCode,
-      role: 'admin',
+      role: "admin",
       createDate,
       expireDate,
     });
@@ -89,6 +89,7 @@ exports.registerAdmin = async (req, res, next) => {
       nId,
     } = req.body;
 
+
     if (password !== confirmPassword) {
       throw createError(400, "Password and Confirm Password did not match.");
     }
@@ -112,7 +113,7 @@ exports.registerAdmin = async (req, res, next) => {
     const currentTime = new Date(`${createDate.date} ${createDate.time}`);
 
     if (currentTime > givenTime) {
-      await Otp.deleteOne({ email, otp: verificationCode, role: 'admin' });
+      await Otp.deleteOne({ email, otp: verificationCode, role: "admin" });
       throw createError(400, "OTP has expired.");
     }
 
@@ -206,10 +207,6 @@ exports.registerAdmin = async (req, res, next) => {
   }
 };
 
-
-
-
-
 exports.loginAdmin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -217,7 +214,7 @@ exports.loginAdmin = async (req, res, next) => {
       throw createError(401, "Please enter email and password");
     }
     const admin = await Admin.findOne({ email }).select("+password");
-
+    
     if (!admin) {
       throw createError(401, "invalid email or password");
     }
@@ -227,9 +224,9 @@ exports.loginAdmin = async (req, res, next) => {
     }
 
     const token = admin.getJWTToken();
-    
+
     await jwtToken(token, res);
-    
+
     res.status(200).json({
       success: true,
       admin,
@@ -251,9 +248,8 @@ exports.logoutAdmin = async (req, res, next) => {
   }
 };
 
-
 exports.getAdminProfile = async (req, res, next) => {
-  try{
+  try {
     const admin = await Admin.findById(req.admin.id).select("-password");
     if (!admin) {
       throw createError(404, "Admin not found.");
@@ -261,11 +257,11 @@ exports.getAdminProfile = async (req, res, next) => {
     res.status(200).json({
       success: true,
       admin,
-    })
+    });
   } catch (error) {
     next(error);
   }
-}
+};
 
 exports.updateAdminPassword = async (req, res, next) => {
   try {
@@ -306,11 +302,7 @@ exports.updateAdminPassword = async (req, res, next) => {
 
 exports.updateAdminProfile = async (req, res, next) => {
   try {
-    let {
-      name,
-      phone,
-      nId,
-    } = req.body;
+    let { name, phone, nId } = req.body;
 
     const admin = await Admin.findById(req.admin.id);
     if (!admin) {
@@ -326,7 +318,7 @@ exports.updateAdminProfile = async (req, res, next) => {
     };
 
     // Handle avatar upload if file exists
-if (req.file.path) {
+    if (req.file.path) {
       await cloudinary.uploader.upload(
         req.file.path,
         { folder: "admins" },
@@ -345,18 +337,21 @@ if (req.file.path) {
       );
     }
 
-    const updatedAdmin = await Admin.findByIdAndUpdate(req.admin.id, updatedData, {
-      new: true,
-      runValidators: true,
-      useFindAndModify: false,
-    });
+    const updatedAdmin = await Admin.findByIdAndUpdate(
+      req.admin.id,
+      updatedData,
+      {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+      }
+    );
 
     res.status(200).json({ success: true, admin: updatedAdmin });
   } catch (error) {
     next(error);
   }
 };
-
 
 exports.forgateAdminPassword = async (req, res, next) => {
   const { email } = req.body;
@@ -376,7 +371,7 @@ exports.forgateAdminPassword = async (req, res, next) => {
       "10m"
     );
 
-    const time =  localTime(10);
+    const time = localTime(10);
 
     const emailData = {
       email,
@@ -419,7 +414,7 @@ exports.resetAdminPassword = async (req, res, next) => {
   try {
     const { newPassword, confirmPassword, token } = req.body;
     if (!token) throw createError(404, "token not found.");
-    
+
     if (newPassword !== confirmPassword) {
       throw createError(402, "old password and new password did not match.");
     }
@@ -462,7 +457,6 @@ exports.resetAdminPassword = async (req, res, next) => {
     next(error);
   }
 };
-
 
 exports.updateAdminEmailRequest = async (req, res, next) => {
   try {
@@ -559,3 +553,108 @@ exports.updateAdminEmailConfirm = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getAllAdmin = async (req, res, next) => {
+  try {
+    const { isAdmin, isBan, search } = req.query;
+
+    const filter = {};
+
+    // Add filters if they exist in the query
+    if (isAdmin !== undefined) filter.isAdmin = isAdmin === "true";
+    if (isBan !== undefined) filter.isBan = isBan === "true";
+
+    // Search filter (searching in multiple fields)
+    if (search) {
+      filter.$or = [
+        { nId: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+        { phone: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const admins = await Admin.find(filter);
+
+    if (!admins || admins.length === 0) {
+      throw createError(404, "Admins not found.");
+    }
+
+    res.status(200).json({
+      success: true,
+      admins,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getAdminById = async (req, res, next) => {
+  try {
+    const admin = await Admin.findById(req.params.id);
+    if (!admin) {
+      throw createError(404, "Admin not found.");
+    }
+    res.status(200).json({
+      success: true,
+      admin,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+
+exports.approveAdmin = async (req, res) => {
+  try {
+    const admin = await Admin.findByIdAndUpdate(
+      req.params.id,
+      { isApporved: true },
+      {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+      }
+    );
+    res.status(200).json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+
+exports.banAdmin = async (req, res) => {
+  try {
+    const admin = await Admin.findByIdAndUpdate(
+      req.params.id,
+      { isBan: true },
+      {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+      }
+    );
+    res.status(200).json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+exports.unbanAdmin = async (req, res) => {
+  try {
+    const admin = await Admin.findByIdAndUpdate(
+      req.params.id,
+      { isBan: false },
+      {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+      }
+    );
+    res.status(200).json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+}
