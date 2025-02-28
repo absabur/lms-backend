@@ -13,7 +13,6 @@ const adminRouter = require("./routes/adminRoute.js");
 const takingBookStudentRouter = require("./routes/bookStudentRoute.js");
 const takingBookTeacherRouter = require("./routes/bookTeacherRoute.js");
 
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const clientUrl = process.env.clientUrl;
