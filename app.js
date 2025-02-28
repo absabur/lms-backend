@@ -16,11 +16,21 @@ const fixedValueRouter = require("./routes/fixedValueRoute.js");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const clientUrl = process.env.clientUrl;
+
+// const clientUrl = process.env.clientUrl;
+// app.use(
+//   cors({
+//     origin: ["http://localhost:3000", "*"],
+//     credentials: true,
+//   })
+// );
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "*"],
+    origin: (origin, callback) => {
+      // Accepts any origin for development
+      callback(null, true);
+    },
     credentials: true,
   })
 );
