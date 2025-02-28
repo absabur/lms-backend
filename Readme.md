@@ -14,9 +14,8 @@ This API endpoint handles the admin signup verification process for the Library 
 {
   "email": "admin@example.com"
 }
+```
 
-
----
 
 
 # Admin Registration API
@@ -42,6 +41,7 @@ This API endpoint handles the registration of new admins for the Library Managem
   "verificationCode": "123456",
   "image": "image_file" 
 }
+```
 
 
 ---
@@ -63,7 +63,7 @@ This API endpoint allows an admin to log in to the Library Management System.
   "email": "admin@example.com",
   "password": "adminpassword"
 }
-
+```
 
 ---
 
@@ -87,7 +87,7 @@ This endpoint does not require a request body.
 {
   "success": true
 }
-
+```
 
 ---
 
@@ -129,7 +129,7 @@ This endpoint requires authentication via a JWT token.
     "updateDate": "2025-02-28T00:00:00"
   }
 }
-
+```
 
 ---
 
@@ -169,7 +169,7 @@ This endpoint requires authentication via a JWT token.
 {
   "success": true
 }
-
+```
 
 ---
 
@@ -221,3 +221,4 @@ This endpoint requires authentication via a JWT token.
     "updateDate": "2022-01-01T00:00:00Z"
   }
 }
+```
