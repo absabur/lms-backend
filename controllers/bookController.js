@@ -16,7 +16,7 @@ exports.createBook = async (req, res, next) => {
       mrp,
       shelf,
       bookNumber,
-      department,
+      category,
       quantity,
       description,
       bookNumbers,
@@ -34,7 +34,6 @@ exports.createBook = async (req, res, next) => {
 
     const images = [];
 
-    // Upload all images to Cloudinary
     for (const file of req.files) {
       const result = await cloudinary.uploader.upload(file.path, { folder: "books" });
 
@@ -55,7 +54,7 @@ exports.createBook = async (req, res, next) => {
       mrp,
       shelf,
       bookNumber,
-      department,
+      category,
       quantity,
       images,
       description,
@@ -94,7 +93,7 @@ exports.updateBook = async (req, res, next) => {
       mrp,
       shelf,
       bookNumber,
-      department,
+      category,
       quantity,
       description,
       bookNumbers,
@@ -136,7 +135,7 @@ exports.updateBook = async (req, res, next) => {
     book.mrp = mrp || book.mrp;
     book.shelf = shelf || book.shelf;
     book.bookNumber = bookNumber || book.bookNumber;
-    book.department = department || book.department;
+    book.category = category || book.category;
     book.quantity = quantity || book.quantity;
     book.description = description || book.description;
     book.bookNumbers = bookNumbers || book.bookNumbers;
@@ -175,18 +174,17 @@ exports.getAllBooks = async (req, res, next) => {
       minMRP,
       maxMRP,
       shelf,
-      department,
+      category,
       minQuantity,
       maxQuantity,
-      sortBy = "createdAt", // default sort field
-      sortOrder = "desc", // default sort order
+      sortBy = "createdAt",
+      sortOrder = "desc",
       page = 1,
       limit = 10
     } = req.query;
 
     const filter = {};
 
-    // Apply filters
     if (bookName) filter.bookName = { $regex: bookName, $options: "i" };
     if (bookAuthor) filter.bookAuthor = { $regex: bookAuthor, $options: "i" };
     if (publisher) filter.publisher = { $regex: publisher, $options: "i" };
@@ -194,9 +192,8 @@ exports.getAllBooks = async (req, res, next) => {
     if (country) filter.country = { $regex: country, $options: "i" };
     if (language) filter.language = { $regex: language, $options: "i" };
     if (shelf) filter.shelf = { $regex: shelf, $options: "i" };
-    if (department) filter.department = { $regex: department, $options: "i" };
+    if (category) filter.category = { $regex: category, $options: "i" };
 
-    // Page range filters
     if (minPages || maxPages) {
       filter.numberOfPages = {};
       if (minPages) filter.numberOfPages.$gte = parseInt(minPages);
@@ -215,7 +212,6 @@ exports.getAllBooks = async (req, res, next) => {
       if (maxQuantity) filter.quantity.$lte = parseInt(maxQuantity);
     }
 
-    // Fetch books with filter, pagination, and sorting
     const books = await Books.find(filter)
       .limit(Number(limit))
       .skip((Number(page) - 1) * Number(limit))
@@ -225,10 +221,8 @@ exports.getAllBooks = async (req, res, next) => {
       throw createError(404, "Books not found");
     }
 
-    // Get total count of documents for pagination
     const count = await Books.countDocuments(filter);
 
-    // Respond with paginated results
     res.status(200).json({
       success: true,
       books,

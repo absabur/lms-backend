@@ -163,7 +163,7 @@ exports.registerTeacher = async (req, res, next) => {
 
     await Otp.deleteOne({ email, otp: verificationCode });
 
-    // Send success email
+    
     const emailData = {
       email,
       subject:
@@ -332,7 +332,7 @@ exports.updateTeacherProfile = async (req, res, next) => {
       );
     }
 
-    // Preserve existing values if fields are empty
+    
     const updatedData = {
       name: name || teacher.name,
       phone: phone || teacher.phone,
@@ -597,13 +597,11 @@ exports.getAllTeacher = async (req, res, next) => {
 
     const filter = {};
 
-    // Add filters if they exist in the query
     if (isApproved !== undefined) filter.isApproved = isApproved === 'true';
     if (isBan !== undefined) filter.isBan = isBan === 'true';
     if (post) filter.post = post;
     if (department) filter.department = department;
 
-    // Search filter (searching in multiple fields)
     if (search) {
       filter.$or = [
         { teacherId: { $regex: search, $options: "i" } },
@@ -713,7 +711,7 @@ exports.registerTeacherByAdmin = async (req, res, next) => {
       throw createError(401, "Unable to create teacher");
     }
 
-    // Send success email
+    
     const emailData = {
       email,
       subject:
@@ -786,7 +784,7 @@ exports.updateTeacherProfileByAdmin = async (req, res, next) => {
       );
     }
 
-    // Preserve existing values if fields are empty
+    
     const updatedData = {
       name: name || teacher.name,
       email: email || teacher.email,email,

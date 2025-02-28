@@ -73,10 +73,6 @@ const studentSchema = new Schema({
     required: [true, "Please enter shift."],
     trim: true,
   },
-  group: {
-    type: String,
-    trim: true,
-  },
   district: {
     type: String,
     required: [true, "Please enter district."],

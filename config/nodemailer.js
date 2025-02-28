@@ -13,10 +13,10 @@ const sendEmailWithNode = async (emailData) => {
     });
   try {
     const mailOptions = {
-      from: process.env.SMTP_USERNAME, // sender address
-      to: emailData.email, // list of receivers
-      subject: emailData.subject, // Subject line
-      html: emailData.html, // html body
+      from: process.env.SMTP_USERNAME,
+      to: emailData.email,
+      subject: emailData.subject,
+      html: emailData.html,
     };
     const info = await transporter.sendMail(mailOptions)
     console.log("Send Email Info: "+info.response)

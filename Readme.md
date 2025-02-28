@@ -335,7 +335,7 @@ Example:
 
 # Get All Students API
 
-This API endpoint retrieves a list of all students, with optional filters for approval status, ban status, technology, session, group, and search queries across multiple fields.
+This API endpoint retrieves a list of all students, with optional filters for approval status, ban status, technology, session, and search queries across multiple fields.
 
 ## Endpoint
 
@@ -349,7 +349,6 @@ This API endpoint retrieves a list of all students, with optional filters for ap
 | `isBan`        | string  | Filter by ban status (`true` or `false`).                        |
 | `technology`   | string  | Filter by technology (e.g., `Computer Science`, `Electrical`).    |
 | `session`      | string  | Filter by session (e.g., `2020`, `2021`).                        |
-| `group`        | string  | Filter by group (e.g., `A`, `B`, `C`).                           |
 | `search`       | string  | Search students by `registration`, `addmissionRoll`, `boardRoll`, `email`, or `phone`. |
 
 ## Request
@@ -485,7 +484,6 @@ The request body must include the following fields:
 | `technology`      | string | The technology the student is enrolled in.                    |
 | `session`         | string | The student's academic session.                               |
 | `shift`           | string | The student's shift (e.g., morning, evening).                 |
-| `group`           | string | The student's group (if applicable).                          |
 | `district`        | string | The student's district of residence.                          |
 | `upazila`         | string | The student's upazila (sub-district).                         |
 | `union`           | string | The student's union (local administrative area).              |
@@ -511,7 +509,6 @@ The request body must include the following fields:
   "technology": "Computer Science",
   "session": "2023",
   "shift": "Morning",
-  "group": "A",
   "district": "Dhaka",
   "upazila": "Uptown",
   "union": "U1",

@@ -12,6 +12,7 @@ const teacherRouter = require("./routes/teacherRoute.js");
 const adminRouter = require("./routes/adminRoute.js");
 const takingBookStudentRouter = require("./routes/bookStudentRoute.js");
 const takingBookTeacherRouter = require("./routes/bookTeacherRoute.js");
+const fixedValueRouter = require("./routes/fixedValueRoute.js");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -38,6 +39,8 @@ app.use("/api/teacher", teacherRouter);
 app.use("/api/take-book/student", takingBookStudentRouter);
 
 app.use("/api/take-book/teacher", takingBookTeacherRouter);
+
+app.use("/api/fixed-values", fixedValueRouter)
 
 app.get("/", (req, res) => {
   res.status(200).json({

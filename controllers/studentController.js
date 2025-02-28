@@ -97,7 +97,6 @@ exports.registerStudent = async (req, res, next) => {
       technology,
       session,
       shift,
-      group,
       district,
       upazila,
       union,
@@ -161,7 +160,6 @@ exports.registerStudent = async (req, res, next) => {
       registration,
       session,
       shift,
-      group,
       password,
       avatar,
       banglaName,
@@ -185,7 +183,7 @@ exports.registerStudent = async (req, res, next) => {
 
     await Otp.deleteOne({ email, otp: verificationCode });
 
-    // Send success email
+    
     const emailData = {
       email,
       subject:
@@ -343,7 +341,6 @@ exports.updateStudentProfile = async (req, res, next) => {
       technology,
       session,
       shift,
-      group,
       district,
       upazila,
       union,
@@ -359,7 +356,7 @@ exports.updateStudentProfile = async (req, res, next) => {
       );
     }
 
-    // Preserve existing values if fields are empty
+    
     const updatedData = {
       name: name || student.name,
       banglaName: banglaName || student.banglaName,
@@ -372,7 +369,6 @@ exports.updateStudentProfile = async (req, res, next) => {
       technology: technology || student.technology,
       session: session || student.session,
       shift: shift || student.shift,
-      group: group || student.group,
       district: district || student.district,
       upazila: upazila || student.upazila,
       union: union || student.union,
@@ -623,18 +619,15 @@ exports.updateStudentEmailConfirm = async (req, res, next) => {
 
 exports.getAllStudent = async (req, res, next) => {
   try {
-    const { isApproved, isBan, technology, session, group, search } = req.query;
+    const { isApproved, isBan, technology, session, search } = req.query;
 
     const filter = {};
 
-    // Add filters if they exist in the query
     if (isApproved !== undefined) filter.isApproved = isApproved === "true";
     if (isBan !== undefined) filter.isBan = isBan === "true";
     if (technology) filter.technology = technology;
     if (session) filter.session = session;
-    if (group) filter.group = group;
 
-    // Search filter (searching in multiple fields)
     if (search) {
       filter.$or = [
         { registration: { $regex: search, $options: "i" } },
@@ -692,7 +685,6 @@ exports.registerStudentByAdmin = async (req, res, next) => {
       technology,
       session,
       shift,
-      group,
       district,
       upazila,
       union,
@@ -740,7 +732,6 @@ exports.registerStudentByAdmin = async (req, res, next) => {
       registration,
       session,
       shift,
-      group,
       password,
       avatar,
       banglaName,
@@ -831,7 +822,6 @@ exports.updateStudentProfileByAdmin = async (req, res, next) => {
       technology,
       session,
       shift,
-      group,
       district,
       upazila,
       union,
@@ -847,7 +837,7 @@ exports.updateStudentProfileByAdmin = async (req, res, next) => {
       );
     }
 
-    // Preserve existing values if fields are empty
+    
     const updatedData = {
       name: name || student.name,
       email: email || student.email,
@@ -861,7 +851,6 @@ exports.updateStudentProfileByAdmin = async (req, res, next) => {
       technology: technology || student.technology,
       session: session || student.session,
       shift: shift || student.shift,
-      group: group || student.group,
       district: district || student.district,
       upazila: upazila || student.upazila,
       union: union || student.union,

@@ -45,9 +45,9 @@ const BooksSchema = new Schema({
     trim: true,
     unique: true,
   },
-  department: {
+  category: {
     type: String,
-    required: [true, "Please Enter Department"],
+    required: [true, "Please Enter Category"],
     trim: true,
   },
   quantity: {

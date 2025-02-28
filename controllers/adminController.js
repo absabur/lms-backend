@@ -156,7 +156,6 @@ exports.registerAdmin = async (req, res, next) => {
 
     await Otp.deleteOne({ email, otp: verificationCode });
 
-    // Send success email
     const emailData = {
       email,
       subject:
@@ -309,7 +308,6 @@ exports.updateAdminProfile = async (req, res, next) => {
       throw createError(400, "Unable to update Profile. Admin does not exist.");
     }
 
-    // Preserve existing values if fields are empty
     const updatedData = {
       name: name || admin.name,
       phone: phone || admin.phone,
@@ -317,7 +315,6 @@ exports.updateAdminProfile = async (req, res, next) => {
       updateDate: localTime(0),
     };
 
-    // Handle avatar upload if file exists
     if (req.file.path) {
       await cloudinary.uploader.upload(
         req.file.path,
@@ -560,11 +557,9 @@ exports.getAllAdmin = async (req, res, next) => {
 
     const filter = {};
 
-    // Add filters if they exist in the query
     if (isAdmin !== undefined) filter.isAdmin = isAdmin === "true";
     if (isBan !== undefined) filter.isBan = isBan === "true";
 
-    // Search filter (searching in multiple fields)
     if (search) {
       filter.$or = [
         { nId: { $regex: search, $options: "i" } },
