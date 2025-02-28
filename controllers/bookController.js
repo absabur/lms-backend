@@ -19,12 +19,17 @@ exports.createBook = async (req, res, next) => {
       department,
       quantity,
       description,
+      bookNumbers,
     } = req.body;
 
     const adminId = req.admin?.id;
 
     if (!req.files || req.files.length === 0) {
       throw createError(400, "At least one image is required.");
+    }
+
+    if (bookNumbers.length != qunatity) {
+      throw createError(400, "Book numbers should be equal to quantity.");
     }
 
     const images = [];
@@ -54,6 +59,7 @@ exports.createBook = async (req, res, next) => {
       quantity,
       images,
       description,
+      bookNumbers,
       createdBy: adminId,
       updatedBy: adminId,
       createDate: localTime(0),
@@ -90,7 +96,8 @@ exports.updateBook = async (req, res, next) => {
       bookNumber,
       department,
       quantity,
-      description
+      description,
+      bookNumbers,
     } = req.body;
 
     const adminId = req.admin?.id;
@@ -132,9 +139,14 @@ exports.updateBook = async (req, res, next) => {
     book.department = department || book.department;
     book.quantity = quantity || book.quantity;
     book.description = description || book.description;
+    book.bookNumbers = bookNumbers || book.bookNumbers;
     book.images = images;
     book.updatedBy = adminId;
     book.updateDate = localTime(0);
+
+    if (book.bookNumbers !== book.quantity) {
+      throw createError(400, "Book numbers should be equal to quantity.");
+    }
 
     const updatedBook = await book.save();
 
@@ -228,6 +240,26 @@ exports.getAllBooks = async (req, res, next) => {
         nextPage: Number(page) < Math.ceil(count / Number(limit)) ? Number(page) + 1 : null,
       },
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+exports.getBookById = async (req, res, next) => {
+  try {
+    const bookId = req.params.id;
+
+    const book = await Books.findById(bookId);
+    if (!book) {
+      throw createError(404, "Book not found");
+    }
+
+    res.status(200).json({
+      success: true,
+      data: book,
+    });
+
   } catch (error) {
     next(error);
   }

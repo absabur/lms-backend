@@ -10,6 +10,8 @@ const bookRouter = require("./routes/bookRoute.js");
 const studentRouter = require("./routes/studentRoute.js");
 const teacherRouter = require("./routes/teacherRoute.js");
 const adminRouter = require("./routes/adminRoute.js");
+const takingBookStudentRouter = require("./routes/bookStudentRoute.js");
+const takingBookTeacherRouter = require("./routes/bookTeacherRoute.js");
 
 
 app.use(express.json());
@@ -34,6 +36,9 @@ app.use("/api/student", studentRouter);
 
 app.use("/api/teacher", teacherRouter);
 
+app.use("/api/take-book/student", takingBookStudentRouter);
+
+app.use("/api/take-book/teacher", takingBookTeacherRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({
