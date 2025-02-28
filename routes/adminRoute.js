@@ -57,13 +57,13 @@ adminRouter.post("/email-update-request", isAdmin, updateAdminEmailRequest);
 
 adminRouter.post("/email-update", createLimiterAuth(), isAdmin, updateAdminEmailConfirm);
 
-adminRouter.get("/all-admins", isAdmin, getAllAdmin)
+adminRouter.get("/all-admins", isSuperAdmin, getAllAdmin)
 
 adminRouter.get("/all-students", isAdmin, getAllStudent)
 
 adminRouter.get("/all-teachers", isAdmin, getAllTeacher)
 
-adminRouter.get("/admin-details/:id([0-9a-fA-F]{24})", isAdmin, getAdminById)
+adminRouter.get("/admin-details/:id([0-9a-fA-F]{24})", isSuperAdmin, getAdminById)
 
 adminRouter.get("/student-details/:id([0-9a-fA-F]{24})", isAdmin, getStudentById)
 
