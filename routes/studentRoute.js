@@ -19,20 +19,15 @@ const { isStudent } = require("../middleware/authentication");
 const studentRouter = express.Router();
 
 studentRouter.post("/signup", createLimiterAuth(), SignUpVerifyStudent);
-
 studentRouter.post(
   "/register",
   createLimiterAuth(),
   upload.single("image"),
   registerStudent
 );
-
 studentRouter.post("/login", createLimiterAuth(), loginStudent);
-
 studentRouter.post("/logout", createLimiterAuth(), logoutStudent);
-
 studentRouter.get("/profile", isStudent, getStudentProfile);
-
 studentRouter.post("/update-password", isStudent, updateStudentPassword);
 
 studentRouter.post(

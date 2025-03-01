@@ -1,11 +1,17 @@
 const createError = require("http-errors");
 const BookTeacher = require("../models/bookTeacherModel.js");
 const { localTime } = require("../utils/localTime.js");
+const Books = require("../models/bookModel.js");
 
 exports.takingRequestBookTeacher = async (req, res, next) => {
   try {
-    const { bookId } = req.params.id;
+    const bookId = req.params.id;
     const teacherId = req.teacher.id;
+
+    let exists = await Books.findById(bookId);
+    if (!exists) {
+      throw createError(404, "Book not found");
+    }
 
     const bookTeacher = new BookTeacher({
       bookId,
@@ -26,10 +32,11 @@ exports.takingRequestBookTeacher = async (req, res, next) => {
 
 exports.cancelTakingRequestBookTeacher = async (req, res, next) => {
   try {
-    const { id } = req.params.id;
+    const { id } = req.params;
     const teacherId = req.teacher.id;
+
     const bookTeacher = await BookTeacher.findOneAndDelete({
-      id,
+      _id: id,
       teacherId,
       takingApproveBy: null,
     });
@@ -49,8 +56,9 @@ exports.cancelTakingRequestBookTeacher = async (req, res, next) => {
 
 exports.approveTakingRequestBookTeacher = async (req, res, next) => {
     try {
-        const { id } = req.params.id;
+        const { id } = req.params;
         const admin = req.admin.id;
+
         const bookTeacher = await BookTeacher
         .findByIdAndUpdate(id, {
             takingApproveBy: admin,
@@ -76,10 +84,11 @@ exports.returnRequestBookTeacher = async (req, res, next) => {
     try {
         const { id } = req.params;
         const teacherId = req.teacher.id
+
         const bookTeacher = await BookTeacher.findOneAndUpdate(
-            { id, teacherId, takingApproveBy: { $ne: null } },
+            { _id: id, teacherId, takingApproveBy: { $ne: null } },
             {
-                $set: { returnRequestDate: localTime(0) }
+               returnRequestDate: localTime(0)
             },
             { new: true }
         );
@@ -103,8 +112,9 @@ exports.cancelReturnRequestBookTeacher = async (req, res, next) => {
   try {
     const { id } = req.params.id;
     const teacherId = req.teacher.id;
+
     const bookTeacher = await BookTeacher.findOneAndUpdate(
-      { id, teacherId, returnApproveBy: null },
+      { _id: id, teacherId, returnApproveBy: null },
       { returnRequestDate: null }
     );
 
@@ -144,4 +154,33 @@ exports.approveReturnRequestBookTeacher = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
+}
+
+
+
+exports.getTeacherBorrowingRequests = async (req, res, next) => {
+  try {
+    const teacherId = req.teacher.id;
+    const bookTeachers = await BookTeacher.find({ teacherId });
+    res.status(200).json({
+      success: true,
+      borrowingDatas: bookTeachers,
+    });
+    } catch (error) {
+    next(error);
+  }
+}
+
+
+exports.getTeacherBorrowingRequestsByAdmin = async (req, res, next) => {
+  try {
+    const bookTeachers = await BookTeacher.find();
+    
+    res.status(200).json({
+      success: true,
+      borrowingRequests: bookTeachers,
+    });
+  } catch (error) {
+    next(error);
+  }
 }

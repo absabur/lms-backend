@@ -33,13 +33,13 @@ teacherRouter.post("/logout", createLimiterAuth(), logoutTeacher);
 
 teacherRouter.get("/profile", isTeacher, getTeacherProfile);
 
-teacherRouter.post("/update-password", isTeacher, updateTeacherPassword)
+teacherRouter.post("/update-password", isTeacher, updateTeacherPassword);
 
 teacherRouter.post("/update-profile", isTeacher, upload.single("image"), updateTeacherProfile);
 
 teacherRouter.post("/forgate-password", forgateTeacherPassword);
 
-teacherRouter.post("/reset-password", createLimiterAuth(), resetTeacherPassword)
+teacherRouter.post("/reset-password", createLimiterAuth(), resetTeacherPassword);
 
 teacherRouter.post("/email-update-request", isTeacher, updateTeacherEmailRequest);
 

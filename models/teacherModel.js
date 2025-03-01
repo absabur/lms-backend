@@ -22,7 +22,7 @@ const teacherSchema = new Schema({
     type: String,
     required: [true, "Please enter phone."],
     trim: true,
-    unique: [true, "phone already in student"],
+    unique: [true, "phone already in teacher"],
     minlength: [11, "Phone number must be atleast 11 charecter."],
   },
   nId: {

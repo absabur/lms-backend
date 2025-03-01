@@ -27,7 +27,7 @@ const BookTeacherSchema = new Schema({
   takingRequestDate: {
     type: Object,
   },
-  TakingApproveDate: {
+  takingApproveDate: {
     type: Object,
   },
   returnRequestDate: {

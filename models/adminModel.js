@@ -22,7 +22,7 @@ const adminSchema = new Schema({
     type: String,
     required: [true, "Please enter phone."],
     trim: true,
-    unique: [true, "phone already in student"],
+    unique: [true, "phone already in admin"],
     minlength: [11, "Phone number must be atleast 11 charecter."],
   },
   nId: {
@@ -45,7 +45,7 @@ const adminSchema = new Schema({
       required: true,
     },
   },
-  isAdmin: {
+  isApproved: {
     type: Boolean,
     default: false,
   },

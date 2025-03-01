@@ -24,9 +24,6 @@ exports.isStudent = async (req, res, next) => {
         if (!exist) {
             throw createError(401, "You are not a student.")
         }
-        if (exist.isBan === true || exist.isBan === 'true') {
-            throw createError(402, "Unfortunately you are ban now, please contact to author.")
-        }
         req.student = exist;
         next()
     } catch (error) {
@@ -71,8 +68,11 @@ exports.isAdmin = async (req, res, next) => {
         if (!exist) {
             throw createError(401, "You are not a admin.")
         }
+        if (!exist.isApproved) {
+            throw createError(401, "Your account is not approved.")
+        }
         
-        if (exist.isBan === true || exist.isBan === 'true') {
+        if (exist.isBan === true) {
             throw createError(402, "Unfortunately you are ban now, please contact to author.")
         }
         req.admin = exist;
@@ -104,10 +104,13 @@ exports.isSuperAdmin = async (req, res, next) => {
             throw createError(401, "You are not a teacher.")
         }
         
+        if (!exist.isApproved) {
+            throw createError(401, "Your account is not approved.")
+        }
         if (exist.isBan === true || exist.isBan === 'true') {
             throw createError(402, "Unfortunately you are ban now, please contact to author.")
         }
-        if (exist.isSuperAdmin !== "true" || exist.isSuperAdmin !== true) {
+        if (exist.isSuperAdmin !== true) {
             throw createError(401, "You don't have this authority.")
         }
         req.admin = exist;
@@ -152,10 +155,6 @@ exports.isTeacher = async (req, res, next) => {
         const exist = await Teacher.findById(decoded.id)
         if (!exist) {
             throw createError(401, "You are not a student.")
-        }
-        
-        if (exist.isBan === true || exist.isBan === 'true') {
-            throw createError(402, "Unfortunately you are ban now, please contact to author.")
         }
         req.teacher = exist;
         next()

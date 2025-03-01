@@ -5,7 +5,9 @@ const sendEmailWithNode = require("../config/nodemailer.js");
 const Otp = require("../models/otpModel.js");
 const cloudinary = require("../config/cloudinary.js");
 const { jwtToken } = require("../utils/jwtToken.js");
+const jwt = require("jsonwebtoken");
 const Admin = require("../models/adminModel.js");
+const { createJsonWebToken } = require("../utils/createToken.js");
 
 exports.SignUpVerifyAdmin = async (req, res, next) => {
   try {
@@ -33,6 +35,7 @@ exports.SignUpVerifyAdmin = async (req, res, next) => {
       createDate,
       expireDate,
     });
+
     const emailData = {
       email,
       subject: "Verify Your Email - Library Management System",
@@ -48,11 +51,11 @@ exports.SignUpVerifyAdmin = async (req, res, next) => {
                   ${verificationCode}
                 </span>
               </div>
-      
+  
               <p style="text-align: center; font-size: 16px; color: #555;">
                 This code will expire in <strong style="color: #d9534f;">${expireDate.expireTime}</strong>.
               </p>
-      
+  
               <hr style="border: none; border-top: 1px solid #ddd; margin: 10px 0;">
               <p style="text-align: center; font-size: 14px; color: #777;">
                 If you did not request this verification, you can ignore this email.
@@ -88,7 +91,6 @@ exports.registerAdmin = async (req, res, next) => {
       phone,
       nId,
     } = req.body;
-
 
     if (password !== confirmPassword) {
       throw createError(400, "Password and Confirm Password did not match.");
@@ -169,7 +171,7 @@ exports.registerAdmin = async (req, res, next) => {
               <p style="text-align: center; font-size: 18px; color: #333;">
                 Congratulations, <strong>${admin.name}</strong>! 🎉 Your account has been successfully created.
               </p>
-      
+  
               <div style="text-align: center; margin: 10px 0;">
                 <p style="font-size: 16px; color: #555;">You can now log in and start managing your library resources.</p>
                 <a href="${process.env.clientUrl}/login" 
@@ -177,11 +179,11 @@ exports.registerAdmin = async (req, res, next) => {
                   Login Now
                 </a>
               </div>
-      
+  
               <p style="text-align: center; font-size: 16px; color: #555;">
                 If you did not create this account, please contact our support team immediately.
               </p>
-      
+  
               <hr style="border: none; border-top: 1px solid #ddd; margin: 10px 0;">
               <p style="text-align: center; font-size: 14px; color: #777;">
                 Thank you for joining us! 📚<br> Library Management System Team
@@ -213,7 +215,7 @@ exports.loginAdmin = async (req, res, next) => {
       throw createError(401, "Please enter email and password");
     }
     const admin = await Admin.findOne({ email }).select("+password");
-    
+
     if (!admin) {
       throw createError(401, "invalid email or password");
     }
@@ -262,6 +264,7 @@ exports.getAdminProfile = async (req, res, next) => {
   }
 };
 
+// Update admin password
 exports.updateAdminPassword = async (req, res, next) => {
   try {
     const { oldPassword, newPassword, confirmPassword } = req.body;
@@ -270,7 +273,7 @@ exports.updateAdminPassword = async (req, res, next) => {
     if (!admin) {
       throw createError(
         400,
-        "Unable to update password. Admin does not exists."
+        "Unable to update password. Admin does not exist."
       );
     }
 
@@ -284,7 +287,7 @@ exports.updateAdminPassword = async (req, res, next) => {
     const isPasswordMatch = await admin.comparedPassword(oldPassword);
 
     if (!isPasswordMatch) {
-      throw createError(401, "wrong old password.");
+      throw createError(401, "Incorrect old password.");
     }
 
     admin.password = newPassword;
@@ -299,6 +302,7 @@ exports.updateAdminPassword = async (req, res, next) => {
   }
 };
 
+// Update admin profile
 exports.updateAdminProfile = async (req, res, next) => {
   try {
     let { name, phone, nId } = req.body;
@@ -312,10 +316,12 @@ exports.updateAdminProfile = async (req, res, next) => {
       name: name || admin.name,
       phone: phone || admin.phone,
       nId: nId || admin.nId,
+      isApporved: false,
       updateDate: localTime(0),
     };
 
-    if (req.file.path) {
+    // Upload new avatar if exists
+    if (req.file?.path) {
       await cloudinary.uploader.upload(
         req.file.path,
         { folder: "admins" },
@@ -350,20 +356,21 @@ exports.updateAdminProfile = async (req, res, next) => {
   }
 };
 
+// Forget admin password (send reset email)
 exports.forgateAdminPassword = async (req, res, next) => {
   const { email } = req.body;
   if (!email) {
     throw createError(400, "Email is required.");
   }
+
   const admin = await Admin.findOne({ email });
   if (!admin) {
     throw createError(404, "Admin not found.");
   }
+
   try {
     const token = createJsonWebToken(
-      {
-        email: admin.email,
-      },
+      { email: email },
       process.env.JWT_PASSWORD_KEY,
       "10m"
     );
@@ -374,33 +381,33 @@ exports.forgateAdminPassword = async (req, res, next) => {
       email,
       subject: "Reset Password",
       html: `
-              <div style="background-color: rgba(175, 175, 175, 0.455); width: 100%; min-width: 350px; padding: 1rem; box-sizing: border-box;">
-                <p style="font-size: 25px; font-weight: 500; text-align: center; color: tomato;">ABS E-Commerce</p>
-                <h2 style="font-size: 30px; font-weight: 700; text-align: center; color: green;">Hello ${admin.name}</h2>
-                <p style="margin: 0 auto; font-size: 22px; font-weight: 500; text-align: center; color: black;">This is a confirmation Email for reset password. We got a request from your Email address to reset password. <br /> If you are not this requested person then ignore this Email.</p>
-                <p style="text-align: center;">
-                  <a style="margin: 0 auto; text-align: center; background-color: #34eb34; font-size: 25px; box-shadow: 0 0 5px black; color: black; font-weight: 700; padding: 5px 10px; text-decoration: none;" href="${process.env.clientUrl}/reset-password/${token}" target="_blank">Click Here </a>
-                </p>
-                <p style="text-align: center; font-size: 18px; color: black;">to get reset password form.</p>
-                <p style="text-align: center;">
-                  <b style=" color: red; font-size: 20px; text-align: center;">This Email will expires in <span style="color: black;">${time.expireTime}</span>, Reset Password before <span style="color: black;">${time.expireTime}</span></b>
-                </p>
-              </div>
-            `,
+        <div style="background-color: rgba(175, 175, 175, 0.455); width: 100%; min-width: 350px; padding: 1rem; box-sizing: border-box;">
+          <p style="font-size: 25px; font-weight: 500; text-align: center; color: tomato;">ABS E-Commerce</p>
+          <h2 style="font-size: 30px; font-weight: 700; text-align: center; color: green;">Hello ${admin.name}</h2>
+          <p style="margin: 0 auto; font-size: 22px; font-weight: 500; text-align: center; color: black;">
+            This is a confirmation Email for reset password. We received a request from your email address to reset your password.
+            <br /> If you did not make this request, please ignore this email.
+          </p>
+          <p style="text-align: center;">
+            <a style="margin: 0 auto; text-align: center; background-color: #34eb34; font-size: 25px; box-shadow: 0 0 5px black; color: black; font-weight: 700; padding: 5px 10px; text-decoration: none;" href="${process.env.clientUrl}/reset-password/${token}" target="_blank">Click Here</a>
+          </p>
+          <p style="text-align: center; font-size: 18px; color: black;">to reset your password.</p>
+          <p style="text-align: center;">
+            <b style="color: red; font-size: 20px;">This email will expire in <span style="color: black;">${time.expireTime}</span>, please reset your password before that time.</b>
+          </p>
+        </div>
+      `,
     };
 
     try {
       await sendEmailWithNode(emailData);
     } catch (error) {
-      throw createError(500, "failed to send verification email.");
+      throw createError(500, "Failed to send verification email.");
     }
 
     res.status(200).json({
       success: true,
-      message:
-        "An email send to " +
-        admin.email +
-        ". Please check the email and reset password from there.",
+      message: `An email has been sent to ${admin.email}. Please check your inbox to reset your password. ${token}`,
     });
   } catch (error) {
     next(error);
@@ -410,28 +417,30 @@ exports.forgateAdminPassword = async (req, res, next) => {
 exports.resetAdminPassword = async (req, res, next) => {
   try {
     const { newPassword, confirmPassword, token } = req.body;
-    if (!token) throw createError(404, "token not found.");
-
+    if (!token) throw createError(404, "Token not found.");
+    // Password validation
     if (newPassword !== confirmPassword) {
-      throw createError(402, "old password and new password did not match.");
+      throw createError(402, "Old password and new password did not match.");
     }
-
+    
     try {
       const decoded = jwt.verify(token, process.env.JWT_PASSWORD_KEY);
+      
       if (!decoded)
         throw createError(
           401,
-          "Unable to verify admin. token has been expire or wrong token"
+          "Unable to verify admin. Token has expired or is invalid."
         );
-      const admin = await Admin.findOne({ email: decoded.email });
 
+      const admin = await Admin.findOne({ email: decoded.email });
       if (!admin) {
         throw createError(
           400,
-          "Unable to reset password. Admin does not exists."
+          "Unable to reset password. Admin does not exist."
         );
       }
 
+      // Hash the new password before saving
       admin.password = newPassword;
       admin.updateDate = localTime(0);
 
@@ -455,15 +464,21 @@ exports.resetAdminPassword = async (req, res, next) => {
   }
 };
 
+// Request to update Admin email
 exports.updateAdminEmailRequest = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const data = await Admin.findById(req.admin.id).select("+password");
 
-    const isPasswordMatch = await data.comparedPassword(password);
+    // Validate email format
+    if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email)) {
+      throw createError(400, "Invalid email format.");
+    }
+
+    const data = await Admin.findById(req.admin.id).select("+password");
+    const isPasswordMatch = data.comparedPassword(password, data.password);
 
     if (!isPasswordMatch) {
-      throw createError(401, "wrong password.");
+      throw createError(401, "Wrong password.");
     }
 
     const admin = await Admin.findOne({ email });
@@ -472,10 +487,7 @@ exports.updateAdminEmailRequest = async (req, res, next) => {
     }
 
     const token = createJsonWebToken(
-      {
-        email,
-        id: req.admin.id,
-      },
+      { email, id: req.admin.id },
       process.env.JWT_CHANGE_EMAIL_KEY,
       "10m"
     );
@@ -484,73 +496,71 @@ exports.updateAdminEmailRequest = async (req, res, next) => {
 
     const emailData = {
       email,
-      subject: "Verify Email",
+      subject: "Verify Email Change",
       html: `
-              <div style="background-color: rgba(175, 175, 175, 0.455); width: 100%; min-width: 350px; padding: 1rem; box-sizing: border-box;">
-                <p style="font-size: 25px; font-weight: 500; text-align: center; color: tomato;">ABS E-Commerce</p>
-                <h2 style="font-size: 30px; font-weight: 700; text-align: center; color: green;">Hello ${req.admin.name}</h2>
-                <p style="margin: 0 auto; font-size: 22px; font-weight: 500; text-align: center; color: black;">This is a Email verification. We got a request to change Email from your Email address. <br /> If you are not this requested person then ignore this Email.</p>
-                <p style="text-align: center;">
-                  <a style="margin: 0 auto; text-align: center; background-color: #34eb34; font-size: 25px; box-shadow: 0 0 5px black; color: black; font-weight: 700; padding: 5px 10px; text-decoration: none;" href="${process.env.clientUrl}/mail-update/${token}" target="_blank">Click Here </a>
-                </p>
-                <p style="text-align: center; font-size: 18px; color: black;">to update email.</p>
-                <p style="text-align: center;">
-                  <b style="color: red; font-size: 20px; text-align: center;">This Email will expires in <span style="color: black;">${time.expireTime}</span>, Verify Email before <span style="color: black;">${time.expireTime}</span></b>
-                </p>
-              </div>
-            `,
+        <div style="background-color: rgba(175, 175, 175, 0.455); width: 100%; min-width: 350px; padding: 1rem; box-sizing: border-box;">
+          <p style="font-size: 25px; font-weight: 500; text-align: center; color: tomato;">ABS E-Commerce</p>
+          <h2 style="font-size: 30px; font-weight: 700; text-align: center; color: green;">Hello ${req.admin.name}</h2>
+          <p style="font-size: 22px; text-align: center; color: black;">We received a request to change your email. If you did not make this request, please ignore this email.</p>
+          <p style="text-align: center;">
+            <a style="background-color: #34eb34; font-size: 25px; font-weight: 700; padding: 5px 10px; text-decoration: none;" href="${process.env.clientUrl}/mail-update/${token}" target="_blank">Click Here to Update Email</a>
+          </p>
+          <p style="font-size: 18px; color: black;">This link expires in <b>${time.expireTime}</b>.</p>
+        </div>
+      `,
     };
 
     try {
       await sendEmailWithNode(emailData);
     } catch (error) {
-      throw createError(500, "failed to send verification email.");
+      throw createError(500, "Failed to send verification email.");
     }
 
     res.status(200).json({
       success: true,
-      message:
-        "An email send to " +
-        email +
-        ". Please check the email and update from there.",
+      message: `An email has been sent to ${email}. Please check and update from there. ${token}`,
     });
   } catch (error) {
     next(error);
   }
 };
 
+// Confirm email change
 exports.updateAdminEmailConfirm = async (req, res, next) => {
   try {
     const { token } = req.body;
-    if (!token) throw createError(404, "token not found.");
+    if (!token) throw createError(404, "Token not found.");
 
     const decoded = jwt.verify(token, process.env.JWT_CHANGE_EMAIL_KEY);
     if (!decoded)
       throw createError(
         401,
-        "Unable to verify admin. token has been expire or wrong token"
+        "Unable to verify admin. Token has expired or is invalid."
       );
-    let updateDate = localTime(0);
+
     const { email, id } = decoded;
+    const updateDate = localTime(0);
+
     const admin = await Admin.findByIdAndUpdate(
       id,
-      { email, updateDate },
+      { email, updateDate, isApproved: false },
       { new: true, runValidators: true, useFindAndModify: false }
     );
 
     if (!admin) {
-      throw createError(400, "Unable to update email. Admin does not exists.");
+      throw createError(400, "Unable to update email. Admin does not exist.");
     }
 
     res.status(200).json({
       success: true,
-      message: "Email updated Successfully",
+      message: "Email updated successfully.",
     });
   } catch (error) {
     next(error);
   }
 };
 
+// Get all admins with filters
 exports.getAllAdmin = async (req, res, next) => {
   try {
     const { isAdmin, isBan, search } = req.query;
@@ -583,6 +593,7 @@ exports.getAllAdmin = async (req, res, next) => {
   }
 };
 
+// Get admin by ID
 exports.getAdminById = async (req, res, next) => {
   try {
     const admin = await Admin.findById(req.params.id);
@@ -598,58 +609,44 @@ exports.getAdminById = async (req, res, next) => {
   }
 };
 
-
-
-exports.approveAdmin = async (req, res) => {
+// Approve Admin
+exports.approveAdmin = async (req, res, next) => {
   try {
     const admin = await Admin.findByIdAndUpdate(
       req.params.id,
-      { isApporved: true },
-      {
-        new: true,
-        runValidators: true,
-        useFindAndModify: false,
-      }
+      { isApproved: true },
+      { new: true, runValidators: true, useFindAndModify: false }
     );
     res.status(200).json({ success: true });
   } catch (error) {
     next(error);
   }
-}
+};
 
-
-
-exports.banAdmin = async (req, res) => {
+// Ban Admin
+exports.banAdmin = async (req, res, next) => {
   try {
     const admin = await Admin.findByIdAndUpdate(
       req.params.id,
       { isBan: true },
-      {
-        new: true,
-        runValidators: true,
-        useFindAndModify: false,
-      }
+      { new: true, runValidators: true, useFindAndModify: false }
     );
     res.status(200).json({ success: true });
   } catch (error) {
     next(error);
   }
-}
+};
 
-
-exports.unbanAdmin = async (req, res) => {
+// Unban Admin
+exports.unbanAdmin = async (req, res, next) => {
   try {
     const admin = await Admin.findByIdAndUpdate(
       req.params.id,
       { isBan: false },
-      {
-        new: true,
-        runValidators: true,
-        useFindAndModify: false,
-      }
+      { new: true, runValidators: true, useFindAndModify: false }
     );
     res.status(200).json({ success: true });
   } catch (error) {
     next(error);
   }
-}
+};

@@ -1,11 +1,17 @@
 const createError = require("http-errors");
 const BookStudent = require("../models/bookStudentModel.js");
+const Books = require("../models/bookModel.js");
 const { localTime } = require("../utils/localTime.js");
 
 exports.takingRequestBookStudent = async (req, res, next) => {
   try {
-    const { bookId } = req.params.id;
+    const bookId = req.params.id;
     const studentId = req.student.id;
+
+    let exists = await Books.findById(bookId);
+    if (!exists) {
+      throw createError(404, "Book not found");
+    }
 
     const bookStudent = new BookStudent({
       bookId,
@@ -26,10 +32,11 @@ exports.takingRequestBookStudent = async (req, res, next) => {
 
 exports.cancelTakingRequestBookStudent = async (req, res, next) => {
   try {
-    const { id } = req.params.id;
+    const id = req.params.id;
     const studentId = req.student.id;
+
     const bookStudent = await BookStudent.findOneAndDelete({
-      id,
+      _id: id,
       studentId,
       takingApproveBy: null,
     });
@@ -48,63 +55,61 @@ exports.cancelTakingRequestBookStudent = async (req, res, next) => {
 };
 
 exports.approveTakingRequestBookStudent = async (req, res, next) => {
-    try {
-        const { id } = req.params.id;
-        const admin = req.admin.id;
-        const bookStudent = await BookStudent
-        .findByIdAndUpdate(id, {
-            takingApproveBy: admin,
-            takingApproveDate: localTime(0),
-        });
-        
-        if (!bookStudent) {
-            throw createError("No borrowing request found");
-        }
-        
-        res.status(200).json({
-            success: true,
-            message: "Book borrowing request approved",
-        });
+  try {
+    const id = req.params.id;
+    const admin = req.admin.id;
 
-    } catch (error) {
-        next(error);
+    const bookStudent = await BookStudent.findByIdAndUpdate(id, {
+      takingApproveBy: admin,
+      takingApproveDate: localTime(0),
+    });
+
+    if (!bookStudent) {
+      throw createError("No borrowing request found");
     }
-}
 
-
-exports.returnRequestBookStudent = async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        const studentId = req.student.id
-        const bookStudent = await BookStudent.findOneAndUpdate(
-            { id, studentId, takingApproveBy: { $ne: null } },
-            {
-                $set: { returnRequestDate: localTime(0) }
-            },
-            { new: true }
-        );
-
-        if (!bookStudent) {
-            throw createError("No borrowing request found");
-        }
-
-        res.status(200).json({
-            success: true,
-            message: "Book return request successful",
-        });
-
-    } catch (error) {
-        next(error);
-    }
+    res.status(200).json({
+      success: true,
+      message: "Book borrowing request approved",
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
+exports.returnRequestBookStudent = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const studentId = req.student.id;
+
+    const bookStudent = await BookStudent.findOneAndUpdate(
+      { _id: id, studentId, takingApproveBy: { $ne: null } },
+      {
+         returnRequestDate: localTime(0)
+      },
+      { new: true }
+    );
+
+    if (!bookStudent) {
+      throw createError("No borrowing request found");
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Book return request successful",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 exports.cancelReturnRequestBookStudent = async (req, res, next) => {
   try {
-    const { id } = req.params.id;
+    const { id } = req.params;
     const studentId = req.student.id;
+    
     const bookStudent = await BookStudent.findOneAndUpdate(
-      { id, studentId, returnApproveBy: null },
+      { _id: id, studentId, returnApproveBy: null },
       { returnRequestDate: null }
     );
 
@@ -119,29 +124,54 @@ exports.cancelReturnRequestBookStudent = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-}
-
+};
 
 exports.approveReturnRequestBookStudent = async (req, res, next) => {
-    try {
-        const { id } = req.params.id;
-        const admin = req.admin.id;
-        const bookStudent = await BookStudent
-        .findByIdAndUpdate(id, {
-            returnApproveBy: admin,
-            returnApproveDate: localTime(0),
-        });
-        
-        if (!bookStudent) {
-            throw createError("No borrowing request found");
-        }
-        
-        res.status(200).json({
-            success: true,
-            message: "Book return request approved",
-        });
-        
-    } catch (error) {
-        next(error);
+  try {
+    const { id } = req.params;
+    const admin = req.admin.id;
+
+    const bookStudent = await BookStudent.findByIdAndUpdate(id, {
+      returnApproveBy: admin,
+      returnApproveDate: localTime(0),
+    });
+
+    if (!bookStudent) {
+      throw createError("No borrowing request found");
     }
+
+    res.status(200).json({
+      success: true,
+      message: "Book return request approved",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+exports.getStudentBorrowingRequests = async (req, res, next) => {
+  try {
+    const studentId = req.student.id;
+    const bookStudents = await BookStudent.find({ studentId });
+    res.status(200).json({
+      success: true,
+      borrowingDatas: bookStudents,
+    });
+    } catch (error) {
+    next(error);
+  }
+}
+
+exports.getStudentBorrowingRequestsByAdmin = async (req, res, next) => {
+  try {
+    const bookStudents = await BookStudent.find();
+    
+    res.status(200).json({
+      success: true,
+      borrowingRequests: bookStudents,
+    });
+  } catch (error) {
+    next(error);
+  }
 }

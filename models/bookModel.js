@@ -11,6 +11,12 @@ const BooksSchema = new Schema({
     required: [true, "Please Enter Book Author"],
     trim: true,
   },
+  slug: {
+    type: String,
+    required: [true, "Please Enter Book Slug"],
+    trim: true,
+    unique: true,
+  },
   publisher: {
     type: String,
     trim: true,
