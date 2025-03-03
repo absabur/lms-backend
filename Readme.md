@@ -122,7 +122,7 @@ npm start
 
 **Body (URL Encoded):**
 
-- `email: efootballpes11th@gmail.com`
+- `email: email@example.com`
 
 
 ## fetch method
@@ -136,7 +136,7 @@ try {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(
-            email: efootballpes11th@gmail.com,
+            email: email@example.com,
         ),
     });
     const result = await response.json();
@@ -160,7 +160,7 @@ try {
 - `confirmPassword: 111111`
 - `verificationCode: 628128`
 - `name: Test Student`
-- `email: efootballpes11th@gmail.com`
+- `email: email@example.com`
 - `phone: 01521710796`
 - `nId: 1965256324`
 - `image: File (/C:/Users/absab/Downloads/ab-sabur.png)`
@@ -181,7 +181,7 @@ try {
             confirmPassword: 111111,
             verificationCode: 628128,
             name: Test Student,
-            email: efootballpes11th@gmail.com,
+            email: email@example.com,
             phone: 01521710796,
             nId: 1965256324,
             image: File (/C:/Users/absab/Downloads/ab-sabur.png),
@@ -204,7 +204,7 @@ try {
 
 **Body (URL Encoded):**
 
-- `email: bogura.polytechnic.library@gmail.com`
+- `email: bogura.polytechnic.email@example.com`
 - `password: 111111`
 
 
@@ -219,7 +219,7 @@ try {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(
-            email: bogura.polytechnic.library@gmail.com,
+            email: bogura.polytechnic.email@example.com,
             password: 111111,
         ),
     });
@@ -371,7 +371,7 @@ try {
 
 **Body (URL Encoded):**
 
-- `email: efootballpes11th@gmail.com`
+- `email: email@example.com`
 
 
 ## fetch method
@@ -385,7 +385,7 @@ try {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(
-            email: efootballpes11th@gmail.com,
+            email: email@example.com,
         ),
     });
     const result = await response.json();
@@ -443,7 +443,7 @@ try {
 
 **Body (URL Encoded):**
 
-- `email: abdussabur929@gmail.com`
+- `email: email@example.com`
 - `password: 111111`
 
 
@@ -458,7 +458,7 @@ try {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(
-            email: abdussabur929@gmail.com,
+            email: email@example.com,
             password: 111111,
         ),
     });
@@ -519,7 +519,7 @@ try {
 - `banglaName: ফ্রম অ্যাডমিন `
 - `fathersName: test`
 - `mothersName: test`
-- `email: efootballpes11th@gmail.com`
+- `email: email@example.com`
 - `phone: 01758695425`
 - `addmissionRoll: 121212`
 - `boardRoll: `
@@ -552,7 +552,7 @@ try {
             banglaName: ফ্রম অ্যাডমিন ,
             fathersName: test,
             mothersName: test,
-            email: efootballpes11th@gmail.com,
+            email: email@example.com,
             phone: 01758695425,
             addmissionRoll: 121212,
             boardRoll: ,
@@ -591,7 +591,7 @@ try {
 - `banglaName: ফ্রম অ্যাডমিন `
 - `fathersName: test`
 - `mothersName: test`
-- `email: efootballpes11th@gmail.com`
+- `email: email@example.com`
 - `phone: 01758695425`
 - `addmissionRoll: 121212`
 - `boardRoll: `
@@ -624,7 +624,7 @@ try {
             banglaName: ফ্রম অ্যাডমিন ,
             fathersName: test,
             mothersName: test,
-            email: efootballpes11th@gmail.com,
+            email: email@example.com,
             phone: 01758695425,
             addmissionRoll: 121212,
             boardRoll: ,
@@ -780,7 +780,7 @@ try {
 - `password: 111111`
 - `confirmPassword: 111111`
 - `name: test teacher`
-- `email: efootballpes11th@gmail.com`
+- `email: email@example.com`
 - `phone: 015635478569`
 - `nId: 465424`
 - `department: cst`
@@ -804,7 +804,7 @@ try {
             password: 111111,
             confirmPassword: 111111,
             name: test teacher,
-            email: efootballpes11th@gmail.com,
+            email: email@example.com,
             phone: 015635478569,
             nId: 465424,
             department: cst,
@@ -834,7 +834,7 @@ try {
 - `password: 111111`
 - `confirmPassword: 111111`
 - `name: test teacher updated`
-- `email: efootballpes11th@gmail.com`
+- `email: email@example.com`
 - `phone: 015635478569`
 - `nId: 465424`
 - `department: cst`
@@ -858,7 +858,7 @@ try {
             password: 111111,
             confirmPassword: 111111,
             name: test teacher updated,
-            email: efootballpes11th@gmail.com,
+            email: email@example.com,
             phone: 015635478569,
             nId: 465424,
             department: cst,
@@ -2207,7 +2207,7 @@ try {
 
 **Body (URL Encoded):**
 
-- `email: efootballpes11th@gmail.com`
+- `email: email@example.com`
 
 
 ## fetch method
@@ -2221,7 +2221,7 @@ try {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(
-            email: efootballpes11th@gmail.com,
+            email: email@example.com,
         ),
     });
     const result = await response.json();
@@ -2315,7 +2315,7 @@ try {
 
 **Body (URL Encoded):**
 
-- `email: abdussabur929@gmail.com`
+- `email: email@example.com`
 - `password: aaaaaa`
 
 
@@ -2330,7 +2330,7 @@ try {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(
-            email: abdussabur929@gmail.com,
+            email: email@example.com,
             password: aaaaaa,
         ),
     });
@@ -2508,7 +2508,7 @@ try {
 
 **Body (URL Encoded):**
 
-- `email: efootballpes11th@gmail.com`
+- `email: email@example.com`
 
 
 ## fetch method
@@ -2522,7 +2522,7 @@ try {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(
-            email: efootballpes11th@gmail.com,
+            email: email@example.com,
         ),
     });
     const result = await response.json();
@@ -2580,7 +2580,7 @@ try {
 
 **Body (URL Encoded):**
 
-- `email: abdussabur929@gmail.com`
+- `email: email@example.com`
 - `password: aaaaaa`
 
 
@@ -2595,7 +2595,7 @@ try {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(
-            email: abdussabur929@gmail.com,
+            email: email@example.com,
             password: aaaaaa,
         ),
     });
@@ -2652,7 +2652,7 @@ try {
 
 **Body (URL Encoded):**
 
-- `email: efootballpes11th@gmail.com`
+- `email: email@example.com`
 
 
 ## fetch method
@@ -2666,7 +2666,7 @@ try {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(
-            email: efootballpes11th@gmail.com,
+            email: email@example.com,
         ),
     });
     const result = await response.json();
@@ -2742,7 +2742,7 @@ try {
 
 **Body (URL Encoded):**
 
-- `email: abdussabur929@gmail.com`
+- `email: email@example.com`
 - `password: aaaaaa`
 
 
@@ -2757,7 +2757,7 @@ try {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(
-            email: abdussabur929@gmail.com,
+            email: email@example.com,
             password: aaaaaa,
         ),
     });
@@ -2917,7 +2917,7 @@ try {
 
 **Body (URL Encoded):**
 
-- `email: efootballpes11th@gmail.com`
+- `email: email@example.com`
 
 
 ## fetch method
@@ -2931,7 +2931,7 @@ try {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(
-            email: efootballpes11th@gmail.com,
+            email: email@example.com,
         ),
     });
     const result = await response.json();
@@ -2989,7 +2989,7 @@ try {
 
 **Body (URL Encoded):**
 
-- `email: abdussabur929@gmail.com`
+- `email: email@example.com`
 - `password: aaaaaa`
 
 
@@ -3004,7 +3004,7 @@ try {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(
-            email: abdussabur929@gmail.com,
+            email: email@example.com,
             password: aaaaaa,
         ),
     });
