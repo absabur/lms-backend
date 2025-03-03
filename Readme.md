@@ -1,3 +1,109 @@
+# Express Server Setup Guide
+
+This guide will help you set up and run a Node.js Express server, including configuring a `.env` file for environment variables.
+
+---
+
+## Prerequisites
+
+Ensure you have the following installed:
+
+- [Node.js](https://nodejs.org/) (v16 or higher recommended)
+- [npm](https://www.npmjs.com/) (comes with Node.js)
+
+---
+
+## Step 1: Clone the Repository
+
+```bash
+git clone <repository-url>
+cd <project-folder>
+```
+
+---
+
+## Step 2: Install Dependencies
+
+```bash
+npm install
+```
+
+---
+
+## Step 3: Set Up Environment Variables
+
+Create a `.env` file in the root of your project and add your environment variables.
+
+Example `.env` file:
+
+```bash
+PORT=8888
+MONGO_URI=mongodb+srv://username:password@clusterlms.kftmc.mongodb.net/lms?retryWrites=true&w=majority
+CLOUDINARY_NAME=sdfgsdfgsdf
+CLOUDINARY_API_KEY=45654631541435
+CLOUDINARY_API_SECRET=aagasgsad51g45as1dg451as
+SMTP_USERNAME=user@example.com
+SMTP_PASSWORD=sadfsadfdsf
+JWT_SECRET=loginstudenttoken
+JWT_EXPIRE=24
+COOKIE_EXPIRE=3
+JWT_PASSWORD_KEY=thisisafortogpasswordkey
+JWT_CHANGE_EMAIL_KEY=thisisaemailchangekey
+clientUrl=
+```
+# Quick Setup Instructions
+
+1. Replace the MONGO_URI..
+2. Replace the CLOUDINARY_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET.`.
+3. Replace SMTP_USERNAME, SMTP_PASSWORD.
+
+You can customize these variables according to your project requirements.
+
+---
+
+## Step 4: Start the Server
+
+### For Development
+
+```bash
+npm run dev
+```
+
+*(Make sure you have `nodemon` installed for hot-reloading in development mode.)*
+
+### For Production
+
+```bash
+npm start
+```
+
+---
+
+## Folder Structure Example
+```bash
+. ├── src │ ├── app.js // Main entry file │ ├── routes // Define your routes here │ ├── controllers // Logic for route handlers │ ├── config // Database connection, etc. │ └── middlewares // Custom middleware (auth, etc.) ├── .env // Environment variables ├── .gitignore
+├── package.json └── README.md
+```
+
+---
+
+## Available Scripts
+
+| Command       | Description                                   |
+|---------------|-----------------------------------------------|
+| `npm run dev` | Run server in development mode with `nodemon` |
+| `npm start`   | Run server in production mode                 |
+
+---
+
+## Notes
+
+- Ensure your `.env` file is **never committed** to version control (add it to `.gitignore`).
+- Update your `.env` variables based on the environment (development, staging, production).
+
+---
+
+
 # API Documentation
 
 ## Admin
