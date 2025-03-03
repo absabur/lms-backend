@@ -33,7 +33,7 @@ exports.SignUpVerifyTeacher = async (req, res, next) => {
     const otp = await Otp.create({
       email,
       otp: verificationCode,
-      role: 'teacher',
+      role: "teacher",
       createDate,
       expireDate,
     });
@@ -74,7 +74,6 @@ exports.SignUpVerifyTeacher = async (req, res, next) => {
       success: true,
       message: `A verification code has been sent to ${email}.`,
     });
-
   } catch (error) {
     next(error);
   }
@@ -112,11 +111,13 @@ exports.registerTeacher = async (req, res, next) => {
     const createDate = localTime(0);
     const updateDate = localTime(0);
 
-    const givenTime = new Date(`${otp.expireDate.date} ${otp.expireDate.expireTime}`);
+    const givenTime = new Date(
+      `${otp.expireDate.date} ${otp.expireDate.expireTime}`
+    );
     const currentTime = new Date(`${createDate.date} ${createDate.time}`);
 
     if (currentTime > givenTime) {
-      await Otp.deleteOne({ email, otp: verificationCode, role: 'teacher' });
+      await Otp.deleteOne({ email, otp: verificationCode, role: "teacher" });
       throw createError(400, "OTP has expired.");
     }
 
@@ -165,7 +166,8 @@ exports.registerTeacher = async (req, res, next) => {
 
     const emailData = {
       email,
-      subject: "Welcome to Library Management System - Account Created Successfully",
+      subject:
+        "Welcome to Library Management System - Account Created Successfully",
       html: `
           <div style="background-color: #f4f4f4; width: 100%; min-width: 350px; padding: 10px; box-sizing: border-box; font-family: Arial, sans-serif;">
             <div style="max-width: 500px; margin: 0 auto; background: #ffffff; padding: 10px; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);">
@@ -207,9 +209,6 @@ exports.registerTeacher = async (req, res, next) => {
     next(error);
   }
 };
-
-
-
 
 exports.loginTeacher = async (req, res, next) => {
   try {
@@ -276,7 +275,10 @@ exports.updateTeacherPassword = async (req, res, next) => {
 
     const teacher = await Teacher.findById(req.teacher.id).select("+password");
     if (!teacher) {
-      throw createError(400, "Unable to update password. Teacher does not exist.");
+      throw createError(
+        400,
+        "Unable to update password. Teacher does not exist."
+      );
     }
 
     if (newPassword !== confirmPassword) {
@@ -303,19 +305,14 @@ exports.updateTeacherPassword = async (req, res, next) => {
 };
 exports.updateTeacherProfile = async (req, res, next) => {
   try {
-    const {
-      name,
-      phone,
-      nId,
-      teacherId,
-      department,
-      post,
-      address,
-    } = req.body;
+    const { name, phone, nId, teacherId, department, post, address } = req.body;
 
     const teacher = await Teacher.findById(req.teacher.id);
     if (!teacher) {
-      throw createError(400, "Unable to update profile. Teacher does not exist.");
+      throw createError(
+        400,
+        "Unable to update profile. Teacher does not exist."
+      );
     }
 
     const updatedData = {
@@ -333,7 +330,7 @@ exports.updateTeacherProfile = async (req, res, next) => {
       try {
         // Upload new avatar to Cloudinary
         const uploadResult = await cloudinary.uploader.upload(req.file.path, {
-          folder: "teachers"
+          folder: "teachers",
         });
 
         // Remove old avatar if exists
@@ -345,7 +342,6 @@ exports.updateTeacherProfile = async (req, res, next) => {
           public_id: uploadResult.public_id,
           url: uploadResult.secure_url,
         };
-
       } catch (uploadError) {
         throw createError(500, "Failed to upload avatar to Cloudinary.");
       }
@@ -360,11 +356,10 @@ exports.updateTeacherProfile = async (req, res, next) => {
       }
     );
 
-    res.status(200).json({ 
-      success: true, 
-      teacher: updatedTeacher 
+    res.status(200).json({
+      success: true,
+      teacher: updatedTeacher,
     });
-
   } catch (error) {
     next(error);
   }
@@ -449,7 +444,10 @@ exports.resetTeacherPassword = async (req, res, next) => {
       // Decode the token
       const decoded = jwt.verify(token, process.env.JWT_PASSWORD_KEY);
       if (!decoded) {
-        throw createError(401, "Invalid token. It may have expired or be incorrect.");
+        throw createError(
+          401,
+          "Invalid token. It may have expired or be incorrect."
+        );
       }
 
       // Find the teacher based on email
@@ -488,7 +486,9 @@ exports.updateTeacherEmailRequest = async (req, res, next) => {
     const { email, password } = req.body;
 
     // Ensure password is provided and matches
-    const teacherData = await Teacher.findById(req.teacher.id).select("+password");
+    const teacherData = await Teacher.findById(req.teacher.id).select(
+      "+password"
+    );
 
     const isPasswordMatch = await teacherData.comparedPassword(password);
     if (!isPasswordMatch) {
@@ -543,7 +543,6 @@ exports.updateTeacherEmailRequest = async (req, res, next) => {
       success: true,
       message: `An email has been sent to ${email}. Please check your inbox to update your email address. ${token}`,
     });
-
   } catch (error) {
     next(error);
   }
@@ -585,43 +584,76 @@ exports.updateTeacherEmailConfirm = async (req, res, next) => {
       success: true,
       message: "Email updated successfully.",
     });
-
   } catch (error) {
     next(error);
   }
 };
 
-
-
 // Function to get all teachers with filters
 exports.getAllTeacher = async (req, res, next) => {
   try {
-    const { isApproved, isBan, post, department, search } = req.query;
+    const {
+      name,
+      email,
+      phone,
+      post,
+      department,
+      isApproved,
+      isBan,
+      sortBy,
+      sortOrder,
+      page = 1,
+      limit = 10,
+      search,
+    } = req.query;
 
+    // Build the filter object
     const filter = {};
 
-    if (isApproved !== undefined) filter.isApproved = isApproved === 'true';
-    if (isBan !== undefined) filter.isBan = isBan === 'true';
-    if (post) filter.post = post;
-    if (department) filter.department = department;
+    if (name) filter.name = { $regex: name, $options: "i" };
+    if (email) filter.email = { $regex: email, $options: "i" };
+    if (phone) filter.phone = { $regex: phone, $options: "i" };
+    if (post) filter.post = { $regex: post, $options: "i" };
+    if (department) filter.department = { $regex: department, $options: "i" };
+    if (isApproved) filter.isApproved = isApproved === "true";
+    if (isBan) filter.isBan = isBan === "true";
 
+    // Search across multiple fields
     if (search) {
       filter.$or = [
-        { teacherId: { $regex: search, $options: "i" } },
-        { nId: { $regex: search, $options: "i" } },
+        { name: { $regex: search, $options: "i" } },
         { email: { $regex: search, $options: "i" } },
-        { phone: { $regex: search, $options: "i" } }
+        { phone: { $regex: search, $options: "i" } },
+        { post: { $regex: search, $options: "i" } },
+        { department: { $regex: search, $options: "i" } },
       ];
     }
 
-    const teachers = await Teacher.find(filter);
-
-    if (!teachers || teachers.length === 0) {
-      throw createError(404, "Teachers not found.");
+    // Build the sort object
+    const sort = {};
+    if (sortBy) {
+      sort[sortBy] = sortOrder === "desc" ? -1 : 1;
     }
+
+    // Pagination
+    const skip = (page - 1) * limit;
+
+    // Fetch teachers with filters, sorting, and pagination
+    const teachers = await Teacher.find(filter)
+      .sort(sort)
+      .skip(skip)
+      .limit(parseInt(limit))
+      .select("-password"); // Exclude password field
+
+    // Count total documents for pagination
+    const totalTeachers = await Teacher.countDocuments(filter);
 
     res.status(200).json({
       success: true,
+      count: teachers.length,
+      total: totalTeachers,
+      page: parseInt(page),
+      limit: parseInt(limit),
       teachers,
     });
   } catch (error) {
@@ -648,7 +680,18 @@ exports.getTeacherById = async (req, res, next) => {
 // Function to register a new teacher
 exports.registerTeacherByAdmin = async (req, res, next) => {
   try {
-    const { password, confirmPassword, name, email, phone, nId, department, post, teacherId, address } = req.body;
+    const {
+      password,
+      confirmPassword,
+      name,
+      email,
+      phone,
+      nId,
+      department,
+      post,
+      teacherId,
+      address,
+    } = req.body;
 
     if (password !== confirmPassword) {
       throw createError(400, "Password and Confirm Password did not match.");
@@ -660,7 +703,9 @@ exports.registerTeacherByAdmin = async (req, res, next) => {
     let avatar = { public_id: "", url: "" };
 
     if (req.file && req.file.path) {
-      const uploadResult = await cloudinary.uploader.upload(req.file.path, { folder: "teachers" });
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: "teachers",
+      });
       avatar.public_id = uploadResult.public_id;
       avatar.url = uploadResult.secure_url;
     } else {
@@ -690,7 +735,8 @@ exports.registerTeacherByAdmin = async (req, res, next) => {
 
     const emailData = {
       email,
-      subject: "Welcome to Library Management System - Account Created Successfully",
+      subject:
+        "Welcome to Library Management System - Account Created Successfully",
       html: `
         <div style="background-color: #f4f4f4; width: 100%; min-width: 350px; padding: 10px; box-sizing: border-box; font-family: Arial, sans-serif;">
           <div style="max-width: 500px; margin: 0 auto; background: #ffffff; padding: 10px; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);">
@@ -729,11 +775,15 @@ exports.registerTeacherByAdmin = async (req, res, next) => {
 // Function to update a teacher's profile
 exports.updateTeacherProfileByAdmin = async (req, res, next) => {
   try {
-    const { name, phone, email, nId, teacherId, department, post, address } = req.body;
+    const { name, phone, email, nId, teacherId, department, post, address } =
+      req.body;
 
     const teacher = await Teacher.findById(req.params.id);
     if (!teacher) {
-      throw createError(400, "Unable to update Profile. Teacher does not exist.");
+      throw createError(
+        400,
+        "Unable to update Profile. Teacher does not exist."
+      );
     }
 
     const updatedData = {
@@ -751,7 +801,9 @@ exports.updateTeacherProfileByAdmin = async (req, res, next) => {
     };
 
     if (req.file && req.file.path) {
-      const uploadResult = await cloudinary.uploader.upload(req.file.path, { folder: "teachers" });
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: "teachers",
+      });
       await cloudinary.uploader.destroy(teacher.avatar.public_id);
       updatedData.avatar = {
         public_id: uploadResult.public_id,
@@ -759,11 +811,15 @@ exports.updateTeacherProfileByAdmin = async (req, res, next) => {
       };
     }
 
-    const updatedTeacher = await Teacher.findByIdAndUpdate(req.params.id, updatedData, {
-      new: true,
-      runValidators: true,
-      useFindAndModify: false,
-    });
+    const updatedTeacher = await Teacher.findByIdAndUpdate(
+      req.params.id,
+      updatedData,
+      {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+      }
+    );
 
     res.status(200).json({ success: true, teacher: updatedTeacher });
   } catch (error) {

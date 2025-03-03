@@ -55,58 +55,53 @@ exports.cancelTakingRequestBookTeacher = async (req, res, next) => {
 };
 
 exports.approveTakingRequestBookTeacher = async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        const admin = req.admin.id;
+  try {
+    const { id } = req.params;
+    const admin = req.admin.id;
 
-        const bookTeacher = await BookTeacher
-        .findByIdAndUpdate(id, {
-            takingApproveBy: admin,
-            takingApproveDate: localTime(0),
-        });
-        
-        if (!bookTeacher) {
-            throw createError("No borrowing request found");
-        }
-        
-        res.status(200).json({
-            success: true,
-            message: "Book borrowing request approved",
-        });
+    const bookTeacher = await BookTeacher.findByIdAndUpdate(id, {
+      takingApproveBy: admin,
+      takingApproveDate: localTime(0),
+    });
 
-    } catch (error) {
-        next(error);
+    if (!bookTeacher) {
+      throw createError("No borrowing request found");
     }
-}
 
-
-exports.returnRequestBookTeacher = async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        const teacherId = req.teacher.id
-
-        const bookTeacher = await BookTeacher.findOneAndUpdate(
-            { _id: id, teacherId, takingApproveBy: { $ne: null } },
-            {
-               returnRequestDate: localTime(0)
-            },
-            { new: true }
-        );
-
-        if (!bookTeacher) {
-            throw createError("No borrowing request found");
-        }
-
-        res.status(200).json({
-            success: true,
-            message: "Book return request successful",
-        });
-
-    } catch (error) {
-        next(error);
-    }
+    res.status(200).json({
+      success: true,
+      message: "Book borrowing request approved",
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
+exports.returnRequestBookTeacher = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const teacherId = req.teacher.id;
+
+    const bookTeacher = await BookTeacher.findOneAndUpdate(
+      { _id: id, teacherId, takingApproveBy: { $ne: null } },
+      {
+        returnRequestDate: localTime(0),
+      },
+      { new: true }
+    );
+
+    if (!bookTeacher) {
+      throw createError("No borrowing request found");
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Book return request successful",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 exports.cancelReturnRequestBookTeacher = async (req, res, next) => {
   try {
@@ -129,58 +124,154 @@ exports.cancelReturnRequestBookTeacher = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-}
-
+};
 
 exports.approveReturnRequestBookTeacher = async (req, res, next) => {
-    try {
-        const { id } = req.params.id;
-        const admin = req.admin.id;
-        const bookTeacher = await BookTeacher
-        .findByIdAndUpdate(id, {
-            returnApproveBy: admin,
-            returnApproveDate: localTime(0),
-        });
-        
-        if (!bookTeacher) {
-            throw createError("No borrowing request found");
-        }
-        
-        res.status(200).json({
-            success: true,
-            message: "Book return request approved",
-        });
-        
-    } catch (error) {
-        next(error);
-    }
-}
-
-
-
-exports.getTeacherBorrowingRequests = async (req, res, next) => {
   try {
-    const teacherId = req.teacher.id;
-    const bookTeachers = await BookTeacher.find({ teacherId });
-    res.status(200).json({
-      success: true,
-      borrowingDatas: bookTeachers,
+    const { id } = req.params.id;
+    const admin = req.admin.id;
+    const bookTeacher = await BookTeacher.findByIdAndUpdate(id, {
+      returnApproveBy: admin,
+      returnApproveDate: localTime(0),
     });
-    } catch (error) {
-    next(error);
-  }
-}
 
+    if (!bookTeacher) {
+      throw createError("No borrowing request found");
+    }
 
-exports.getTeacherBorrowingRequestsByAdmin = async (req, res, next) => {
-  try {
-    const bookTeachers = await BookTeacher.find();
-    
     res.status(200).json({
       success: true,
-      borrowingRequests: bookTeachers,
+      message: "Book return request approved",
     });
   } catch (error) {
     next(error);
   }
-}
+};
+
+exports.getTeacherBorrowingRequests = async (req, res, next) => {
+  try {
+    const teacherId = req.teacher.id;
+    const {
+      bookId,
+      bookNumber,
+      takingApproveBy,
+      returnApproveBy,
+      sortBy,
+      sortOrder,
+      page = 1,
+      limit = 10,
+      search,
+    } = req.query;
+
+    // Build the filter object
+    const filter = {};
+
+    if (bookId) filter.bookId = bookId;
+    if (teacherId) filter.teacherId = teacherId;
+    if (bookNumber) filter.bookNumber = bookNumber;
+    if (takingApproveBy) filter.takingApproveBy = takingApproveBy;
+    if (returnApproveBy) filter.returnApproveBy = returnApproveBy;
+
+    // Search across multiple fields
+    if (search) {
+      filter.$or = [{ bookNumber: { $regex: search, $options: "i" } }];
+    }
+
+    // Build the sort object
+    const sort = {};
+    if (sortBy) {
+      sort[sortBy] = sortOrder === "desc" ? -1 : 1;
+    }
+
+    // Pagination
+    const skip = (page - 1) * limit;
+
+    // Fetch book-teacher records with filters, sorting, and pagination
+    const bookTeachers = await BookTeacher.find(filter)
+      .sort(sort)
+      .skip(skip)
+      .limit(parseInt(limit))
+      .populate("bookId", "bookName bookAuthor") // Populate book details
+      .populate("teacherId", "name email") // Populate teacher details
+      .populate("takingApproveBy", "name email") // Populate admin details for taking approval
+      .populate("returnApproveBy", "name email"); // Populate admin details for return approval
+
+    // Count total documents for pagination
+    const totalBookTeachers = await BookTeacher.countDocuments(filter);
+
+    res.status(200).json({
+      success: true,
+      count: bookTeachers.length,
+      total: totalBookTeachers,
+      page: parseInt(page),
+      limit: parseInt(limit),
+      bookTeachers,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getTeacherBorrowingRequestsByAdmin = async (req, res, next) => {
+  try {
+    const {
+      bookId,
+      teacherId,
+      bookNumber,
+      takingApproveBy,
+      returnApproveBy,
+      sortBy,
+      sortOrder,
+      page = 1,
+      limit = 10,
+      search,
+    } = req.query;
+
+    // Build the filter object
+    const filter = {};
+
+    if (bookId) filter.bookId = bookId;
+    if (teacherId) filter.teacherId = teacherId;
+    if (bookNumber) filter.bookNumber = bookNumber;
+    if (takingApproveBy) filter.takingApproveBy = takingApproveBy;
+    if (returnApproveBy) filter.returnApproveBy = returnApproveBy;
+
+    // Search across multiple fields
+    if (search) {
+      filter.$or = [{ bookNumber: { $regex: search, $options: "i" } }];
+    }
+
+    // Build the sort object
+    const sort = {};
+    if (sortBy) {
+      sort[sortBy] = sortOrder === "desc" ? -1 : 1;
+    }
+
+    // Pagination
+    const skip = (page - 1) * limit;
+
+    // Fetch book-teacher records with filters, sorting, and pagination
+    const bookTeachers = await BookTeacher.find(filter)
+      .sort(sort)
+      .skip(skip)
+      .limit(parseInt(limit))
+      .populate("bookId", "bookName bookAuthor") // Populate book details
+      .populate("teacherId", "name email") // Populate teacher details
+      .populate("takingApproveBy", "name email") // Populate admin details for taking approval
+      .populate("returnApproveBy", "name email"); // Populate admin details for return approval
+
+    // Count total documents for pagination
+    const totalBookTeachers = await BookTeacher.countDocuments(filter);
+
+    res.status(200).json({
+      success: true,
+      count: bookTeachers.length,
+      total: totalBookTeachers,
+      page: parseInt(page),
+      limit: parseInt(limit),
+      bookTeachers,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

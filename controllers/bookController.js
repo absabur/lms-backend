@@ -18,7 +18,7 @@ exports.createBook = async (req, res, next) => {
       mrp,
       shelf,
       bookNumber,
-      category,
+      department,
       quantity,
       description,
       bookNumbers,
@@ -33,7 +33,7 @@ exports.createBook = async (req, res, next) => {
 
     let slug = makeSlug(bookName, bookAuthor);
     let exists = await Books.findOne({ slug: slug });
-    
+
     if (exists) {
       throw createError(404, "This book already exists.");
     }
@@ -69,7 +69,7 @@ exports.createBook = async (req, res, next) => {
       mrp,
       shelf,
       bookNumber,
-      category,
+      department,
       quantity,
       images,
       description,
@@ -106,7 +106,7 @@ exports.updateBook = async (req, res, next) => {
       mrp,
       shelf,
       bookNumber,
-      category,
+      department,
       quantity,
       description,
       bookNumbers,
@@ -121,11 +121,9 @@ exports.updateBook = async (req, res, next) => {
       throw createError(404, "Book not found");
     }
 
-    let bookNumbersArray = book.bookNumbers
+    let bookNumbersArray = book.bookNumbers;
     if (bookNumbers) {
-      bookNumbersArray = bookNumbers
-        .split(", ")
-        .map((item) => item.trim());
+      bookNumbersArray = bookNumbers.split(", ").map((item) => item.trim());
       if (quantity) {
         if (bookNumbersArray.length != quantity) {
           throw createError(400, "Book numbers should be equal to quantity.");
@@ -170,7 +168,7 @@ exports.updateBook = async (req, res, next) => {
     book.mrp = mrp || book.mrp;
     book.shelf = shelf || book.shelf;
     book.bookNumber = bookNumber || book.bookNumber;
-    book.category = category || book.category;
+    book.department = department || book.department;
     book.quantity = quantity || book.quantity;
     book.description = description || book.description;
     book.bookNumbers = bookNumbersArray || book.bookNumbers;
@@ -199,78 +197,86 @@ exports.getAllBooks = async (req, res, next) => {
       bookAuthor,
       publisher,
       edition,
-      country,
       language,
-      minPages,
-      maxPages,
-      minMRP,
-      maxMRP,
+      department,
       shelf,
-      category,
-      minQuantity,
-      maxQuantity,
-      sortBy = "createdAt",
-      sortOrder = "desc",
+      country,
+      mrpMin,
+      mrpMax,
+      quantityMin,
+      quantityMax,
+      sortBy,
+      sortOrder,
       page = 1,
       limit = 10,
+      search,
     } = req.query;
 
+    // Build the filter object
     const filter = {};
 
-    // Apply filters
     if (bookName) filter.bookName = { $regex: bookName, $options: "i" };
     if (bookAuthor) filter.bookAuthor = { $regex: bookAuthor, $options: "i" };
     if (publisher) filter.publisher = { $regex: publisher, $options: "i" };
     if (edition) filter.edition = { $regex: edition, $options: "i" };
-    if (country) filter.country = { $regex: country, $options: "i" };
     if (language) filter.language = { $regex: language, $options: "i" };
+    if (department) filter.department = { $regex: department, $options: "i" };
     if (shelf) filter.shelf = { $regex: shelf, $options: "i" };
-    if (category) filter.category = { $regex: category, $options: "i" };
+    if (country) filter.country = { $regex: country, $options: "i" };
 
-    // Apply range filters
-    if (minPages || maxPages) {
-      filter.numberOfPages = {};
-      if (minPages) filter.numberOfPages.$gte = parseInt(minPages);
-      if (maxPages) filter.numberOfPages.$lte = parseInt(maxPages);
-    }
-
-    if (minMRP || maxMRP) {
+    // Filter by MRP range
+    if (mrpMin || mrpMax) {
       filter.mrp = {};
-      if (minMRP) filter.mrp.$gte = parseFloat(minMRP);
-      if (maxMRP) filter.mrp.$lte = parseFloat(maxMRP);
+      if (mrpMin) filter.mrp.$gte = parseFloat(mrpMin);
+      if (mrpMax) filter.mrp.$lte = parseFloat(mrpMax);
     }
 
-    if (minQuantity || maxQuantity) {
+    // Filter by quantity range
+    if (quantityMin || quantityMax) {
       filter.quantity = {};
-      if (minQuantity) filter.quantity.$gte = parseInt(minQuantity);
-      if (maxQuantity) filter.quantity.$lte = parseInt(maxQuantity);
+      if (quantityMin) filter.quantity.$gte = parseInt(quantityMin);
+      if (quantityMax) filter.quantity.$lte = parseInt(quantityMax);
     }
 
-    // Retrieve books with pagination and sorting
+    // Search across multiple fields
+    if (search) {
+      filter.$or = [
+        { bookName: { $regex: search, $options: "i" } },
+        { bookAuthor: { $regex: search, $options: "i" } },
+        { publisher: { $regex: search, $options: "i" } },
+        { edition: { $regex: search, $options: "i" } },
+        { language: { $regex: search, $options: "i" } },
+        { department: { $regex: search, $options: "i" } },
+        { shelf: { $regex: search, $options: "i" } },
+        { country: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    // Build the sort object
+    const sort = {};
+    if (sortBy) {
+      sort[sortBy] = sortOrder === "desc" ? -1 : 1;
+    }
+
+    // Pagination
+    const skip = (page - 1) * limit;
+
+    // Fetch books with filters, sorting, and pagination
     const books = await Books.find(filter)
-      .limit(Number(limit))
-      .skip((Number(page) - 1) * Number(limit))
-      .sort({ [sortBy]: sortOrder === "asc" ? 1 : -1 });
+      .sort(sort)
+      .skip(skip)
+      .limit(parseInt(limit));
 
-    if (!books || books.length === 0) {
-      throw createError(404, "Books not found");
-    }
-
-    const count = await Books.countDocuments(filter);
+    // Count total documents for pagination
+    const totalBooks = await Books.countDocuments(filter);
 
     res.status(200).json({
       success: true,
+      count: books.length,
+      total: totalBooks,
+      page: parseInt(page),
+      limit: parseInt(limit),
       books,
-      pagination: {
-        totalBooks: count,
-        totalPages: Math.ceil(count / Number(limit)),
-        currentPage: Number(page),
-        prevPage: Number(page) > 1 ? Number(page) - 1 : null,
-        nextPage:
-          Number(page) < Math.ceil(count / Number(limit))
-            ? Number(page) + 1
-            : null,
-      },
     });
   } catch (error) {
     next(error);

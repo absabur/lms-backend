@@ -85,7 +85,7 @@ exports.returnRequestBookStudent = async (req, res, next) => {
     const bookStudent = await BookStudent.findOneAndUpdate(
       { _id: id, studentId, takingApproveBy: { $ne: null } },
       {
-         returnRequestDate: localTime(0)
+        returnRequestDate: localTime(0),
       },
       { new: true }
     );
@@ -107,7 +107,7 @@ exports.cancelReturnRequestBookStudent = async (req, res, next) => {
   try {
     const { id } = req.params;
     const studentId = req.student.id;
-    
+
     const bookStudent = await BookStudent.findOneAndUpdate(
       { _id: id, studentId, returnApproveBy: null },
       { returnRequestDate: null }
@@ -149,29 +149,130 @@ exports.approveReturnRequestBookStudent = async (req, res, next) => {
   }
 };
 
-
 exports.getStudentBorrowingRequests = async (req, res, next) => {
   try {
     const studentId = req.student.id;
-    const bookStudents = await BookStudent.find({ studentId });
-    res.status(200).json({
-      success: true,
-      borrowingDatas: bookStudents,
-    });
-    } catch (error) {
-    next(error);
-  }
-}
+    const {
+      bookId,
+      bookNumber,
+      takingApproveBy,
+      returnApproveBy,
+      sortBy,
+      sortOrder,
+      page = 1,
+      limit = 10,
+      search,
+    } = req.query;
 
-exports.getStudentBorrowingRequestsByAdmin = async (req, res, next) => {
-  try {
-    const bookStudents = await BookStudent.find();
-    
+    // Build the filter object
+    const filter = {};
+
+    if (bookId) filter.bookId = bookId;
+    if (studentId) filter.studentId = studentId;
+    if (bookNumber) filter.bookNumber = bookNumber;
+    if (takingApproveBy) filter.takingApproveBy = takingApproveBy;
+    if (returnApproveBy) filter.returnApproveBy = returnApproveBy;
+
+    // Search across multiple fields
+    if (search) {
+      filter.$or = [{ bookNumber: { $regex: search, $options: "i" } }];
+    }
+
+    // Build the sort object
+    const sort = {};
+    if (sortBy) {
+      sort[sortBy] = sortOrder === "desc" ? -1 : 1;
+    }
+
+    // Pagination
+    const skip = (page - 1) * limit;
+
+    // Fetch book-student records with filters, sorting, and pagination
+    const bookStudents = await BookStudent.find(filter)
+      .sort(sort)
+      .skip(skip)
+      .limit(parseInt(limit))
+      .populate("bookId", "bookName bookAuthor") // Populate book details
+      .populate("studentId", "name email") // Populate student details
+      .populate("takingApproveBy", "name email") // Populate admin details for taking approval
+      .populate("returnApproveBy", "name email"); // Populate admin details for return approval
+
+    // Count total documents for pagination
+    const totalBookStudents = await BookStudent.countDocuments(filter);
+
     res.status(200).json({
       success: true,
-      borrowingRequests: bookStudents,
+      count: bookStudents.length,
+      total: totalBookStudents,
+      page: parseInt(page),
+      limit: parseInt(limit),
+      bookStudents,
     });
   } catch (error) {
     next(error);
   }
-}
+};
+
+exports.getStudentBorrowingRequestsByAdmin = async (req, res, next) => {
+  try {
+    const {
+      bookId,
+      studentId,
+      bookNumber,
+      takingApproveBy,
+      returnApproveBy,
+      sortBy,
+      sortOrder,
+      page = 1,
+      limit = 10,
+      search,
+    } = req.query;
+
+    // Build the filter object
+    const filter = {};
+
+    if (bookId) filter.bookId = bookId;
+    if (studentId) filter.studentId = studentId;
+    if (bookNumber) filter.bookNumber = bookNumber;
+    if (takingApproveBy) filter.takingApproveBy = takingApproveBy;
+    if (returnApproveBy) filter.returnApproveBy = returnApproveBy;
+
+    // Search across multiple fields
+    if (search) {
+      filter.$or = [{ bookNumber: { $regex: search, $options: "i" } }];
+    }
+
+    // Build the sort object
+    const sort = {};
+    if (sortBy) {
+      sort[sortBy] = sortOrder === "desc" ? -1 : 1;
+    }
+
+    // Pagination
+    const skip = (page - 1) * limit;
+
+    // Fetch book-student records with filters, sorting, and pagination
+    const bookStudents = await BookStudent.find(filter)
+      .sort(sort)
+      .skip(skip)
+      .limit(parseInt(limit))
+      .populate("bookId", "bookName bookAuthor") // Populate book details
+      .populate("studentId", "name email") // Populate student details
+      .populate("takingApproveBy", "name email") // Populate admin details for taking approval
+      .populate("returnApproveBy", "name email"); // Populate admin details for return approval
+
+    // Count total documents for pagination
+    const totalBookStudents = await BookStudent.countDocuments(filter);
+
+    res.status(200).json({
+      success: true,
+      count: bookStudents.length,
+      total: totalBookStudents,
+      page: parseInt(page),
+      limit: parseInt(limit),
+      bookStudents,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

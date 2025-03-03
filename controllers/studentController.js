@@ -92,7 +92,7 @@ exports.registerStudent = async (req, res, next) => {
       addmissionRoll,
       boardRoll,
       registration,
-      technology,
+      department,
       session,
       shift,
       district,
@@ -156,7 +156,7 @@ exports.registerStudent = async (req, res, next) => {
       mothersName,
       addmissionRoll,
       boardRoll,
-      technology,
+      department,
       district,
       upazila,
       union,
@@ -326,7 +326,7 @@ exports.updateStudentProfile = async (req, res, next) => {
       addmissionRoll,
       boardRoll,
       registration,
-      technology,
+      department,
       session,
       shift,
       district,
@@ -353,7 +353,7 @@ exports.updateStudentProfile = async (req, res, next) => {
       addmissionRoll: addmissionRoll || student.addmissionRoll || "",
       boardRoll: boardRoll || student.boardRoll || "",
       registration: registration || student.registration || "",
-      technology: technology || student.technology,
+      department: department || student.department,
       session: session || student.session,
       shift: shift || student.shift,
       district: district || student.district,
@@ -458,7 +458,7 @@ exports.resetStudentPassword = async (req, res, next) => {
 
     try {
       const decoded = jwt.verify(token, process.env.JWT_PASSWORD_KEY);
-      
+
       if (!decoded)
         throw createError(
           401,
@@ -593,33 +593,94 @@ exports.updateStudentEmailConfirm = async (req, res, next) => {
 
 exports.getAllStudent = async (req, res, next) => {
   try {
-    const { isApproved, isBan, technology, session, search } = req.query;
+    const {
+      name,
+      banglaName,
+      fathersName,
+      mothersName,
+      email,
+      phone,
+      department,
+      session,
+      shift,
+      district,
+      upazila,
+      union,
+      village,
+      isApproved,
+      isBan,
+      sortBy,
+      sortOrder,
+      page = 1,
+      limit = 10,
+      search,
+    } = req.query;
+
+    // Build the filter object
     const filter = {};
 
-    // Apply filters based on query params
-    if (isApproved !== undefined) filter.isApproved = isApproved === "true";
-    if (isBan !== undefined) filter.isBan = isBan === "true";
-    if (technology) filter.technology = technology;
-    if (session) filter.session = session;
+    if (name) filter.name = { $regex: name, $options: "i" };
+    if (banglaName) filter.banglaName = { $regex: banglaName, $options: "i" };
+    if (fathersName)
+      filter.fathersName = { $regex: fathersName, $options: "i" };
+    if (mothersName)
+      filter.mothersName = { $regex: mothersName, $options: "i" };
+    if (email) filter.email = { $regex: email, $options: "i" };
+    if (phone) filter.phone = { $regex: phone, $options: "i" };
+    if (department) filter.department = { $regex: department, $options: "i" };
+    if (session) filter.session = { $regex: session, $options: "i" };
+    if (shift) filter.shift = { $regex: shift, $options: "i" };
+    if (district) filter.district = { $regex: district, $options: "i" };
+    if (upazila) filter.upazila = { $regex: upazila, $options: "i" };
+    if (union) filter.union = { $regex: union, $options: "i" };
+    if (village) filter.village = { $regex: village, $options: "i" };
+    if (isApproved) filter.isApproved = isApproved === "true";
+    if (isBan) filter.isBan = isBan === "true";
 
+    // Search across multiple fields
     if (search) {
       filter.$or = [
-        { registration: { $regex: search, $options: "i" } },
-        { addmissionRoll: { $regex: search, $options: "i" } },
-        { boardRoll: { $regex: search, $options: "i" } },
+        { name: { $regex: search, $options: "i" } },
+        { banglaName: { $regex: search, $options: "i" } },
+        { fathersName: { $regex: search, $options: "i" } },
+        { mothersName: { $regex: search, $options: "i" } },
         { email: { $regex: search, $options: "i" } },
         { phone: { $regex: search, $options: "i" } },
+        { department: { $regex: search, $options: "i" } },
+        { session: { $regex: search, $options: "i" } },
+        { shift: { $regex: search, $options: "i" } },
+        { district: { $regex: search, $options: "i" } },
+        { upazila: { $regex: search, $options: "i" } },
+        { union: { $regex: search, $options: "i" } },
+        { village: { $regex: search, $options: "i" } },
       ];
     }
 
-    const students = await Student.find(filter);
-
-    if (!students.length) {
-      throw createError(404, "No students found.");
+    // Build the sort object
+    const sort = {};
+    if (sortBy) {
+      sort[sortBy] = sortOrder === "desc" ? -1 : 1;
     }
+
+    // Pagination
+    const skip = (page - 1) * limit;
+
+    // Fetch students with filters, sorting, and pagination
+    const students = await Student.find(filter)
+      .sort(sort)
+      .skip(skip)
+      .limit(parseInt(limit))
+      .select("-password"); // Exclude password field
+
+    // Count total documents for pagination
+    const totalStudents = await Student.countDocuments(filter);
 
     res.status(200).json({
       success: true,
+      count: students.length,
+      total: totalStudents,
+      page: parseInt(page),
+      limit: parseInt(limit),
       students,
     });
   } catch (error) {
@@ -658,7 +719,7 @@ exports.registerStudentByAdmin = async (req, res, next) => {
       addmissionRoll,
       boardRoll,
       registration,
-      technology,
+      department,
       session,
       shift,
       district,
@@ -698,7 +759,7 @@ exports.registerStudentByAdmin = async (req, res, next) => {
       mothersName,
       addmissionRoll,
       boardRoll,
-      technology,
+      department,
       district,
       upazila,
       union,
@@ -749,7 +810,7 @@ exports.updateStudentProfileByAdmin = async (req, res, next) => {
       addmissionRoll: req.body.addmissionRoll || student.addmissionRoll,
       boardRoll: req.body.boardRoll || student.boardRoll,
       registration: req.body.registration || student.registration,
-      technology: req.body.technology || student.technology,
+      department: req.body.department || student.department,
       session: req.body.session || student.session,
       shift: req.body.shift || student.shift,
       district: req.body.district || student.district,

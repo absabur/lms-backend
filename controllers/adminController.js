@@ -563,29 +563,64 @@ exports.updateAdminEmailConfirm = async (req, res, next) => {
 // Get all admins with filters
 exports.getAllAdmin = async (req, res, next) => {
   try {
-    const { isAdmin, isBan, search } = req.query;
+    const {
+      name,
+      email,
+      phone,
+      isApproved,
+      isSuperAdmin,
+      isBan,
+      sortBy,
+      sortOrder,
+      page = 1,
+      limit = 10,
+      search,
+    } = req.query;
 
+    // Build the filter object
     const filter = {};
 
-    if (isAdmin !== undefined) filter.isAdmin = isAdmin === "true";
-    if (isBan !== undefined) filter.isBan = isBan === "true";
+    if (name) filter.name = { $regex: name, $options: 'i' };
+    if (email) filter.email = { $regex: email, $options: 'i' };
+    if (phone) filter.phone = { $regex: phone, $options: 'i' };
+    if (isApproved) filter.isApproved = isApproved === 'true';
+    if (isSuperAdmin) filter.isSuperAdmin = isSuperAdmin === 'true';
+    if (isBan) filter.isBan = isBan === 'true';
 
+    // Search across multiple fields
     if (search) {
       filter.$or = [
-        { nId: { $regex: search, $options: "i" } },
-        { email: { $regex: search, $options: "i" } },
-        { phone: { $regex: search, $options: "i" } },
+        { name: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+        { phone: { $regex: search, $options: 'i' } },
       ];
     }
 
-    const admins = await Admin.find(filter);
-
-    if (!admins || admins.length === 0) {
-      throw createError(404, "Admins not found.");
+    // Build the sort object
+    const sort = {};
+    if (sortBy) {
+      sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
     }
+
+    // Pagination
+    const skip = (page - 1) * limit;
+
+    // Fetch admins with filters, sorting, and pagination
+    const admins = await Admin.find(filter)
+      .sort(sort)
+      .skip(skip)
+      .limit(parseInt(limit))
+      .select('-password'); // Exclude password field
+
+    // Count total documents for pagination
+    const totalAdmins = await Admin.countDocuments(filter);
 
     res.status(200).json({
       success: true,
+      count: admins.length,
+      total: totalAdmins,
+      page: parseInt(page),
+      limit: parseInt(limit),
       admins,
     });
   } catch (error) {

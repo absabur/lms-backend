@@ -4,8 +4,6 @@ const {
   Language,
   Shelf,
   Department,
-  Technology,
-  Category,
   Session,
   Shift,
   District,
@@ -51,12 +49,10 @@ exports.createLanguage = async (req, res, next) => {
       createdDate: localTime(0),
     });
     await newLanguage.save();
-    res
-      .status(201)
-      .json({
-        message: "Language created successfully",
-        language: newLanguage,
-      });
+    res.status(201).json({
+      message: "Language created successfully",
+      language: newLanguage,
+    });
   } catch (error) {
     next(error);
   }
@@ -108,12 +104,10 @@ exports.createDepartment = async (req, res, next) => {
       createdDate: localTime(0),
     });
     await newDepartment.save();
-    res
-      .status(201)
-      .json({
-        message: "Department created successfully",
-        department: newDepartment,
-      });
+    res.status(201).json({
+      message: "Department created successfully",
+      department: newDepartment,
+    });
   } catch (error) {
     next(error);
   }
@@ -123,66 +117,6 @@ exports.getAllDepartments = async (req, res, next) => {
   try {
     const departments = await Department.find();
     res.status(200).json({ departments });
-  } catch (error) {
-    next(error);
-  }
-};
-
-exports.createTechnology = async (req, res, next) => {
-  try {
-    const adminId = req.admin.id;
-    const { name } = req.body;
-    const newTechnology = new Technology({
-      name,
-      createdBy: adminId,
-      createdDate: localTime(0),
-    });
-    await newTechnology.save();
-    res
-      .status(201)
-      .json({
-        message: "Technology created successfully",
-        technology: newTechnology,
-      });
-  } catch (error) {
-    next(error);
-  }
-};
-
-exports.getAllTechnologies = async (req, res, next) => {
-  try {
-    const technologies = await Technology.find();
-    res.status(200).json({ technologies });
-  } catch (error) {
-    next(error);
-  }
-};
-
-exports.createCategory = async (req, res, next) => {
-  try {
-    const adminId = req.admin.id;
-    const { name } = req.body;
-    const newCategory = new Category({
-      name,
-      createdBy: adminId,
-      createdDate: localTime(0),
-    });
-    await newCategory.save();
-    res
-      .status(201)
-      .json({
-        message: "Category created successfully",
-        category: newCategory,
-      });
-  } catch (error) {
-    next(error);
-  }
-};
-
-exports.getAllCategories = async (req, res, next) => {
-  try {
-    const categories = await Category.find();
-    res.status(200).json({ categories });
   } catch (error) {
     next(error);
   }
@@ -244,7 +178,7 @@ exports.getAllShifts = async (req, res, next) => {
 
 exports.createDistrict = async (req, res, next) => {
   try {
-    const adminId = req.admin.id;
+    const adminId = req.body.id;
     const { name } = req.body;
     const newDistrict = new District({
       name,
@@ -252,12 +186,10 @@ exports.createDistrict = async (req, res, next) => {
       createdDate: localTime(0),
     });
     await newDistrict.save();
-    res
-      .status(201)
-      .json({
-        message: "District created successfully",
-        district: newDistrict,
-      });
+    res.status(201).json({
+      message: "District created successfully",
+      district: newDistrict,
+    });
   } catch (error) {
     next(error);
   }
@@ -274,11 +206,11 @@ exports.getAllDistricts = async (req, res, next) => {
 
 exports.createUpazila = async (req, res, next) => {
   try {
-    const adminId = req.admin.id;
+    const adminId = req.body.id;
     const { name, districtId } = req.body;
     const district = await District.findById(districtId);
     if (!district) {
-      throw createHttpError(404, "District not found")
+      throw createHttpError(404, "District not found");
     }
     const newUpazila = new Upazila({
       name,
@@ -297,8 +229,47 @@ exports.createUpazila = async (req, res, next) => {
 
 exports.getAllUpazilas = async (req, res, next) => {
   try {
-    const upazilas = await Upazila.find();
-    res.status(200).json({ upazilas });
+    const {
+      name,
+      districtId,
+      sortBy,
+      sortOrder,
+      search,
+    } = req.query;
+
+    // Build the filter object
+    const filter = {};
+
+    if (name) filter.name = { $regex: name, $options: "i" };
+    if (districtId) filter.districtId = districtId;
+
+    // Search across multiple fields
+    if (search) {
+      filter.$or = [{ name: { $regex: search, $options: "i" } }];
+    }
+
+    // Build the sort object
+    const sort = {};
+    if (sortBy) {
+      sort[sortBy] = sortOrder === "desc" ? -1 : 1;
+    }
+
+
+    // Fetch upazilas with filters, sorting, and pagination
+    const upazilas = await Upazila.find(filter)
+      .sort(sort)
+      .populate("districtId", "name") // Populate district details
+      .populate("createdBy", "name email"); // Populate admin details
+
+    // Count total documents for pagination
+    const totalUpazilas = await Upazila.countDocuments(filter);
+
+    res.status(200).json({
+      success: true,
+      count: upazilas.length,
+      total: totalUpazilas,
+      upazilas,
+    });
   } catch (error) {
     next(error);
   }

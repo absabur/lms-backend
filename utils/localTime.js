@@ -64,12 +64,6 @@ exports.localTime = (expire) => {
     formatedTime:
       date.c.hour + ":" + date.c.minute + ":" + date.c.second + " " + ampm,
     expireTime,
-    month: Number(date.c.month),
-    day: Number(date.c.day),
-    hour: Number(date.c.hour),
-    minute: Number(date.c.minute),
-    second: Number(date.c.second),
-    AmPm: ampm,
   };
   return dateObject;
 };

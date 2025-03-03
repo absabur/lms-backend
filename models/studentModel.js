@@ -58,9 +58,9 @@ const studentSchema = new Schema({
     type: Number,
     unique: [true, "registration already in student"],
   },
-  technology: {
+  department: {
     type: String,
-    required: [true, "Please enter technology."],
+    required: [true, "Please enter department."],
     trim: true,
   },
   session: {

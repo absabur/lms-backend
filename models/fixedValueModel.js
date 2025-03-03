@@ -4,6 +4,7 @@ const { Schema, model } = require("mongoose");
 const CountrySchema = new Schema({
   name: {
     type: String,
+    required: [true, "Please enter Country."],
     trim: true,
   },
   createdBy: {
@@ -22,6 +23,7 @@ const Country = model("Country", CountrySchema);
 const LanguageSchema = new Schema({
   name: {
     type: String,
+    required: [true, "Please enter language."],
     trim: true,
   },
   createdBy: {
@@ -40,6 +42,7 @@ const Language = model("Language", LanguageSchema);
 const ShelfSchema = new Schema({
   name: {
     type: String,
+    required: [true, "Please enter Shelf."],
     trim: true,
   },
   createdBy: {
@@ -72,44 +75,6 @@ const DepartmentSchema = new Schema({
 });
 
 const Department = model("Department", DepartmentSchema);
-
-
-const TechnologySchema = new Schema({
-  name: {
-    type: String,
-    required: [true, "Please enter technology."],
-    trim: true,
-  },
-  createdBy: {
-    type: Schema.Types.ObjectId,
-    ref: "Admin",
-    required: true,
-  },
-  createdDate: {
-    type: Object,
-  }
-});
-
-const Technology = model("Technology", TechnologySchema);
-
-
-const CategorySchema = new Schema({
-  name: {
-    type: String,
-    required: [true, "Please Enter Category"],
-    trim: true,
-  },
-  createdBy: {
-    type: Schema.Types.ObjectId,
-    ref: "Admin",
-    required: true,
-  },
-  createdDate: {
-    type: Object,
-  }
-});
-
-const Category = model("Category", CategorySchema);
 
 
 const SessionSchema = new Schema({
@@ -217,8 +182,6 @@ module.exports = {
   Language,
   Shelf,
   Department,
-  Technology,
-  Category,
   Session,
   Shift,
   District,
