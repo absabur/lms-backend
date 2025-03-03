@@ -83,7 +83,7 @@ npm start
 ├── models
 ├── routes
 ├── utils
-|-- .env
+├── .env
 ├── app.js
 ├── index.js
 ├── package-lock.json
@@ -145,7 +145,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - register
 
@@ -192,7 +193,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - login
 
@@ -227,7 +229,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - logout
 
@@ -255,7 +258,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - profile
 
@@ -278,7 +282,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - update password
 
@@ -315,7 +320,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - update profile
 
@@ -354,7 +360,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - forgate password
 
@@ -387,7 +394,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - reset password
 
@@ -424,7 +432,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - email update request
 
@@ -459,7 +468,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - email update
 
@@ -492,7 +502,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - create student
 
@@ -563,7 +574,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - update student
 
@@ -634,7 +646,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - all students
 
@@ -657,7 +670,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - get student
 
@@ -680,7 +694,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - approve student
 
@@ -703,7 +718,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - ban student
 
@@ -726,7 +742,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - unban student
 
@@ -749,7 +766,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - create teacher
 
@@ -802,7 +820,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - update teacher
 
@@ -855,7 +874,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - all teacher
 
@@ -878,7 +898,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - get teacher by id
 
@@ -901,7 +922,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - approve-teacher
 
@@ -924,7 +946,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - ban teacher
 
@@ -947,7 +970,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - unban teacher
 
@@ -970,7 +994,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - all admin
 
@@ -993,7 +1018,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - get admin
 
@@ -1016,7 +1042,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - approve admin
 
@@ -1039,7 +1066,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - ban admin
 
@@ -1062,7 +1090,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Admin - unban admin
 
@@ -1085,7 +1114,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ## Book
 
@@ -1148,7 +1178,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Book - update-book
 
@@ -1209,7 +1240,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Book - all books
 
@@ -1232,7 +1264,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Book - get book
 
@@ -1255,7 +1288,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ## BookStudent
 
@@ -1280,7 +1314,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### BookStudent - book take req cancel
 
@@ -1303,7 +1338,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### BookStudent - book take req approve
 
@@ -1326,7 +1362,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### BookStudent - book return req
 
@@ -1349,7 +1386,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### BookStudent - book return req cancel
 
@@ -1372,7 +1410,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### BookStudent - book return req approve
 
@@ -1395,7 +1434,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### BookStudent - borrow list
 
@@ -1418,7 +1458,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### BookStudent - borrow list admin
 
@@ -1441,7 +1482,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ## BookTeacher
 
@@ -1466,7 +1508,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### BookTeacher - book take req cancel
 
@@ -1489,7 +1532,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### BookTeacher - book take req appreve
 
@@ -1512,7 +1556,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### BookTeacher - book return req
 
@@ -1535,7 +1580,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### BookTeacher - book return req cancel
 
@@ -1558,7 +1604,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### BookTeacher - book return req approve
 
@@ -1581,7 +1628,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### BookTeacher - borrow list
 
@@ -1604,7 +1652,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### BookTeacher - borrow list admin
 
@@ -1627,7 +1676,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ## FixedValue
 
@@ -1657,7 +1707,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### FixedValue - all countries
 
@@ -1680,7 +1731,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### FixedValue - create language
 
@@ -1713,7 +1765,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### FixedValue - all languages
 
@@ -1736,7 +1789,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### FixedValue - create shelf
 
@@ -1764,7 +1818,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### FixedValue - all shelves
 
@@ -1787,7 +1842,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### FixedValue - create department
 
@@ -1820,7 +1876,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### FixedValue - all departments
 
@@ -1843,7 +1900,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### FixedValue - create session
 
@@ -1876,7 +1934,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### FixedValue - all sessions
 
@@ -1899,7 +1958,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### FixedValue - create shift
 
@@ -1932,7 +1992,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### FixedValue - all shifts
 
@@ -1955,7 +2016,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### FixedValue - create district
 
@@ -1988,7 +2050,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### FixedValue - all districts
 
@@ -2011,7 +2074,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### FixedValue - create upazila
 
@@ -2048,7 +2112,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### FixedValue - all upazilas
 
@@ -2071,7 +2136,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### FixedValue - create post
 
@@ -2104,7 +2170,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### FixedValue - all posts
 
@@ -2127,7 +2194,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ## Student
 
@@ -2162,7 +2230,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Student - register
 
@@ -2235,7 +2304,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Student - login
 
@@ -2270,7 +2340,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Student - logout
 
@@ -2298,7 +2369,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Student - profile
 
@@ -2321,7 +2393,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Student - update password
 
@@ -2358,7 +2431,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Student - update profile
 
@@ -2423,7 +2497,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Student - forgate password
 
@@ -2456,7 +2531,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Student - reset password
 
@@ -2493,7 +2569,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Student - email update request
 
@@ -2528,7 +2605,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Student - email update
 
@@ -2561,7 +2639,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ## Teacher
 
@@ -2596,7 +2675,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Teacher - register
 
@@ -2651,7 +2731,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Teacher - login
 
@@ -2686,7 +2767,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Teacher - logout
 
@@ -2714,7 +2796,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Teacher - profile
 
@@ -2737,7 +2820,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Teacher - update password
 
@@ -2774,7 +2858,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Teacher - update profile
 
@@ -2821,7 +2906,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Teacher - forgate password
 
@@ -2854,7 +2940,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Teacher - reset password
 
@@ -2891,7 +2978,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Teacher - email update request
 
@@ -2926,7 +3014,8 @@ try {
 }
                 
 ```
-            ---
+
+---
 
 ### Teacher - email update
 
@@ -2959,5 +3048,6 @@ try {
 }
                 
 ```
-            ---
+
+---
 
