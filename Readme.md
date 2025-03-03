@@ -1,9 +1,5 @@
 # Express Server Setup Guide
 
-This guide will help you set up and run a Node.js Express server, including configuring a `.env` file for environment variables.
-
----
-
 ## Prerequisites
 
 Ensure you have the following installed:
@@ -51,7 +47,7 @@ JWT_PASSWORD_KEY=sdgfsdfgsdfgsdfg
 JWT_CHANGE_EMAIL_KEY=sdfgsdgsdfgdsf
 clientUrl=
 ```
-# Quick Setup Instructions
+### Quick Setup Instructions
 
 1. Replace the MONGO_URI..
 2. Replace the CLOUDINARY_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET.`.
@@ -87,6 +83,7 @@ npm start
 ├── models
 ├── routes
 ├── utils
+|-- .env
 ├── app.js
 ├── index.js
 ├── package-lock.json
