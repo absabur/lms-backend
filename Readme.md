@@ -44,11 +44,11 @@ CLOUDINARY_API_KEY=45654631541435
 CLOUDINARY_API_SECRET=aagasgsad51g45as1dg451as
 SMTP_USERNAME=user@example.com
 SMTP_PASSWORD=sadfsadfdsf
-JWT_SECRET=loginstudenttoken
+JWT_SECRET=asdgsgsagsdfgsdfg
 JWT_EXPIRE=24
 COOKIE_EXPIRE=3
-JWT_PASSWORD_KEY=thisisafortogpasswordkey
-JWT_CHANGE_EMAIL_KEY=thisisaemailchangekey
+JWT_PASSWORD_KEY=sdgfsdfgsdfgsdfg
+JWT_CHANGE_EMAIL_KEY=sdfgsdgsdfgdsf
 clientUrl=
 ```
 # Quick Setup Instructions
@@ -81,8 +81,17 @@ npm start
 
 ## Folder Structure Example
 ```bash
-. ├── src │ ├── app.js // Main entry file │ ├── routes // Define your routes here │ ├── controllers // Logic for route handlers │ ├── config // Database connection, etc. │ └── middlewares // Custom middleware (auth, etc.) ├── .env // Environment variables ├── .gitignore
-├── package.json └── README.md
+├── config
+├── controllers
+├── middleware
+├── models
+├── routes
+├── utils
+├── app.js
+├── index.js
+├── package-lock.json
+├── package.json
+├── Readme.md
 ```
 
 ---
