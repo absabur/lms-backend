@@ -204,7 +204,7 @@ try {
 
 **Body (URL Encoded):**
 
-- `email: bogura.polytechnic.email@example.com`
+- `email: email@example.com`
 - `password: 111111`
 
 
@@ -219,7 +219,7 @@ try {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(
-            email: bogura.polytechnic.email@example.com,
+            email: email@example.com,
             password: 111111,
         ),
     });
