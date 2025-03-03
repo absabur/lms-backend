@@ -114,7 +114,7 @@ npm start
 
 ## Admin
 
-### signup
+### Admin - signup
 
 **Method:** `POST`
 
@@ -124,9 +124,30 @@ npm start
 
 - `email: efootballpes11th@gmail.com`
 
----
 
-### register
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/signup`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            email: efootballpes11th@gmail.com,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - register
 
 **Method:** `POST`
 
@@ -143,9 +164,37 @@ npm start
 - `nId: 1965256324`
 - `image: File (/C:/Users/absab/Downloads/ab-sabur.png)`
 
----
 
-### login
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/register`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            password: 111111,
+            confirmPassword: 111111,
+            verificationCode: 628128,
+            name: Test Student,
+            email: efootballpes11th@gmail.com,
+            phone: 01521710796,
+            nId: 1965256324,
+            image: File (/C:/Users/absab/Downloads/ab-sabur.png),
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - login
 
 **Method:** `POST`
 
@@ -156,25 +205,82 @@ npm start
 - `email: bogura.polytechnic.library@gmail.com`
 - `password: 111111`
 
----
 
-### logout
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/login`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            email: bogura.polytechnic.library@gmail.com,
+            password: 111111,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - logout
 
 **Method:** `POST`
 
 **URL:** `http://localhost:8888/api/admin/logout`
 
----
 
-### profile
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/logout`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - profile
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/admin/profile`
 
----
 
-### update password
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/profile`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - update password
 
 **Method:** `POST`
 
@@ -186,9 +292,32 @@ npm start
 - `newPassword: 111111`
 - `confirmPassword: 111111`
 
----
 
-### update profile
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/update-password`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            oldPassword: aaaaaa,
+            newPassword: 111111,
+            confirmPassword: 111111,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - update profile
 
 **Method:** `POST`
 
@@ -201,9 +330,33 @@ npm start
 - `nId: `
 - `image: File (/C:/Users/absab/Downloads/1000003903.jpg)`
 
----
 
-### forgate password
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/update-profile`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            name: change name,
+            phone: ,
+            nId: ,
+            image: File (/C:/Users/absab/Downloads/1000003903.jpg),
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - forgate password
 
 **Method:** `POST`
 
@@ -213,9 +366,30 @@ npm start
 
 - `email: efootballpes11th@gmail.com`
 
----
 
-### reset password
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/forgate-password`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            email: efootballpes11th@gmail.com,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - reset password
 
 **Method:** `POST`
 
@@ -227,9 +401,32 @@ npm start
 - `confirmPassword: 111111`
 - `token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVmb290YmFsbHBlczExdGhAZ21haWwuY29tIiwiaWF0IjoxNzQwODIxMjQ5LCJleHAiOjE3NDA4MjE4NDl9.orrRerFvfkwQ0IbUU483qKQ94Fg03bGcfJ9W6VeIVh4`
 
----
 
-### email update request
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/reset-password`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            newPassword: 111111,
+            confirmPassword: 111111,
+            token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVmb290YmFsbHBlczExdGhAZ21haWwuY29tIiwiaWF0IjoxNzQwODIxMjQ5LCJleHAiOjE3NDA4MjE4NDl9.orrRerFvfkwQ0IbUU483qKQ94Fg03bGcfJ9W6VeIVh4,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - email update request
 
 **Method:** `POST`
 
@@ -240,9 +437,31 @@ npm start
 - `email: abdussabur929@gmail.com`
 - `password: 111111`
 
----
 
-### email update
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/email-update-request`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            email: abdussabur929@gmail.com,
+            password: 111111,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - email update
 
 **Method:** `POST`
 
@@ -252,9 +471,30 @@ npm start
 
 - `token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiZHVzc2FidXI5MjlAZ21haWwuY29tIiwiaWQiOiI2N2MyY2RhY2MxMWU4MTE3ODdiZWQ0NDkiLCJpYXQiOjE3NDA4MjE1NjEsImV4cCI6MTc0MDgyMjE2MX0.TmW_urPzc_vMp9MjR_crIoDw8JS91FYP-vTKUpf8r74`
 
----
 
-### create student
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/email-update`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiZHVzc2FidXI5MjlAZ21haWwuY29tIiwiaWQiOiI2N2MyY2RhY2MxMWU4MTE3ODdiZWQ0NDkiLCJpYXQiOjE3NDA4MjE1NjEsImV4cCI6MTc0MDgyMjE2MX0.TmW_urPzc_vMp9MjR_crIoDw8JS91FYP-vTKUpf8r74,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - create student
 
 **Method:** `POST`
 
@@ -283,9 +523,49 @@ npm start
 - `address: last`
 - `image: File (/C:/Users/absab/Downloads/Untitled design (1).png)`
 
----
 
-### update student
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/create-student`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            password: 111111,
+            confirmPassword: 111111,
+            name: test from admin,
+            banglaName: ফ্রম অ্যাডমিন ,
+            fathersName: test,
+            mothersName: test,
+            email: efootballpes11th@gmail.com,
+            phone: 01758695425,
+            addmissionRoll: 121212,
+            boardRoll: ,
+            registration: ,
+            department: cst,
+            session: 2021,
+            shift: 2,
+            district: bog,
+            upazila: dup,
+            union: zia,
+            village: bor,
+            address: last,
+            image: File (/C:/Users/absab/Downloads/Untitled design (1).png),
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - update student
 
 **Method:** `POST`
 
@@ -314,49 +594,164 @@ npm start
 - `address: last`
 - `image: File ([])`
 
----
 
-### all students
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/update-student/67c2d85b6b6341122934fe39`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            password: 111111,
+            confirmPassword: 111111,
+            name: test rupdate from admin,
+            banglaName: ফ্রম অ্যাডমিন ,
+            fathersName: test,
+            mothersName: test,
+            email: efootballpes11th@gmail.com,
+            phone: 01758695425,
+            addmissionRoll: 121212,
+            boardRoll: ,
+            registration: ,
+            department: cst,
+            session: 2021,
+            shift: 2,
+            district: bog,
+            upazila: dup,
+            union: zia,
+            village: bor,
+            address: last,
+            image: File ([]),
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - all students
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/admin/all-students?name=&banglaName=&fathersName=&mothersName=&email=&phone=&department=&session=&shift=&district=&upazila=&union=&village=&isApproved=&isBan=&sortBy=&sortOrder=&page=1&limit=10&search=`
 
----
 
-### get student
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/all-students?name=&banglaName=&fathersName=&mothersName=&email=&phone=&department=&session=&shift=&district=&upazila=&union=&village=&isApproved=&isBan=&sortBy=&sortOrder=&page=1&limit=10&search=`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - get student
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/admin/student-details/67c2d85b6b6341122934fe39`
 
----
 
-### approve student
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/student-details/67c2d85b6b6341122934fe39`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - approve student
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/admin/approve-student/67c2d85b6b6341122934fe39`
 
----
 
-### ban student
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/approve-student/67c2d85b6b6341122934fe39`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - ban student
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/admin/ban-student/67c2d85b6b6341122934fe39`
 
----
 
-### unban student
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/ban-student/67c2d85b6b6341122934fe39`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - unban student
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/admin/unban-student/67c2d85b6b6341122934fe39`
 
----
 
-### create teacher
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/unban-student/67c2d85b6b6341122934fe39`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - create teacher
 
 **Method:** `POST`
 
@@ -376,9 +771,40 @@ npm start
 - `address: bd`
 - `image: File (/C:/Users/absab/Downloads/rahad.jpg)`
 
----
 
-### update teacher
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/create-teacher`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            password: 111111,
+            confirmPassword: 111111,
+            name: test teacher,
+            email: efootballpes11th@gmail.com,
+            phone: 015635478569,
+            nId: 465424,
+            department: cst,
+            post: ji,
+            teacherId: 6425205,
+            address: bd,
+            image: File (/C:/Users/absab/Downloads/rahad.jpg),
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - update teacher
 
 **Method:** `POST`
 
@@ -398,91 +824,272 @@ npm start
 - `address: bd`
 - `image: File ([])`
 
----
 
-### all teacher
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/update-teacher/67c2dc177e25f82e0195f989`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            password: 111111,
+            confirmPassword: 111111,
+            name: test teacher updated,
+            email: efootballpes11th@gmail.com,
+            phone: 015635478569,
+            nId: 465424,
+            department: cst,
+            post: ji,
+            teacherId: 6425205,
+            address: bd,
+            image: File ([]),
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - all teacher
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/admin/all-teachers?name=&email=&phone=&post=&department=&isApproved=&isBan=&sortBy=&sortOrder=&page=1&limit=10&search=`
 
----
 
-### get teacher by id
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/all-teachers?name=&email=&phone=&post=&department=&isApproved=&isBan=&sortBy=&sortOrder=&page=1&limit=10&search=`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - get teacher by id
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/admin/teacher-details/67c2dc177e25f82e0195f989`
 
----
 
-### approve-teacher
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/teacher-details/67c2dc177e25f82e0195f989`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - approve-teacher
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/admin/approve-teacher/67c2dc177e25f82e0195f989`
 
----
 
-### ban teacher
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/approve-teacher/67c2dc177e25f82e0195f989`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - ban teacher
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/admin/ban-teacher/67c2dc177e25f82e0195f989`
 
----
 
-### unban teacher
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/ban-teacher/67c2dc177e25f82e0195f989`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - unban teacher
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/admin/unban-teacher/67c2dc177e25f82e0195f989`
 
----
 
-### all admin
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/unban-teacher/67c2dc177e25f82e0195f989`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - all admin
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/admin/all-admins?name=&email=&phone=&isApproved=&isSuperAdmin=&isBan=&sortBy=&sortOrder=&page=1&limit=10&search=`
 
----
 
-### get admin
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/all-admins?name=&email=&phone=&isApproved=&isSuperAdmin=&isBan=&sortBy=&sortOrder=&page=1&limit=10&search=`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - get admin
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/admin/admin-details/67c2cdacc11e811787bed449`
 
----
 
-### approve admin
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/admin-details/67c2cdacc11e811787bed449`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - approve admin
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/admin/approve-admin/67c2cdacc11e811787bed449`
 
----
 
-### ban admin
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/approve-admin/67c2cdacc11e811787bed449`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - ban admin
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/admin/ban-admin/67c2cdacc11e811787bed449`
 
----
 
-### unban admin
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/ban-admin/67c2cdacc11e811787bed449`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Admin - unban admin
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/admin/unban-admin/67c2cdacc11e811787bed449`
 
----
+
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/admin/unban-admin/67c2cdacc11e811787bed449`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
 
 ## Book
 
-### create book
+### Book - create book
 
 **Method:** `POST`
 
@@ -506,9 +1113,44 @@ npm start
 - `bookNumbers: 001.01, 001.02, 001.03, 001.04, 001.05`
 - `images: File (['/C:/Users/absab/Downloads/wall.jpg', '/C:/Users/absab/Downloads/wal.jpg', '/C:/Users/absab/Downloads/wal - Copy.jpg'])`
 
----
 
-### update-book
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/book/add-book`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            bookName:  Introduction to Algorithms,
+            bookAuthor:  Thomas H. Cormen,
+            publisher:  MIT Press,
+            edition:  4th,
+            numberOfPages:  1312,
+            country:  USA,
+            language:  English,
+            mrp:  1200,
+            shelf:  A-3,
+            bookNumber:  B001,
+            department:  Computer Science,
+            quantity:  5,
+            description:  A comprehensive textbook on algorithms covering a wide range of topics including data structures, graph algorithms, sorting, and more.,
+            bookNumbers: 001.01, 001.02, 001.03, 001.04, 001.05,
+            images: File (['/C:/Users/absab/Downloads/wall.jpg', '/C:/Users/absab/Downloads/wal.jpg', '/C:/Users/absab/Downloads/wal - Copy.jpg']),
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Book - update-book
 
 **Method:** `POST`
 
@@ -532,175 +1174,515 @@ npm start
 - `bookNumbers: 001.01, 001.02, 001.03, 001.04, 001.05`
 - `images: `
 
----
 
-### all books
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/book/update-book/67c2f532f9ce5b08f89f1d92`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            bookName:  Introduction to Algorithms,
+            bookAuthor:  Thomas H. Cormen,
+            publisher:  MIT Press,
+            edition:  4th,
+            numberOfPages:  1310,
+            country:  USA,
+            language:  English,
+            mrp:  1200,
+            shelf:  A-3,
+            bookNumber:  B001,
+            department:  Computer Science,
+            quantity: ,
+            description:  A comprehensive textbook on algorithms covering a wide range of topics including data structures, graph algorithms, sorting, and more.,
+            bookNumbers: 001.01, 001.02, 001.03, 001.04, 001.05,
+            images: ,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Book - all books
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/book/all-books?bookName=&bookAuthor=&publisher=&edition=&language=&department=&shelf=&country=&mrpMin=&mrpMax=&quantityMin=&quantityMax=&sortBy=&sortOrder=&page=1&limit=10&search=`
 
----
 
-### get book
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/book/all-books?bookName=&bookAuthor=&publisher=&edition=&language=&department=&shelf=&country=&mrpMin=&mrpMax=&quantityMin=&quantityMax=&sortBy=&sortOrder=&page=1&limit=10&search=`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Book - get book
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/book/get-book/67c2f29f54b4e981a7f41066`
 
----
+
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/book/get-book/67c2f29f54b4e981a7f41066`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
 
 ## BookStudent
 
-### book take req
+### BookStudent - book take req
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/take-book/student/book-take-request/67c2f532f9ce5b08f89f1d92`
 
----
 
-### book take req cancel
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/take-book/student/book-take-request/67c2f532f9ce5b08f89f1d92`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### BookStudent - book take req cancel
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/take-book/student/book-take-request-cancel/67c2f9cdbbb9cc2dafda0e0c`
 
----
 
-### book take req approve
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/take-book/student/book-take-request-cancel/67c2f9cdbbb9cc2dafda0e0c`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### BookStudent - book take req approve
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/take-book/student/book-take-request-approve/67c3005df97e683036297deb`
 
----
 
-### book return req
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/take-book/student/book-take-request-approve/67c3005df97e683036297deb`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### BookStudent - book return req
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/take-book/student/book-return-request/67c3005df97e683036297deb`
 
----
 
-### book return req cancel
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/take-book/student/book-return-request/67c3005df97e683036297deb`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### BookStudent - book return req cancel
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/take-book/student/book-return-request-cancel/67c3005df97e683036297deb`
 
----
 
-### book return req approve
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/take-book/student/book-return-request-cancel/67c3005df97e683036297deb`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### BookStudent - book return req approve
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/take-book/student/book-return-request-approve/67c3005df97e683036297deb`
 
----
 
-### borrow list
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/take-book/student/book-return-request-approve/67c3005df97e683036297deb`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### BookStudent - borrow list
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/take-book/student/get-borrow-lists?bookId=&bookNumber=&takingApproveBy=&returnApproveBy=&sortBy=&sortOrder=&page=1&limit=10&search=`
 
----
 
-### borrow list admin
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/take-book/student/get-borrow-lists?bookId=&bookNumber=&takingApproveBy=&returnApproveBy=&sortBy=&sortOrder=&page=1&limit=10&search=`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### BookStudent - borrow list admin
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/take-book/student/get-borrow-lists-admin?bookId=&studentId=&bookNumber=&takingApproveBy=&returnApproveBy=&sortBy=&sortOrder=&page=1&limit=10&search=`
 
----
+
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/take-book/student/get-borrow-lists-admin?bookId=&studentId=&bookNumber=&takingApproveBy=&returnApproveBy=&sortBy=&sortOrder=&page=1&limit=10&search=`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
 
 ## BookTeacher
 
-### book take req
+### BookTeacher - book take req
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/take-book/teacher/book-take-request/id`
 
----
 
-### book take req cancel
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/take-book/teacher/book-take-request/id`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### BookTeacher - book take req cancel
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/take-book/teacher/book-take-request-cancel/id`
 
----
 
-### book take req appreve
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/take-book/teacher/book-take-request-cancel/id`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### BookTeacher - book take req appreve
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/take-book/teacher/book-take-request-approve/id`
 
----
 
-### book return req
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/take-book/teacher/book-take-request-approve/id`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### BookTeacher - book return req
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/take-book/teacher/book-return-request/id`
 
----
 
-### book return req cancel
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/take-book/teacher/book-return-request/id`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### BookTeacher - book return req cancel
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/take-book/teacher/book-return-request-cancel/id`
 
----
 
-### book return req approve
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/take-book/teacher/book-return-request-cancel/id`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### BookTeacher - book return req approve
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/take-book/teacher/book-return-request-approve/id`
 
----
 
-### borrow list
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/take-book/teacher/book-return-request-approve/id`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### BookTeacher - borrow list
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/take-book/teacher/get-borrow-lists?bookId=&bookNumber=&takingApproveBy=&returnApproveBy=&sortBy=&sortOrder=&page=1&limit=10&search=`
 
----
 
-### borrow list admin
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/take-book/teacher/get-borrow-lists?bookId=&bookNumber=&takingApproveBy=&returnApproveBy=&sortBy=&sortOrder=&page=1&limit=10&search=`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### BookTeacher - borrow list admin
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/take-book/teacher/get-borrow-lists-admin?bookId=&teacherId=&bookNumber=&takingApproveBy=&returnApproveBy=&sortBy=&sortOrder=&page=1&limit=10&search=`
 
----
+
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/take-book/teacher/get-borrow-lists-admin?bookId=&teacherId=&bookNumber=&takingApproveBy=&returnApproveBy=&sortBy=&sortOrder=&page=1&limit=10&search=`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
 
 ## FixedValue
 
-### create country
+### FixedValue - create country
 
 **Method:** `POST`
 
 **URL:** `http://localhost:8888/api/fixed-values/country`
 
----
 
-### all countries
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/fixed-values/country`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### FixedValue - all countries
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/fixed-values/countries`
 
----
 
-### create language
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/fixed-values/countries`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### FixedValue - create language
 
 **Method:** `POST`
 
@@ -710,33 +1692,104 @@ npm start
 
 - `name: English`
 
----
 
-### all languages
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/fixed-values/language`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            name: English,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### FixedValue - all languages
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/fixed-values/languages`
 
----
 
-### create shelf
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/fixed-values/languages`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### FixedValue - create shelf
 
 **Method:** `POST`
 
 **URL:** `http://localhost:8888/api/fixed-values/shelf`
 
----
 
-### all shelves
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/fixed-values/shelf`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### FixedValue - all shelves
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/fixed-values/shelves`
 
----
 
-### create department
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/fixed-values/shelves`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### FixedValue - create department
 
 **Method:** `POST`
 
@@ -746,17 +1799,53 @@ npm start
 
 - `name: Mining and Mine Survey Technology`
 
----
 
-### all departments
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/fixed-values/department`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            name: Mining and Mine Survey Technology,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### FixedValue - all departments
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/fixed-values/departments`
 
----
 
-### create session
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/fixed-values/departments`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### FixedValue - create session
 
 **Method:** `POST`
 
@@ -766,17 +1855,53 @@ npm start
 
 - `name: 24-25`
 
----
 
-### all sessions
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/fixed-values/session`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            name: 24-25,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### FixedValue - all sessions
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/fixed-values/sessions`
 
----
 
-### create shift
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/fixed-values/sessions`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### FixedValue - create shift
 
 **Method:** `POST`
 
@@ -786,17 +1911,53 @@ npm start
 
 - `name: Second`
 
----
 
-### all shifts
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/fixed-values/shift`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            name: Second,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### FixedValue - all shifts
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/fixed-values/shifts`
 
----
 
-### create district
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/fixed-values/shifts`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### FixedValue - create district
 
 **Method:** `POST`
 
@@ -806,17 +1967,53 @@ npm start
 
 - `name: Dhaka`
 
----
 
-### all districts
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/fixed-values/district`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            name: Dhaka,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### FixedValue - all districts
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/fixed-values/districts`
 
----
 
-### create upazila
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/fixed-values/districts`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### FixedValue - create upazila
 
 **Method:** `POST`
 
@@ -828,17 +2025,55 @@ npm start
 - `districtId: `
 - `id: `
 
----
 
-### all upazilas
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/fixed-values/upazila`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            name: ,
+            districtId: ,
+            id: ,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### FixedValue - all upazilas
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/fixed-values/upazilas?name=&districtId=&sortBy=&sortOrder=&search=`
 
----
 
-### create post
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/fixed-values/upazilas?name=&districtId=&sortBy=&sortOrder=&search=`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### FixedValue - create post
 
 **Method:** `POST`
 
@@ -848,19 +2083,55 @@ npm start
 
 - `name: Junior Instructor`
 
----
 
-### all posts
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/fixed-values/post`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            name: Junior Instructor,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### FixedValue - all posts
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/fixed-values/posts`
 
----
+
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/fixed-values/posts`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
 
 ## Student
 
-### signup
+### Student - signup
 
 **Method:** `POST`
 
@@ -870,9 +2141,30 @@ npm start
 
 - `email: efootballpes11th@gmail.com`
 
----
 
-### register
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/student/signup`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            email: efootballpes11th@gmail.com,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Student - register
 
 **Method:** `POST`
 
@@ -902,9 +2194,50 @@ npm start
 - `address: `
 - `image: File ([])`
 
----
 
-### login
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/student/register`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            password: ,
+            confirmPassword: ,
+            verificationCode: ,
+            name: ,
+            banglaName: ,
+            fathersName: ,
+            mothersName: ,
+            email: ,
+            phone: ,
+            addmissionRoll: ,
+            boardRoll: ,
+            registration: ,
+            department: ,
+            session: ,
+            shift: ,
+            district: ,
+            upazila: ,
+            union: ,
+            village: ,
+            address: ,
+            image: File ([]),
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Student - login
 
 **Method:** `POST`
 
@@ -915,25 +2248,82 @@ npm start
 - `email: abdussabur929@gmail.com`
 - `password: aaaaaa`
 
----
 
-### logout
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/student/login`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            email: abdussabur929@gmail.com,
+            password: aaaaaa,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Student - logout
 
 **Method:** `POST`
 
 **URL:** `http://localhost:8888/api/student/logout`
 
----
 
-### profile
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/student/logout`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Student - profile
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/student/profile`
 
----
 
-### update password
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/student/profile`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Student - update password
 
 **Method:** `POST`
 
@@ -945,9 +2335,32 @@ npm start
 - `newPassword: aaaaaa`
 - `confirmPassword: aaaaaa`
 
----
 
-### update profile
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/student/update-password`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            oldPassword: 111111,
+            newPassword: aaaaaa,
+            confirmPassword: aaaaaa,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Student - update profile
 
 **Method:** `POST`
 
@@ -973,9 +2386,46 @@ npm start
 - `address: last`
 - `image: File (/C:/Users/absab/Downloads/file (1).png)`
 
----
 
-### forgate password
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/student/update-profile`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            name: test rupdate from user,
+            banglaName: ফ্রম,
+            fathersName: test,
+            mothersName: test,
+            phone: 01758695425,
+            addmissionRoll: 121212,
+            boardRoll: ,
+            registration: ,
+            department: cst,
+            session: 2021,
+            shift: 2,
+            district: bog,
+            upazila: dup,
+            union: zia,
+            village: bor,
+            address: last,
+            image: File (/C:/Users/absab/Downloads/file (1).png),
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Student - forgate password
 
 **Method:** `POST`
 
@@ -985,9 +2435,30 @@ npm start
 
 - `email: efootballpes11th@gmail.com`
 
----
 
-### reset password
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/student/forgate-password`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            email: efootballpes11th@gmail.com,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Student - reset password
 
 **Method:** `POST`
 
@@ -999,9 +2470,32 @@ npm start
 - `confirmPassword: aaaaaa`
 - `token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVmb290YmFsbHBlczExdGhAZ21haWwuY29tIiwiaWF0IjoxNzQwODI1MzE0LCJleHAiOjE3NDA4MjU5MTR9.mWUVTCqIT3x34u1044BE7jZdIcy63jPYyb6cjmKXI-s`
 
----
 
-### email update request
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/student/reset-password`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            newPassword: aaaaaa,
+            confirmPassword: aaaaaa,
+            token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVmb290YmFsbHBlczExdGhAZ21haWwuY29tIiwiaWF0IjoxNzQwODI1MzE0LCJleHAiOjE3NDA4MjU5MTR9.mWUVTCqIT3x34u1044BE7jZdIcy63jPYyb6cjmKXI-s,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Student - email update request
 
 **Method:** `POST`
 
@@ -1012,9 +2506,31 @@ npm start
 - `email: abdussabur929@gmail.com`
 - `password: aaaaaa`
 
----
 
-### email update
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/student/email-update-request`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            email: abdussabur929@gmail.com,
+            password: aaaaaa,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Student - email update
 
 **Method:** `POST`
 
@@ -1024,11 +2540,32 @@ npm start
 
 - `token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiZHVzc2FidXI5MjlAZ21haWwuY29tIiwiaWQiOiI2N2MyZDg1YjZiNjM0MTEyMjkzNGZlMzkiLCJpYXQiOjE3NDA4MjU1NzgsImV4cCI6MTc0MDgyNjE3OH0.TVCFPKZolPecIAKBOP__RnwNMBL9DYePxypT6a235EY`
 
----
+
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/student/email-update`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiZHVzc2FidXI5MjlAZ21haWwuY29tIiwiaWQiOiI2N2MyZDg1YjZiNjM0MTEyMjkzNGZlMzkiLCJpYXQiOjE3NDA4MjU1NzgsImV4cCI6MTc0MDgyNjE3OH0.TVCFPKZolPecIAKBOP__RnwNMBL9DYePxypT6a235EY,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
 
 ## Teacher
 
-### signup
+### Teacher - signup
 
 **Method:** `POST`
 
@@ -1038,9 +2575,30 @@ npm start
 
 - `email: efootballpes11th@gmail.com`
 
----
 
-### register
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/teacher/signup`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            email: efootballpes11th@gmail.com,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Teacher - register
 
 **Method:** `POST`
 
@@ -1061,9 +2619,41 @@ npm start
 - `address: `
 - `image: File ([])`
 
----
 
-### login
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/teacher/register`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            password: ,
+            confirmPassword: ,
+            verificationCode: ,
+            name: ,
+            email: ,
+            phone: ,
+            nId: ,
+            department: ,
+            post: ,
+            teacherId: ,
+            address: ,
+            image: File ([]),
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Teacher - login
 
 **Method:** `POST`
 
@@ -1074,25 +2664,82 @@ npm start
 - `email: abdussabur929@gmail.com`
 - `password: aaaaaa`
 
----
 
-### logout
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/teacher/login`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            email: abdussabur929@gmail.com,
+            password: aaaaaa,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Teacher - logout
 
 **Method:** `POST`
 
 **URL:** `http://localhost:8888/api/teacher/logout`
 
----
 
-### profile
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/teacher/logout`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Teacher - profile
 
 **Method:** `GET`
 
 **URL:** `http://localhost:8888/api/teacher/profile`
 
----
 
-### update password
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/teacher/profile`, {
+        method: 'GET',
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Teacher - update password
 
 **Method:** `POST`
 
@@ -1104,9 +2751,32 @@ npm start
 - `newPassword: aaaaaa`
 - `confirmPassword: aaaaaa`
 
----
 
-### update profile
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/teacher/update-password`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            oldPassword: 111111,
+            newPassword: aaaaaa,
+            confirmPassword: aaaaaa,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Teacher - update profile
 
 **Method:** `POST`
 
@@ -1123,9 +2793,37 @@ npm start
 - `address: bd`
 - `image: File ([])`
 
----
 
-### forgate password
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/teacher/update-profile`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            name: test teacher updated as teacher,
+            phone: 015635478569,
+            nId: 465424,
+            department: cst,
+            post: ji,
+            teacherId: 6425205,
+            address: bd,
+            image: File ([]),
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Teacher - forgate password
 
 **Method:** `POST`
 
@@ -1135,9 +2833,30 @@ npm start
 
 - `email: efootballpes11th@gmail.com`
 
----
 
-### reset password
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/teacher/forgate-password`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            email: efootballpes11th@gmail.com,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Teacher - reset password
 
 **Method:** `POST`
 
@@ -1149,9 +2868,32 @@ npm start
 - `confirmPassword: aaaaaa`
 - `token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVmb290YmFsbHBlczExdGhAZ21haWwuY29tIiwiaWF0IjoxNzQwODI3MDEwLCJleHAiOjE3NDA4Mjc2MTB9.8prnFw3Y1492BAnW3oCf5mqv9dRP-rWKEwyE5TR9CLY`
 
----
 
-### email update request
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/teacher/reset-password`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            newPassword: aaaaaa,
+            confirmPassword: aaaaaa,
+            token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVmb290YmFsbHBlczExdGhAZ21haWwuY29tIiwiaWF0IjoxNzQwODI3MDEwLCJleHAiOjE3NDA4Mjc2MTB9.8prnFw3Y1492BAnW3oCf5mqv9dRP-rWKEwyE5TR9CLY,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Teacher - email update request
 
 **Method:** `POST`
 
@@ -1162,9 +2904,31 @@ npm start
 - `email: abdussabur929@gmail.com`
 - `password: aaaaaa`
 
----
 
-### email update
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/teacher/email-update-request`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            email: abdussabur929@gmail.com,
+            password: aaaaaa,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
+
+### Teacher - email update
 
 **Method:** `POST`
 
@@ -1174,5 +2938,26 @@ npm start
 
 - `token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiZHVzc2FidXI5MjlAZ21haWwuY29tIiwiaWQiOiI2N2MyZGMxNzdlMjVmODJlMDE5NWY5ODkiLCJpYXQiOjE3NDA4MjcxNTUsImV4cCI6MTc0MDgyNzc1NX0.Zq1STlSOJQB6b9HNGz9uCdK8plzdrZ_TsU5FETTgJhU`
 
----
+
+## fetch method
+
+```bash
+
+try {
+    const response = await fetch(`http://localhost:8888/api/teacher/email-update`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+            token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiZHVzc2FidXI5MjlAZ21haWwuY29tIiwiaWQiOiI2N2MyZGMxNzdlMjVmODJlMDE5NWY5ODkiLCJpYXQiOjE3NDA4MjcxNTUsImV4cCI6MTc0MDgyNzc1NX0.Zq1STlSOJQB6b9HNGz9uCdK8plzdrZ_TsU5FETTgJhU,
+        ),
+    });
+    const result = await response.json();
+} catch (error) {
+    console.error(error);
+}
+                
+```
+            ---
 
