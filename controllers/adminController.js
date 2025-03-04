@@ -201,6 +201,7 @@ exports.registerAdmin = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
+      message: "Registration successfully",
       admin,
     });
   } catch (error) {
@@ -242,6 +243,34 @@ exports.logoutAdmin = async (req, res, next) => {
   try {
     res.clearCookie("access_token");
     res.status(200).json({
+      success: true,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.authenticated = async (req, res, next) => {
+  try {
+    let token;
+    if (req.cookies.access_token !== undefined) {
+      token = req.cookies.access_token;
+    } else {
+      token = req.headers.access_token;
+    }
+
+    if (!token || token === "null") {
+      throw createError(401, "You must login first.");
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (!decoded) {
+      throw createError(404, "Login with correct information.");
+    }
+    const exist = await Admin.findById(decoded.id);
+    if (!exist) {
+      throw createError(401, "You are not a Admin.");
+    }
+    res.json({
       success: true,
     });
   } catch (error) {
@@ -316,7 +345,7 @@ exports.updateAdminProfile = async (req, res, next) => {
       name: name || admin.name,
       phone: phone || admin.phone,
       nId: nId || admin.nId,
-      isApporved: false,
+      isApproved: false,
       updateDate: localTime(0),
     };
 
@@ -422,10 +451,10 @@ exports.resetAdminPassword = async (req, res, next) => {
     if (newPassword !== confirmPassword) {
       throw createError(402, "Old password and new password did not match.");
     }
-    
+
     try {
       const decoded = jwt.verify(token, process.env.JWT_PASSWORD_KEY);
-      
+
       if (!decoded)
         throw createError(
           401,
@@ -580,26 +609,26 @@ exports.getAllAdmin = async (req, res, next) => {
     // Build the filter object
     const filter = {};
 
-    if (name) filter.name = { $regex: name, $options: 'i' };
-    if (email) filter.email = { $regex: email, $options: 'i' };
-    if (phone) filter.phone = { $regex: phone, $options: 'i' };
-    if (isApproved) filter.isApproved = isApproved === 'true';
-    if (isSuperAdmin) filter.isSuperAdmin = isSuperAdmin === 'true';
-    if (isBan) filter.isBan = isBan === 'true';
+    if (name) filter.name = { $regex: name, $options: "i" };
+    if (email) filter.email = { $regex: email, $options: "i" };
+    if (phone) filter.phone = { $regex: phone, $options: "i" };
+    if (isApproved) filter.isApproved = isApproved === "true";
+    if (isSuperAdmin) filter.isSuperAdmin = isSuperAdmin === "true";
+    if (isBan) filter.isBan = isBan === "true";
 
     // Search across multiple fields
     if (search) {
       filter.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } },
-        { phone: { $regex: search, $options: 'i' } },
+        { name: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+        { phone: { $regex: search, $options: "i" } },
       ];
     }
 
     // Build the sort object
     const sort = {};
     if (sortBy) {
-      sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
+      sort[sortBy] = sortOrder === "desc" ? -1 : 1;
     }
 
     // Pagination
@@ -610,7 +639,7 @@ exports.getAllAdmin = async (req, res, next) => {
       .sort(sort)
       .skip(skip)
       .limit(parseInt(limit))
-      .select('-password'); // Exclude password field
+      .select("-password"); // Exclude password field
 
     // Count total documents for pagination
     const totalAdmins = await Admin.countDocuments(filter);

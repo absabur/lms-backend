@@ -767,7 +767,7 @@ exports.registerStudentByAdmin = async (req, res, next) => {
       address,
       createDate: localTime(0),
       updateDate: localTime(0),
-      isApporved: true,
+      isApproved: true,
       createdBy: req.admin.id,
     });
 
@@ -818,7 +818,7 @@ exports.updateStudentProfileByAdmin = async (req, res, next) => {
       union: req.body.union || student.union,
       village: req.body.village || student.village,
       address: req.body.address || student.address,
-      isApporved: true,
+      isApproved: true,
       updateDate: localTime(0),
       updatedBy: req.admin.id,
     };

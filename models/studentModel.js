@@ -114,7 +114,7 @@ const studentSchema = new Schema({
       required: true,
     },
   },
-  isApporved: {
+  isApproved: {
     type: Boolean,
     default: false,
   },

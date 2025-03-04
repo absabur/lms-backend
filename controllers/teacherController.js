@@ -832,7 +832,7 @@ exports.approveTeacher = async (req, res, next) => {
   try {
     const teacher = await Teacher.findByIdAndUpdate(
       req.params.id,
-      { isApporved: true },
+      { isApproved: true },
       {
         new: true,
         runValidators: true,

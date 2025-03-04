@@ -30,6 +30,38 @@ exports.isStudent = async (req, res, next) => {
         next(error)
     }
 }
+exports.isStudentApproved = async (req, res, next) => {
+    try {
+        let token;
+        if (req.cookies.access_token !== undefined) {
+            token = req.cookies.access_token
+        }else {
+            token = req.headers.access_token
+        }
+        
+        if (!token || token === "null") {
+            throw createError(401, "You must login first.")
+        }
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        if (!decoded) {
+            throw createError(404, "Login with correct information.")
+        }
+        const exist = await Student.findById(decoded.id)
+        if (!exist) {
+            throw createError(401, "You are not a student.")
+        }
+        if (!exist.isApproved) {
+            throw createError(401, "Your account is not approved.")
+        }
+        if (exist.ban) {
+            throw createError(402, "Unfortunately you are ban now, please contact to author.")
+        }
+        req.student = exist;
+        next()
+    } catch (error) {
+        next(error)
+    }
+}
 
 
 
@@ -163,6 +195,38 @@ exports.isTeacher = async (req, res, next) => {
     }
 }
 
+exports.isTeacherApproved = async (req, res, next) => {
+    try {
+        let token;
+        if (req.cookies.access_token !== undefined) {
+            token = req.cookies.access_token
+        }else {
+            token = req.headers.access_token
+        }
+        
+        if (!token || token === "null") {
+            throw createError(401, "You must login first.")
+        }
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        if (!decoded) {
+            throw createError(404, "Login with correct information.")
+        }
+        const exist = await Teacher.findById(decoded.id)
+        if (!exist) {
+            throw createError(401, "You are not a student.")
+        }
+        if (!exist.isApproved) {
+            throw createError(401, "Your account is not approved.")
+        }
+        if (exist.ban) {
+            throw createError(402, "Unfortunately you are ban now, please contact to author.")
+        }
+        req.teacher = exist;
+        next()
+    } catch (error) {
+        next(error)
+    }
+}
 
 
 exports.isTeacherBan = async (req, res, next) => {

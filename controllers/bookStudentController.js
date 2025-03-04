@@ -161,7 +161,6 @@ exports.getStudentBorrowingRequests = async (req, res, next) => {
       sortOrder,
       page = 1,
       limit = 10,
-      search,
     } = req.query;
 
     // Build the filter object
@@ -170,12 +169,17 @@ exports.getStudentBorrowingRequests = async (req, res, next) => {
     if (bookId) filter.bookId = bookId;
     if (studentId) filter.studentId = studentId;
     if (bookNumber) filter.bookNumber = bookNumber;
-    if (takingApproveBy) filter.takingApproveBy = takingApproveBy;
-    if (returnApproveBy) filter.returnApproveBy = returnApproveBy;
+    if (takingApproveBy === false) {
+      filter.takingApproveBy = null; // Filter records where takingApproveBy is null
+    } else if (takingApproveBy) {
+      filter.takingApproveBy = takingApproveBy; // Filter records with a specific takingApproveBy value
+    }
 
-    // Search across multiple fields
-    if (search) {
-      filter.$or = [{ bookNumber: { $regex: search, $options: "i" } }];
+    // Handle returnApproveBy
+    if (returnApproveBy === false) {
+      filter.returnApproveBy = null; // Filter records where returnApproveBy is null
+    } else if (returnApproveBy) {
+      filter.returnApproveBy = returnApproveBy; // Filter records with a specific returnApproveBy value
     }
 
     // Build the sort object
@@ -225,7 +229,6 @@ exports.getStudentBorrowingRequestsByAdmin = async (req, res, next) => {
       sortOrder,
       page = 1,
       limit = 10,
-      search,
     } = req.query;
 
     // Build the filter object
@@ -234,12 +237,16 @@ exports.getStudentBorrowingRequestsByAdmin = async (req, res, next) => {
     if (bookId) filter.bookId = bookId;
     if (studentId) filter.studentId = studentId;
     if (bookNumber) filter.bookNumber = bookNumber;
-    if (takingApproveBy) filter.takingApproveBy = takingApproveBy;
-    if (returnApproveBy) filter.returnApproveBy = returnApproveBy;
+    if (takingApproveBy === false) {
+      filter.takingApproveBy = null; // Filter records where takingApproveBy is null
+    } else if (takingApproveBy) {
+      filter.takingApproveBy = takingApproveBy; // Filter records with a specific takingApproveBy value
+    }
 
-    // Search across multiple fields
-    if (search) {
-      filter.$or = [{ bookNumber: { $regex: search, $options: "i" } }];
+    if (returnApproveBy === false) {
+      filter.returnApproveBy = null; // Filter records where returnApproveBy is null
+    } else if (returnApproveBy) {
+      filter.returnApproveBy = returnApproveBy; // Filter records with a specific returnApproveBy value
     }
 
     // Build the sort object

@@ -17,23 +17,14 @@ const fixedValueRouter = require("./routes/fixedValueRoute.js");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// const clientUrl = process.env.clientUrl;
-// app.use(
-//   cors({
-//     origin: ["http://localhost:3000", "*"],
-//     credentials: true,
-//   })
-// );
-
+const clientUrl = process.env.clientUrl;
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Accepts any origin for development
-      callback(null, true);
-    },
+    origin: ["http://localhost:3000", "*"],
     credentials: true,
   })
 );
+
 
 
 app.use(cookieParser());

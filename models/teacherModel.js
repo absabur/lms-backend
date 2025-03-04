@@ -64,7 +64,7 @@ const teacherSchema = new Schema({
       required: true,
     },
   },
-  isApporved: {
+  isApproved: {
     type: Boolean,
     default: false,
   },
