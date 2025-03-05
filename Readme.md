@@ -133,7 +133,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             email: example@gmail.com,
         }),
     });
@@ -174,7 +174,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             password: 111111,
             confirmPassword: 111111,
             verificationCode: 628128,
@@ -216,7 +216,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             email: example@gmail.com,
             password: 111111,
         }),
@@ -247,7 +247,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
         }),
     });
     const result = await response.json();
@@ -306,7 +306,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             oldPassword: aaaaaa,
             newPassword: 111111,
             confirmPassword: 111111,
@@ -345,7 +345,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             name: change name,
             phone: ,
             nId: ,
@@ -382,7 +382,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             email: example@gmail.com,
         }),
     });
@@ -418,7 +418,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             newPassword: 111111,
             confirmPassword: 111111,
             token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVmb290YmFsbHBlczExdGhAZ21haWwuY29tIiwiaWF0IjoxNzQwODIxMjQ5LCJleHAiOjE3NDA4MjE4NDl9.orrRerFvfkwQ0IbUU483qKQ94Fg03bGcfJ9W6VeIVh4,
@@ -455,7 +455,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             email: example@gmail.com,
             password: 111111,
         }),
@@ -490,7 +490,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiZHVzc2FidXI5MjlAZ21haWwuY29tIiwiaWQiOiI2N2MyY2RhY2MxMWU4MTE3ODdiZWQ0NDkiLCJpYXQiOjE3NDA4MjE1NjEsImV4cCI6MTc0MDgyMjE2MX0.TmW_urPzc_vMp9MjR_crIoDw8JS91FYP-vTKUpf8r74,
         }),
     });
@@ -543,7 +543,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             password: 111111,
             confirmPassword: 111111,
             name: test from admin,
@@ -615,7 +615,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             password: 111111,
             confirmPassword: 111111,
             name: test rupdate from admin,
@@ -798,7 +798,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             password: 111111,
             confirmPassword: 111111,
             name: test teacher,
@@ -852,7 +852,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             password: 111111,
             confirmPassword: 111111,
             name: test teacher updated,
@@ -1152,7 +1152,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             bookName:  Introduction to Algorithms,
             bookAuthor:  Thomas H. Cormen,
             publisher:  MIT Press,
@@ -1214,7 +1214,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             bookName:  Introduction to Algorithms,
             bookAuthor:  Thomas H. Cormen,
             publisher:  MIT Press,
@@ -1696,7 +1696,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
         }),
     });
     const result = await response.json();
@@ -1753,7 +1753,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             name: English,
         }),
     });
@@ -1807,7 +1807,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
         }),
     });
     const result = await response.json();
@@ -1864,7 +1864,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             name: Mining and Mine Survey Technology,
         }),
     });
@@ -1922,7 +1922,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             name: 24-25,
         }),
     });
@@ -1980,7 +1980,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             name: Second,
         }),
     });
@@ -2038,7 +2038,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             name: Dhaka,
         }),
     });
@@ -2098,7 +2098,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             name: ,
             districtId: ,
             id: ,
@@ -2158,7 +2158,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             name: Junior Instructor,
         }),
     });
@@ -2218,7 +2218,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             email: example@gmail.com,
         }),
     });
@@ -2272,7 +2272,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             password: ,
             confirmPassword: ,
             verificationCode: ,
@@ -2327,7 +2327,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             email: example@gmail.com,
             password: aaaaaa,
         }),
@@ -2358,7 +2358,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
         }),
     });
     const result = await response.json();
@@ -2417,7 +2417,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             oldPassword: 111111,
             newPassword: aaaaaa,
             confirmPassword: aaaaaa,
@@ -2469,7 +2469,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             name: test rupdate from user,
             banglaName: ফ্রম,
             fathersName: test,
@@ -2519,7 +2519,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             email: example@gmail.com,
         }),
     });
@@ -2555,7 +2555,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             newPassword: aaaaaa,
             confirmPassword: aaaaaa,
             token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVmb290YmFsbHBlczExdGhAZ21haWwuY29tIiwiaWF0IjoxNzQwODI1MzE0LCJleHAiOjE3NDA4MjU5MTR9.mWUVTCqIT3x34u1044BE7jZdIcy63jPYyb6cjmKXI-s,
@@ -2592,7 +2592,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             email: example@gmail.com,
             password: aaaaaa,
         }),
@@ -2627,7 +2627,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiZHVzc2FidXI5MjlAZ21haWwuY29tIiwiaWQiOiI2N2MyZDg1YjZiNjM0MTEyMjkzNGZlMzkiLCJpYXQiOjE3NDA4MjU1NzgsImV4cCI6MTc0MDgyNjE3OH0.TVCFPKZolPecIAKBOP__RnwNMBL9DYePxypT6a235EY,
         }),
     });
@@ -2663,7 +2663,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             email: example@gmail.com,
         }),
     });
@@ -2708,7 +2708,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             password: ,
             confirmPassword: ,
             verificationCode: ,
@@ -2754,7 +2754,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             email: example@gmail.com,
             password: aaaaaa,
         }),
@@ -2785,7 +2785,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
         }),
     });
     const result = await response.json();
@@ -2844,7 +2844,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             oldPassword: 111111,
             newPassword: aaaaaa,
             confirmPassword: aaaaaa,
@@ -2887,7 +2887,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             name: test teacher updated as teacher,
             phone: 015635478569,
             nId: 465424,
@@ -2928,7 +2928,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             email: example@gmail.com,
         }),
     });
@@ -2964,7 +2964,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             newPassword: aaaaaa,
             confirmPassword: aaaaaa,
             token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVmb290YmFsbHBlczExdGhAZ21haWwuY29tIiwiaWF0IjoxNzQwODI3MDEwLCJleHAiOjE3NDA4Mjc2MTB9.8prnFw3Y1492BAnW3oCf5mqv9dRP-rWKEwyE5TR9CLY,
@@ -3001,7 +3001,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             email: example@gmail.com,
             password: aaaaaa,
         }),
@@ -3036,7 +3036,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({{
+        body: JSON.stringify({
             token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiZHVzc2FidXI5MjlAZ21haWwuY29tIiwiaWQiOiI2N2MyZGMxNzdlMjVmODJlMDE5NWY5ODkiLCJpYXQiOjE3NDA4MjcxNTUsImV4cCI6MTc0MDgyNzc1NX0.Zq1STlSOJQB6b9HNGz9uCdK8plzdrZ_TsU5FETTgJhU,
         }),
     });
