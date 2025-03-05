@@ -44,6 +44,9 @@ JWT_SECRET=asdgsgsagsdfgsdfg
 JWT_PASSWORD_KEY=sdgfsdfgsdfgsdfg
 JWT_CHANGE_EMAIL_KEY=sdfgsdgsdfgdsf
 clientUrl=
+JWT_EXPIRE=30
+COOKIE_EXPIRE=30
+NODE_ENV=development
 ```
 ### Quick Setup Instructions
 
