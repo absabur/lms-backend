@@ -99,7 +99,7 @@ teacherSchema.pre("save", async function (next) {
 
 teacherSchema.methods.getJWTToken = function () {
   return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
-    expiresIn: Number(process.env.JWT_EXPIRE) * 60 * 1000,
+    expiresIn: Number(process.env.JWT_EXPIRE) * 24 * 60 * 60 * 1000,
   });
 };
 

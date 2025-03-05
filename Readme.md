@@ -41,8 +41,6 @@ CLOUDINARY_API_SECRET=aagasgsad51g45as1dg451as
 SMTP_USERNAME=user@example.com
 SMTP_PASSWORD=sadfsadfdsf
 JWT_SECRET=asdgsgsagsdfgsdfg
-JWT_EXPIRE=24
-COOKIE_EXPIRE=3
 JWT_PASSWORD_KEY=sdgfsdfgsdfgsdfg
 JWT_CHANGE_EMAIL_KEY=sdfgsdgsdfgdsf
 clientUrl=
@@ -135,9 +133,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            email: example@gmail.com,
-        ),
+        body: JSON.stringify({'\n            email: example@gmail.com,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -176,16 +172,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            password: 111111,
-            confirmPassword: 111111,
-            verificationCode: 628128,
-            name: Test Student,
-            email: example@gmail.com,
-            phone: 01521710796,
-            nId: 1965256324,
-            image: File (/C:/Users/absab/Downloads/ab-sabur.png),
-        ),
+        body: JSON.stringify({'\n            password: 111111,\n            confirmPassword: 111111,\n            verificationCode: 628128,\n            name: Test Student,\n            email: example@gmail.com,\n            phone: 01521710796,\n            nId: 1965256324,\n            image: File (/C:/Users/absab/Downloads/ab-sabur.png),\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -218,10 +205,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            email: example@gmail.com,
-            password: 111111,
-        ),
+        body: JSON.stringify({'\n            email: example@gmail.com,\n            password: 111111,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -249,8 +233,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-        ),
+        body: JSON.stringify({'\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -308,11 +291,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            oldPassword: aaaaaa,
-            newPassword: 111111,
-            confirmPassword: 111111,
-        ),
+        body: JSON.stringify({'\n            oldPassword: aaaaaa,\n            newPassword: 111111,\n            confirmPassword: 111111,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -347,12 +326,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            name: change name,
-            phone: ,
-            nId: ,
-            image: File (/C:/Users/absab/Downloads/1000003903.jpg),
-        ),
+        body: JSON.stringify({'\n            name: change name,\n            phone: ,\n            nId: ,\n            image: File (/C:/Users/absab/Downloads/1000003903.jpg),\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -384,9 +358,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            email: example@gmail.com,
-        ),
+        body: JSON.stringify({'\n            email: example@gmail.com,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -420,11 +392,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            newPassword: 111111,
-            confirmPassword: 111111,
-            token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVmb290YmFsbHBlczExdGhAZ21haWwuY29tIiwiaWF0IjoxNzQwODIxMjQ5LCJleHAiOjE3NDA4MjE4NDl9.orrRerFvfkwQ0IbUU483qKQ94Fg03bGcfJ9W6VeIVh4,
-        ),
+        body: JSON.stringify({'\n            newPassword: 111111,\n            confirmPassword: 111111,\n            token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVmb290YmFsbHBlczExdGhAZ21haWwuY29tIiwiaWF0IjoxNzQwODIxMjQ5LCJleHAiOjE3NDA4MjE4NDl9.orrRerFvfkwQ0IbUU483qKQ94Fg03bGcfJ9W6VeIVh4,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -457,10 +425,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            email: example@gmail.com,
-            password: 111111,
-        ),
+        body: JSON.stringify({'\n            email: example@gmail.com,\n            password: 111111,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -492,9 +457,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiZHVzc2FidXI5MjlAZ21haWwuY29tIiwiaWQiOiI2N2MyY2RhY2MxMWU4MTE3ODdiZWQ0NDkiLCJpYXQiOjE3NDA4MjE1NjEsImV4cCI6MTc0MDgyMjE2MX0.TmW_urPzc_vMp9MjR_crIoDw8JS91FYP-vTKUpf8r74,
-        ),
+        body: JSON.stringify({'\n            token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiZHVzc2FidXI5MjlAZ21haWwuY29tIiwiaWQiOiI2N2MyY2RhY2MxMWU4MTE3ODdiZWQ0NDkiLCJpYXQiOjE3NDA4MjE1NjEsImV4cCI6MTc0MDgyMjE2MX0.TmW_urPzc_vMp9MjR_crIoDw8JS91FYP-vTKUpf8r74,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -545,28 +508,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            password: 111111,
-            confirmPassword: 111111,
-            name: test from admin,
-            banglaName: ফ্রম অ্যাডমিন ,
-            fathersName: test,
-            mothersName: test,
-            email: example@gmail.com,
-            phone: 01758695425,
-            addmissionRoll: 121212,
-            boardRoll: ,
-            registration: ,
-            department: cst,
-            session: 2021,
-            shift: 2,
-            district: bog,
-            upazila: dup,
-            union: zia,
-            village: bor,
-            address: last,
-            image: File (/C:/Users/absab/Downloads/Untitled design (1).png),
-        ),
+        body: JSON.stringify({'\n            password: 111111,\n            confirmPassword: 111111,\n            name: test from admin,\n            banglaName: ফ্রম অ্যাডমিন ,\n            fathersName: test,\n            mothersName: test,\n            email: example@gmail.com,\n            phone: 01758695425,\n            addmissionRoll: 121212,\n            boardRoll: ,\n            registration: ,\n            department: cst,\n            session: 2021,\n            shift: 2,\n            district: bog,\n            upazila: dup,\n            union: zia,\n            village: bor,\n            address: last,\n            image: File (/C:/Users/absab/Downloads/Untitled design (1).png),\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -617,28 +559,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            password: 111111,
-            confirmPassword: 111111,
-            name: test rupdate from admin,
-            banglaName: ফ্রম অ্যাডমিন ,
-            fathersName: test,
-            mothersName: test,
-            email: example@gmail.com,
-            phone: 01758695425,
-            addmissionRoll: 121212,
-            boardRoll: ,
-            registration: ,
-            department: cst,
-            session: 2021,
-            shift: 2,
-            district: bog,
-            upazila: dup,
-            union: zia,
-            village: bor,
-            address: last,
-            image: File ([]),
-        ),
+        body: JSON.stringify({'\n            password: 111111,\n            confirmPassword: 111111,\n            name: test rupdate from admin,\n            banglaName: ফ্রম অ্যাডমিন ,\n            fathersName: test,\n            mothersName: test,\n            email: example@gmail.com,\n            phone: 01758695425,\n            addmissionRoll: 121212,\n            boardRoll: ,\n            registration: ,\n            department: cst,\n            session: 2021,\n            shift: 2,\n            district: bog,\n            upazila: dup,\n            union: zia,\n            village: bor,\n            address: last,\n            image: File ([]),\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -800,19 +721,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            password: 111111,
-            confirmPassword: 111111,
-            name: test teacher,
-            email: example@gmail.com,
-            phone: 015635478569,
-            nId: 465424,
-            department: cst,
-            post: ji,
-            teacherId: 6425205,
-            address: bd,
-            image: File (/C:/Users/absab/Downloads/rahad.jpg),
-        ),
+        body: JSON.stringify({'\n            password: 111111,\n            confirmPassword: 111111,\n            name: test teacher,\n            email: example@gmail.com,\n            phone: 015635478569,\n            nId: 465424,\n            department: cst,\n            post: ji,\n            teacherId: 6425205,\n            address: bd,\n            image: File (/C:/Users/absab/Downloads/rahad.jpg),\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -854,19 +763,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            password: 111111,
-            confirmPassword: 111111,
-            name: test teacher updated,
-            email: example@gmail.com,
-            phone: 015635478569,
-            nId: 465424,
-            department: cst,
-            post: ji,
-            teacherId: 6425205,
-            address: bd,
-            image: File ([]),
-        ),
+        body: JSON.stringify({'\n            password: 111111,\n            confirmPassword: 111111,\n            name: test teacher updated,\n            email: example@gmail.com,\n            phone: 015635478569,\n            nId: 465424,\n            department: cst,\n            post: ji,\n            teacherId: 6425205,\n            address: bd,\n            image: File ([]),\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -1154,23 +1051,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            bookName:  Introduction to Algorithms,
-            bookAuthor:  Thomas H. Cormen,
-            publisher:  MIT Press,
-            edition:  4th,
-            numberOfPages:  1312,
-            country:  USA,
-            language:  English,
-            mrp:  1200,
-            shelf:  A-3,
-            bookNumber:  B001,
-            department:  Computer Science,
-            quantity:  5,
-            description:  A comprehensive textbook on algorithms covering a wide range of topics including data structures, graph algorithms, sorting, and more.,
-            bookNumbers: 001.01, 001.02, 001.03, 001.04, 001.05,
-            images: File (['/C:/Users/absab/Downloads/wall.jpg', '/C:/Users/absab/Downloads/wal.jpg', '/C:/Users/absab/Downloads/wal - Copy.jpg']),
-        ),
+        body: JSON.stringify({"\n            bookName:  Introduction to Algorithms,\n            bookAuthor:  Thomas H. Cormen,\n            publisher:  MIT Press,\n            edition:  4th,\n            numberOfPages:  1312,\n            country:  USA,\n            language:  English,\n            mrp:  1200,\n            shelf:  A-3,\n            bookNumber:  B001,\n            department:  Computer Science,\n            quantity:  5,\n            description:  A comprehensive textbook on algorithms covering a wide range of topics including data structures, graph algorithms, sorting, and more.,\n            bookNumbers: 001.01, 001.02, 001.03, 001.04, 001.05,\n            images: File (['/C:/Users/absab/Downloads/wall.jpg', '/C:/Users/absab/Downloads/wal.jpg', '/C:/Users/absab/Downloads/wal - Copy.jpg']),\n"}),
     });
     const result = await response.json();
 } catch (error) {
@@ -1216,23 +1097,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            bookName:  Introduction to Algorithms,
-            bookAuthor:  Thomas H. Cormen,
-            publisher:  MIT Press,
-            edition:  4th,
-            numberOfPages:  1310,
-            country:  USA,
-            language:  English,
-            mrp:  1200,
-            shelf:  A-3,
-            bookNumber:  B001,
-            department:  Computer Science,
-            quantity: ,
-            description:  A comprehensive textbook on algorithms covering a wide range of topics including data structures, graph algorithms, sorting, and more.,
-            bookNumbers: 001.01, 001.02, 001.03, 001.04, 001.05,
-            images: ,
-        ),
+        body: JSON.stringify({'\n            bookName:  Introduction to Algorithms,\n            bookAuthor:  Thomas H. Cormen,\n            publisher:  MIT Press,\n            edition:  4th,\n            numberOfPages:  1310,\n            country:  USA,\n            language:  English,\n            mrp:  1200,\n            shelf:  A-3,\n            bookNumber:  B001,\n            department:  Computer Science,\n            quantity: ,\n            description:  A comprehensive textbook on algorithms covering a wide range of topics including data structures, graph algorithms, sorting, and more.,\n            bookNumbers: 001.01, 001.02, 001.03, 001.04, 001.05,\n            images: ,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -1698,8 +1563,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-        ),
+        body: JSON.stringify({'\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -1755,9 +1619,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            name: English,
-        ),
+        body: JSON.stringify({'\n            name: English,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -1809,8 +1671,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-        ),
+        body: JSON.stringify({'\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -1866,9 +1727,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            name: Mining and Mine Survey Technology,
-        ),
+        body: JSON.stringify({'\n            name: Mining and Mine Survey Technology,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -1924,9 +1783,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            name: 24-25,
-        ),
+        body: JSON.stringify({'\n            name: 24-25,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -1982,9 +1839,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            name: Second,
-        ),
+        body: JSON.stringify({'\n            name: Second,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -2040,9 +1895,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            name: Dhaka,
-        ),
+        body: JSON.stringify({'\n            name: Dhaka,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -2100,11 +1953,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            name: ,
-            districtId: ,
-            id: ,
-        ),
+        body: JSON.stringify({'\n            name: ,\n            districtId: ,\n            id: ,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -2160,9 +2009,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            name: Junior Instructor,
-        ),
+        body: JSON.stringify({'\n            name: Junior Instructor,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -2220,9 +2067,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            email: example@gmail.com,
-        ),
+        body: JSON.stringify({'\n            email: example@gmail.com,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -2274,29 +2119,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            password: ,
-            confirmPassword: ,
-            verificationCode: ,
-            name: ,
-            banglaName: ,
-            fathersName: ,
-            mothersName: ,
-            email: ,
-            phone: ,
-            addmissionRoll: ,
-            boardRoll: ,
-            registration: ,
-            department: ,
-            session: ,
-            shift: ,
-            district: ,
-            upazila: ,
-            union: ,
-            village: ,
-            address: ,
-            image: File ([]),
-        ),
+        body: JSON.stringify({'\n            password: ,\n            confirmPassword: ,\n            verificationCode: ,\n            name: ,\n            banglaName: ,\n            fathersName: ,\n            mothersName: ,\n            email: ,\n            phone: ,\n            addmissionRoll: ,\n            boardRoll: ,\n            registration: ,\n            department: ,\n            session: ,\n            shift: ,\n            district: ,\n            upazila: ,\n            union: ,\n            village: ,\n            address: ,\n            image: File ([]),\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -2329,10 +2152,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            email: example@gmail.com,
-            password: aaaaaa,
-        ),
+        body: JSON.stringify({'\n            email: example@gmail.com,\n            password: aaaaaa,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -2360,8 +2180,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-        ),
+        body: JSON.stringify({'\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -2419,11 +2238,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            oldPassword: 111111,
-            newPassword: aaaaaa,
-            confirmPassword: aaaaaa,
-        ),
+        body: JSON.stringify({'\n            oldPassword: 111111,\n            newPassword: aaaaaa,\n            confirmPassword: aaaaaa,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -2471,25 +2286,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            name: test rupdate from user,
-            banglaName: ফ্রম,
-            fathersName: test,
-            mothersName: test,
-            phone: 01758695425,
-            addmissionRoll: 121212,
-            boardRoll: ,
-            registration: ,
-            department: cst,
-            session: 2021,
-            shift: 2,
-            district: bog,
-            upazila: dup,
-            union: zia,
-            village: bor,
-            address: last,
-            image: File (/C:/Users/absab/Downloads/file (1).png),
-        ),
+        body: JSON.stringify({'\n            name: test rupdate from user,\n            banglaName: ফ্রম,\n            fathersName: test,\n            mothersName: test,\n            phone: 01758695425,\n            addmissionRoll: 121212,\n            boardRoll: ,\n            registration: ,\n            department: cst,\n            session: 2021,\n            shift: 2,\n            district: bog,\n            upazila: dup,\n            union: zia,\n            village: bor,\n            address: last,\n            image: File (/C:/Users/absab/Downloads/file (1).png),\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -2521,9 +2318,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            email: example@gmail.com,
-        ),
+        body: JSON.stringify({'\n            email: example@gmail.com,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -2557,11 +2352,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            newPassword: aaaaaa,
-            confirmPassword: aaaaaa,
-            token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVmb290YmFsbHBlczExdGhAZ21haWwuY29tIiwiaWF0IjoxNzQwODI1MzE0LCJleHAiOjE3NDA4MjU5MTR9.mWUVTCqIT3x34u1044BE7jZdIcy63jPYyb6cjmKXI-s,
-        ),
+        body: JSON.stringify({'\n            newPassword: aaaaaa,\n            confirmPassword: aaaaaa,\n            token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVmb290YmFsbHBlczExdGhAZ21haWwuY29tIiwiaWF0IjoxNzQwODI1MzE0LCJleHAiOjE3NDA4MjU5MTR9.mWUVTCqIT3x34u1044BE7jZdIcy63jPYyb6cjmKXI-s,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -2594,10 +2385,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            email: example@gmail.com,
-            password: aaaaaa,
-        ),
+        body: JSON.stringify({'\n            email: example@gmail.com,\n            password: aaaaaa,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -2629,9 +2417,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiZHVzc2FidXI5MjlAZ21haWwuY29tIiwiaWQiOiI2N2MyZDg1YjZiNjM0MTEyMjkzNGZlMzkiLCJpYXQiOjE3NDA4MjU1NzgsImV4cCI6MTc0MDgyNjE3OH0.TVCFPKZolPecIAKBOP__RnwNMBL9DYePxypT6a235EY,
-        ),
+        body: JSON.stringify({'\n            token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiZHVzc2FidXI5MjlAZ21haWwuY29tIiwiaWQiOiI2N2MyZDg1YjZiNjM0MTEyMjkzNGZlMzkiLCJpYXQiOjE3NDA4MjU1NzgsImV4cCI6MTc0MDgyNjE3OH0.TVCFPKZolPecIAKBOP__RnwNMBL9DYePxypT6a235EY,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -2665,9 +2451,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            email: example@gmail.com,
-        ),
+        body: JSON.stringify({'\n            email: example@gmail.com,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -2710,20 +2494,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            password: ,
-            confirmPassword: ,
-            verificationCode: ,
-            name: ,
-            email: ,
-            phone: ,
-            nId: ,
-            department: ,
-            post: ,
-            teacherId: ,
-            address: ,
-            image: File ([]),
-        ),
+        body: JSON.stringify({'\n            password: ,\n            confirmPassword: ,\n            verificationCode: ,\n            name: ,\n            email: ,\n            phone: ,\n            nId: ,\n            department: ,\n            post: ,\n            teacherId: ,\n            address: ,\n            image: File ([]),\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -2756,10 +2527,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            email: example@gmail.com,
-            password: aaaaaa,
-        ),
+        body: JSON.stringify({'\n            email: example@gmail.com,\n            password: aaaaaa,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -2787,8 +2555,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-        ),
+        body: JSON.stringify({'\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -2846,11 +2613,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            oldPassword: 111111,
-            newPassword: aaaaaa,
-            confirmPassword: aaaaaa,
-        ),
+        body: JSON.stringify({'\n            oldPassword: 111111,\n            newPassword: aaaaaa,\n            confirmPassword: aaaaaa,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -2889,16 +2652,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            name: test teacher updated as teacher,
-            phone: 015635478569,
-            nId: 465424,
-            department: cst,
-            post: ji,
-            teacherId: 6425205,
-            address: bd,
-            image: File ([]),
-        ),
+        body: JSON.stringify({'\n            name: test teacher updated as teacher,\n            phone: 015635478569,\n            nId: 465424,\n            department: cst,\n            post: ji,\n            teacherId: 6425205,\n            address: bd,\n            image: File ([]),\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -2930,9 +2684,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            email: example@gmail.com,
-        ),
+        body: JSON.stringify({'\n            email: example@gmail.com,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -2966,11 +2718,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            newPassword: aaaaaa,
-            confirmPassword: aaaaaa,
-            token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVmb290YmFsbHBlczExdGhAZ21haWwuY29tIiwiaWF0IjoxNzQwODI3MDEwLCJleHAiOjE3NDA4Mjc2MTB9.8prnFw3Y1492BAnW3oCf5mqv9dRP-rWKEwyE5TR9CLY,
-        ),
+        body: JSON.stringify({'\n            newPassword: aaaaaa,\n            confirmPassword: aaaaaa,\n            token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVmb290YmFsbHBlczExdGhAZ21haWwuY29tIiwiaWF0IjoxNzQwODI3MDEwLCJleHAiOjE3NDA4Mjc2MTB9.8prnFw3Y1492BAnW3oCf5mqv9dRP-rWKEwyE5TR9CLY,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -3003,10 +2751,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            email: example@gmail.com,
-            password: aaaaaa,
-        ),
+        body: JSON.stringify({'\n            email: example@gmail.com,\n            password: aaaaaa,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -3038,9 +2783,7 @@ try {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(
-            token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiZHVzc2FidXI5MjlAZ21haWwuY29tIiwiaWQiOiI2N2MyZGMxNzdlMjVmODJlMDE5NWY5ODkiLCJpYXQiOjE3NDA4MjcxNTUsImV4cCI6MTc0MDgyNzc1NX0.Zq1STlSOJQB6b9HNGz9uCdK8plzdrZ_TsU5FETTgJhU,
-        ),
+        body: JSON.stringify({'\n            token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiZHVzc2FidXI5MjlAZ21haWwuY29tIiwiaWQiOiI2N2MyZGMxNzdlMjVmODJlMDE5NWY5ODkiLCJpYXQiOjE3NDA4MjcxNTUsImV4cCI6MTc0MDgyNzc1NX0.Zq1STlSOJQB6b9HNGz9uCdK8plzdrZ_TsU5FETTgJhU,\n'}),
     });
     const result = await response.json();
 } catch (error) {
@@ -3050,4 +2793,3 @@ try {
 ```
 
 ---
-
