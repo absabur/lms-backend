@@ -385,7 +385,7 @@ exports.forgateTeacherPassword = async (req, res, next) => {
         email: teacher.email,
       },
       process.env.JWT_PASSWORD_KEY,
-      "10m" // Expiry time set for 10 minutes
+      10*60*1000
     );
 
     const time = localTime(10);
@@ -505,7 +505,7 @@ exports.updateTeacherEmailRequest = async (req, res, next) => {
     const token = createJsonWebToken(
       { email, id: req.teacher.id },
       process.env.JWT_CHANGE_EMAIL_KEY,
-      "10m"
+      10*60*1000
     );
 
     const expirationTime = localTime(10);
