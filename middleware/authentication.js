@@ -139,10 +139,10 @@ exports.isSuperAdmin = async (req, res, next) => {
         if (!exist.isApproved) {
             throw createError(401, "Your account is not approved.")
         }
-        if (exist.isBan === true || exist.isBan === 'true') {
+        if (exist.isBan) {
             throw createError(402, "Unfortunately you are ban now, please contact to author.")
         }
-        if (exist.isSuperAdmin !== true) {
+        if (!exist.isSuperAdmin) {
             throw createError(401, "You don't have this authority.")
         }
         req.admin = exist;
