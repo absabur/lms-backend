@@ -45,12 +45,6 @@ const BooksSchema = new Schema({
     type: String,
     trim: true,
   },
-  bookNumber: {
-    type: String,
-    required: [true, "Please Enter Book Number"],
-    trim: true,
-    unique: true,
-  },
   department: {
     type: String,
     required: [true, "Please Enter department"],

@@ -17,7 +17,6 @@ exports.createBook = async (req, res, next) => {
       language,
       mrp,
       shelf,
-      bookNumber,
       department,
       quantity,
       description,
@@ -38,8 +37,8 @@ exports.createBook = async (req, res, next) => {
       throw createError(404, "This book already exists.");
     }
 
-    const bookNumbersArray = bookNumbers.split(", ").map((item) => item.trim());
-
+    const bookNumbersArray = bookNumbers.split(",").map((item) => item.trim());
+    
     if (bookNumbersArray.length != quantity) {
       throw createError(400, "Book numbers should be equal to quantity.");
     }
@@ -68,7 +67,6 @@ exports.createBook = async (req, res, next) => {
       language,
       mrp,
       shelf,
-      bookNumber,
       department,
       quantity,
       images,
@@ -79,7 +77,7 @@ exports.createBook = async (req, res, next) => {
       createDate: localTime(0),
       updateDate: localTime(0),
     });
-
+    
     const savedBook = await book.save();
 
     res.status(201).json({
@@ -88,6 +86,7 @@ exports.createBook = async (req, res, next) => {
       data: savedBook,
     });
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };
@@ -105,7 +104,6 @@ exports.updateBook = async (req, res, next) => {
       language,
       mrp,
       shelf,
-      bookNumber,
       department,
       quantity,
       description,
@@ -167,7 +165,6 @@ exports.updateBook = async (req, res, next) => {
     book.language = language || book.language;
     book.mrp = mrp || book.mrp;
     book.shelf = shelf || book.shelf;
-    book.bookNumber = bookNumber || book.bookNumber;
     book.department = department || book.department;
     book.quantity = quantity || book.quantity;
     book.description = description || book.description;

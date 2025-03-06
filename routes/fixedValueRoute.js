@@ -18,7 +18,8 @@ const {
   createUpazila,
   getAllUpazilas,
   createPost,
-  getAllPosts
+  getAllPosts,
+  allValues
 } = require("../controllers/fixedValueController.js");
 const { isSuperAdmin } = require("../middleware/authentication.js")
 
@@ -57,5 +58,9 @@ fixedValueRouter.get("/upazilas", getAllUpazilas);
 
 fixedValueRouter.post("/post", isSuperAdmin, createPost);
 fixedValueRouter.get("/posts", getAllPosts);
+
+fixedValueRouter.get("/all-values", allValues);
+
+
 
 module.exports = fixedValueRouter;

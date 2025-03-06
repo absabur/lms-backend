@@ -229,13 +229,7 @@ exports.createUpazila = async (req, res, next) => {
 
 exports.getAllUpazilas = async (req, res, next) => {
   try {
-    const {
-      name,
-      districtId,
-      sortBy,
-      sortOrder,
-      search,
-    } = req.query;
+    const { name, districtId, sortBy, sortOrder, search } = req.query;
 
     // Build the filter object
     const filter = {};
@@ -253,7 +247,6 @@ exports.getAllUpazilas = async (req, res, next) => {
     if (sortBy) {
       sort[sortBy] = sortOrder === "desc" ? -1 : 1;
     }
-
 
     // Fetch upazilas with filters, sorting, and pagination
     const upazilas = await Upazila.find(filter)
@@ -297,6 +290,40 @@ exports.getAllPosts = async (req, res, next) => {
   try {
     const posts = await Post.find();
     res.status(200).json({ posts });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.allValues = async (req, res, next) => {
+  try {
+    const countries = await Country.find();
+
+    const languages = await Language.find();
+
+    const shelves = await Shelf.find();
+
+    const departments = await Department.find();
+
+    const sessions = await Session.find();
+
+    const shifts = await Shift.find();
+
+    const districts = await District.find();
+
+    const posts = await Post.find();
+
+    res.status(200).json({
+      success: true,
+      countries,
+      languages,
+      shelves,
+      departments,
+      sessions,
+      shifts,
+      districts,
+      posts,
+    });
   } catch (error) {
     next(error);
   }
