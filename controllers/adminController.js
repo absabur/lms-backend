@@ -401,7 +401,7 @@ exports.forgateAdminPassword = async (req, res, next) => {
     const token = createJsonWebToken(
       { email: email },
       process.env.JWT_PASSWORD_KEY,
-      10*60*1000
+      10 * 60 * 1000
     );
 
     const time = localTime(10);
@@ -518,7 +518,7 @@ exports.updateAdminEmailRequest = async (req, res, next) => {
     const token = createJsonWebToken(
       { email, id: req.admin.id },
       process.env.JWT_CHANGE_EMAIL_KEY,
-      10*60*1000
+      10 * 60 * 1000
     );
 
     const time = localTime(10);

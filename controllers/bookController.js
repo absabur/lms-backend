@@ -38,7 +38,7 @@ exports.createBook = async (req, res, next) => {
     }
 
     const bookNumbersArray = bookNumbers.split(",").map((item) => item.trim());
-    
+
     if (bookNumbersArray.length != quantity) {
       throw createError(400, "Book numbers should be equal to quantity.");
     }
@@ -77,7 +77,7 @@ exports.createBook = async (req, res, next) => {
       createDate: localTime(0),
       updateDate: localTime(0),
     });
-    
+
     const savedBook = await book.save();
 
     res.status(201).json({
@@ -113,7 +113,6 @@ exports.updateBook = async (req, res, next) => {
     const adminId = req.admin?.id;
     const bookId = req.params.id;
 
-    // Find the book by ID
     const book = await Books.findById(bookId);
     if (!book) {
       throw createError(404, "Book not found");
@@ -134,15 +133,11 @@ exports.updateBook = async (req, res, next) => {
     }
 
     let images = book.images;
-
-    // Handle image updates
     if (req.files && req.files.length > 0) {
-      // Delete old images from Cloudinary
       for (const img of book.images) {
         await cloudinary.uploader.destroy(img.public_id);
       }
 
-      // Upload new images
       images = [];
       for (const file of req.files) {
         const result = await cloudinary.uploader.upload(file.path, {
@@ -155,9 +150,30 @@ exports.updateBook = async (req, res, next) => {
       }
     }
 
-    // Update book details
-    book.bookName = bookName || book.bookName;
-    book.bookAuthor = bookAuthor || book.bookAuthor;
+    // Update fields
+    const updatedName = bookName || book.bookName;
+    const updatedAuthor = bookAuthor || book.bookAuthor;
+
+    // Update slug if bookName or bookAuthor changed
+    if (bookName || bookAuthor) {
+      const newSlug = makeSlug(updatedName, updatedAuthor);
+
+      // Only update if slug is different
+      if (newSlug !== book.slug) {
+        const slugExists = await Books.findOne({ slug: newSlug });
+        if (slugExists && slugExists._id.toString() !== book._id.toString()) {
+          throw createError(
+            400,
+            "Another book with the same name and author already exists."
+          );
+        }
+        book.slug = newSlug;
+      }
+    }
+
+    // Set remaining fields
+    book.bookName = updatedName;
+    book.bookAuthor = updatedAuthor;
     book.publisher = publisher || book.publisher;
     book.edition = edition || book.edition;
     book.numberOfPages = numberOfPages || book.numberOfPages;
@@ -173,7 +189,6 @@ exports.updateBook = async (req, res, next) => {
     book.updatedBy = adminId;
     book.updateDate = localTime(0);
 
-    // Save updated book
     const updatedBook = await book.save();
 
     res.status(200).json({
@@ -281,11 +296,11 @@ exports.getAllBooks = async (req, res, next) => {
 };
 
 // Get Book by ID
-exports.getBookById = async (req, res, next) => {
+exports.getBookBySlug = async (req, res, next) => {
   try {
-    const bookId = req.params.id;
+    const slug = req.params.slug;
 
-    const book = await Books.findById(bookId);
+    const book = await Books.find({ slug: slug });
     if (!book) {
       throw createError(404, "Book not found");
     }
