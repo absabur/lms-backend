@@ -134,10 +134,6 @@ exports.updateBook = async (req, res, next) => {
 
     let images = book.images;
     if (req.files && req.files.length > 0) {
-      for (const img of book.images) {
-        await cloudinary.uploader.destroy(img.public_id);
-      }
-
       images = [];
       for (const file of req.files) {
         const result = await cloudinary.uploader.upload(file.path, {
@@ -147,6 +143,9 @@ exports.updateBook = async (req, res, next) => {
           public_id: result.public_id,
           url: result.secure_url,
         });
+      }
+      for (const img of book.images) {
+        await cloudinary.uploader.destroy(img.public_id);
       }
     }
 

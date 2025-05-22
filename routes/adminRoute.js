@@ -33,7 +33,7 @@ adminRouter.post("/login", createLimiterAuth(), loginAdmin);
 adminRouter.post("/logout", createLimiterAuth(), logoutAdmin);
 adminRouter.get("/authenticated", authenticated);
 adminRouter.get("/profile", isAdmin, getAdminProfile);
-adminRouter.post("/update-password", isAdmin, updateAdminPassword);
+adminRouter.post("/update-password", isAdmin, upload.none(), updateAdminPassword);
 adminRouter.post("/update-profile", isAdmin, upload.single("image"), updateAdminProfile);
 adminRouter.post("/forgate-password", forgateAdminPassword);
 adminRouter.post("/reset-password", createLimiterAuth(), resetAdminPassword);

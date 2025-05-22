@@ -15,7 +15,7 @@ const teacherSchema = new Schema({
     type: String,
     required: [true, "Please enter email."],
     trim: true,
-    unique: [true, "email already in student"],
+    unique: [true, "email already in teacher"],
     validate: [validator.isEmail, "Please Enter a valid Email"],
   },
   phone: {
@@ -27,11 +27,11 @@ const teacherSchema = new Schema({
   },
   nId: {
     type: Number,
-    unique: [true, "addmision roll already in student"],
+    unique: [true, "addmision roll already in teacher"],
   },
   teacherId: {
     type: Number,
-    unique: [true, "registration already in student"],
+    unique: [true, "registration already in teacher"],
   },
   post: {
     type: String,

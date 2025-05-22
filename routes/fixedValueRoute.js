@@ -24,39 +24,39 @@ const {
 const { isSuperAdmin } = require("../middleware/authentication.js")
 
 
-fixedValueRouter.post("/country", isSuperAdmin, createCountry);
+fixedValueRouter.post("/countries", isSuperAdmin, createCountry);
 fixedValueRouter.get("/countries", getAllCountries);
 
 
-fixedValueRouter.post("/language", isSuperAdmin, createLanguage);
+fixedValueRouter.post("/languages", isSuperAdmin, createLanguage);
 fixedValueRouter.get("/languages", getAllLanguages);
 
 
-fixedValueRouter.post("/shelf", isSuperAdmin, createShelf);
+fixedValueRouter.post("/shelves", isSuperAdmin, createShelf);
 fixedValueRouter.get("/shelves", getAllShelves);
 
 
-fixedValueRouter.post("/department", isSuperAdmin, createDepartment);
+fixedValueRouter.post("/departments", isSuperAdmin, createDepartment);
 fixedValueRouter.get("/departments", getAllDepartments);
 
 
-fixedValueRouter.post("/session", isSuperAdmin, createSession);
+fixedValueRouter.post("/sessions", isSuperAdmin, createSession);
 fixedValueRouter.get("/sessions", getAllSessions);
 
 
-fixedValueRouter.post("/shift", isSuperAdmin, createShift);
+fixedValueRouter.post("/shifts", isSuperAdmin, createShift);
 fixedValueRouter.get("/shifts", getAllShifts);
 
 
-fixedValueRouter.post("/district", createDistrict);
+fixedValueRouter.post("/districts", createDistrict);
 fixedValueRouter.get("/districts", getAllDistricts);
 
 
-fixedValueRouter.post("/upazila", createUpazila);
+fixedValueRouter.post("/upazilas", createUpazila);
 fixedValueRouter.get("/upazilas", getAllUpazilas);
 
 
-fixedValueRouter.post("/post", isSuperAdmin, createPost);
+fixedValueRouter.post("/posts", isSuperAdmin, createPost);
 fixedValueRouter.get("/posts", getAllPosts);
 
 fixedValueRouter.get("/all-values", allValues);

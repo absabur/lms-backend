@@ -313,8 +313,9 @@ exports.allValues = async (req, res, next) => {
 
     const posts = await Post.find();
 
+    const upazilas = await Upazila.find();
+
     res.status(200).json({
-      success: true,
       countries,
       languages,
       shelves,
@@ -323,6 +324,7 @@ exports.allValues = async (req, res, next) => {
       shifts,
       districts,
       posts,
+      upazilas
     });
   } catch (error) {
     next(error);

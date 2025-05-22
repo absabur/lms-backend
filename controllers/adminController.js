@@ -241,7 +241,13 @@ exports.loginAdmin = async (req, res, next) => {
 
 exports.logoutAdmin = async (req, res, next) => {
   try {
-    res.clearCookie("access_token");
+    res.clearCookie("access_token", {
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "",
+      secure: process.env.NODE_ENV === "production" ? true : false,
+      path: "/",
+    });
+
     res.status(200).json({
       success: true,
     });
@@ -297,6 +303,7 @@ exports.getAdminProfile = async (req, res, next) => {
 exports.updateAdminPassword = async (req, res, next) => {
   try {
     const { oldPassword, newPassword, confirmPassword } = req.body;
+
     const admin = await Admin.findById(req.admin.id).select("+password");
 
     if (!admin) {
@@ -345,7 +352,6 @@ exports.updateAdminProfile = async (req, res, next) => {
       name: name || admin.name,
       phone: phone || admin.phone,
       nId: nId || admin.nId,
-      isApproved: false,
       updateDate: localTime(0),
     };
 
