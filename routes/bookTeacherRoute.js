@@ -5,7 +5,7 @@ const { takingRequestBookTeacher, cancelTakingRequestBookTeacher, approveTakingR
 
 takingBookTeacherRouter.get( "/book-take-request/:id([0-9a-fA-F]{24})", isTeacherApproved, takingRequestBookTeacher);
 takingBookTeacherRouter.get( "/book-take-request-cancel/:id([0-9a-fA-F]{24})", isTeacherApproved, cancelTakingRequestBookTeacher);
-takingBookTeacherRouter.get( "/book-take-request-approve/:id([0-9a-fA-F]{24})", isAdmin, approveTakingRequestBookTeacher);
+takingBookTeacherRouter.get( "/book-take-request-approve/:id([0-9a-fA-F]{24})/:bookNumber", isAdmin, approveTakingRequestBookTeacher);
 takingBookTeacherRouter.get( "/book-return-request/:id([0-9a-fA-F]{24})", isTeacherApproved, returnRequestBookTeacher);
 takingBookTeacherRouter.get( "/book-return-request-cancel/:id([0-9a-fA-F]{24})", isTeacherApproved, cancelReturnRequestBookTeacher);
 takingBookTeacherRouter.get( "/book-return-request-approve/:id([0-9a-fA-F]{24})", isAdmin, approveReturnRequestBookTeacher);

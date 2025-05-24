@@ -79,28 +79,7 @@ exports.SignUpVerifyStudent = async (req, res, next) => {
 // Register student logic
 exports.registerStudent = async (req, res, next) => {
   try {
-    const {
-      password,
-      confirmPassword,
-      verificationCode,
-      name,
-      banglaName,
-      fathersName,
-      mothersName,
-      email,
-      phone,
-      addmissionRoll,
-      boardRoll,
-      registration,
-      department,
-      session,
-      shift,
-      district,
-      upazila,
-      union,
-      village,
-      address,
-    } = req.body;
+    const { password, confirmPassword, verificationCode, email } = req.body;
 
     if (password !== confirmPassword) {
       return next(
@@ -130,41 +109,14 @@ exports.registerStudent = async (req, res, next) => {
       return next(createError(400, "OTP has expired."));
     }
 
-    let avatar = { public_id: "", url: "" };
-
-    if (req.file?.path) {
-      const uploadedImage = await cloudinary.uploader.upload(req.file.path, {
-        folder: "students",
-      });
-      avatar.public_id = uploadedImage.public_id;
-      avatar.url = uploadedImage.secure_url;
-    } else {
-      return next(createError(400, "Avatar image is required."));
-    }
-
-    const student = await Student.create({
-      name,
+    const student = new Student({
       email,
-      phone,
-      registration,
-      session,
-      shift,
       password,
-      avatar,
-      banglaName,
-      fathersName,
-      mothersName,
-      addmissionRoll,
-      boardRoll,
-      department,
-      district,
-      upazila,
-      union,
-      village,
-      address,
       createDate,
       updateDate,
     });
+
+    await student.save({ validateBeforeSave: false });
 
     if (!student) {
       return next(createError(401, "Unable to create student"));
@@ -182,11 +134,11 @@ exports.registerStudent = async (req, res, next) => {
               <h1 style="text-align: center; color: #d9534f;">Library Management System</h1>
               <h2 style="text-align: center; color: #5cb85c;">Account Created Successfully!</h2>
               <p style="text-align: center; font-size: 18px; color: #333;">
-                Congratulations, <strong>${student.name}</strong>! 🎉 Your account has been successfully created.
+                Congratulations, Your account has been successfully created.
               </p>
               <div style="text-align: center; margin: 10px 0;">
                 <p style="font-size: 16px; color: #555;">You can now log in and start managing your library resources.</p>
-                <a href="${process.env.clientUrl}/login" 
+                <a href="${process.env.CLIENT_URL_1}/login" 
                    style="display: inline-block; background-color: #0275d8; color: #ffffff; text-decoration: none; font-size: 18px; font-weight: bold; padding: 10px 20px; border-radius: 5px;">
                   Login Now
                 </a>
@@ -212,6 +164,78 @@ exports.registerStudent = async (req, res, next) => {
     res.status(200).json({
       success: true,
       student,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.addStudentDetails = async (req, res, next) => {
+  try {
+    const {
+      name,
+      banglaName,
+      fathersName,
+      mothersName,
+      phone,
+      addmissionRoll,
+      boardRoll,
+      registration,
+      department,
+      session,
+      shift,
+      district,
+      upazila,
+      union,
+      village,
+      address,
+    } = req.body;
+
+    let avatar = { public_id: "", url: "" };
+
+    if (req.file?.path) {
+      const uploadedImage = await cloudinary.uploader.upload(req.file.path, {
+        folder: "students",
+      });
+      avatar.public_id = uploadedImage.public_id;
+      avatar.url = uploadedImage.secure_url;
+    } else {
+      return next(createError(400, "Avatar image is required."));
+    }
+    const updatedStudent = await Student.findByIdAndUpdate(
+      req.student.id,
+      {
+        name,
+        phone,
+        registration,
+        session,
+        shift,
+        avatar,
+        banglaName,
+        fathersName,
+        mothersName,
+        addmissionRoll,
+        boardRoll,
+        department,
+        district,
+        upazila,
+        union,
+        village,
+        address,
+      },
+      {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+      }
+    );
+
+    if (!updatedStudent) {
+      return next(createError(401, "Unable to add student details"));
+    }
+
+    res.status(200).json({
+      success: true,
     });
   } catch (error) {
     next(error);
@@ -409,7 +433,7 @@ exports.forgateStudentPassword = async (req, res, next) => {
     const token = createJsonWebToken(
       { email: student.email },
       process.env.JWT_PASSWORD_KEY,
-      10*60*1000
+      10 * 60 * 1000
     );
     const time = localTime(10);
 
@@ -522,7 +546,7 @@ exports.updateStudentEmailRequest = async (req, res, next) => {
     const token = createJsonWebToken(
       { email, id: req.student.id },
       process.env.JWT_CHANGE_EMAIL_KEY,
-      10*60*1000
+      10 * 60 * 1000
     );
     const time = localTime(10);
 

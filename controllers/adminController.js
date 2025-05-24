@@ -273,6 +273,7 @@ exports.authenticated = async (req, res, next) => {
       throw createError(404, "Login with correct information.");
     }
     const exist = await Admin.findById(decoded.id);
+    
     if (!exist) {
       throw createError(401, "You are not a Admin.");
     }

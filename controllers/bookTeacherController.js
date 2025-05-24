@@ -14,7 +14,7 @@ exports.takingRequestBookTeacher = async (req, res, next) => {
     }
 
     const bookTeacher = new BookTeacher({
-      bookId,
+      book: exists,
       teacherId,
       takingRequestDate: localTime(0),
     });
@@ -57,11 +57,13 @@ exports.cancelTakingRequestBookTeacher = async (req, res, next) => {
 exports.approveTakingRequestBookTeacher = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const { bookNumber } = req.params;
     const admin = req.admin.id;
 
     const bookTeacher = await BookTeacher.findByIdAndUpdate(id, {
       takingApproveBy: admin,
       takingApproveDate: localTime(0),
+      bookNumber: bookNumber
     });
 
     if (!bookTeacher) {
@@ -105,11 +107,16 @@ exports.returnRequestBookTeacher = async (req, res, next) => {
 
 exports.cancelReturnRequestBookTeacher = async (req, res, next) => {
   try {
-    const { id } = req.params.id;
+    const { id } = req.params;
     const teacherId = req.teacher.id;
 
     const bookTeacher = await BookTeacher.findOneAndUpdate(
-      { _id: id, teacherId, returnApproveBy: null },
+      {
+        _id: id,
+        teacherId,
+        takingApproveBy: { $ne: null },
+        returnApproveBy: null,
+      },
       { returnRequestDate: null }
     );
 
@@ -128,7 +135,7 @@ exports.cancelReturnRequestBookTeacher = async (req, res, next) => {
 
 exports.approveReturnRequestBookTeacher = async (req, res, next) => {
   try {
-    const { id } = req.params.id;
+    const { id } = req.params;
     const admin = req.admin.id;
     const bookTeacher = await BookTeacher.findByIdAndUpdate(id, {
       returnApproveBy: admin,
@@ -156,6 +163,10 @@ exports.getTeacherBorrowingRequests = async (req, res, next) => {
       bookNumber,
       takingApproveBy,
       returnApproveBy,
+      takingRequestDate,
+      takingApproveDate,
+      returnRequestDate,
+      returnApproveDate,
       sortBy,
       sortOrder,
       page = 1,
@@ -168,19 +179,55 @@ exports.getTeacherBorrowingRequests = async (req, res, next) => {
     if (bookId) filter.bookId = bookId;
     if (teacherId) filter.teacherId = teacherId;
     if (bookNumber) filter.bookNumber = bookNumber;
-    if (takingApproveBy === false) {
-      filter.takingApproveBy = null; // Filter records where takingApproveBy is null
-    } else if (takingApproveBy) {
-      filter.takingApproveBy = takingApproveBy; // Filter records with a specific takingApproveBy value
+    const takingApproveBool =
+      takingApproveBy === "true" || takingApproveBy === true;
+    const returnApproveBool =
+      returnApproveBy === "true" || returnApproveBy === true;
+    const takingRequestDateBool =
+      takingRequestDate === "true" || takingRequestDate === true;
+    const takingApproveDateBool =
+      takingApproveDate === "true" || takingApproveDate === true;
+    const returnRequestDateBool =
+      returnRequestDate === "true" || returnRequestDate === true;
+    const returnApproveDateBool =
+      returnApproveDate === "true" || returnApproveDate === true;
+
+    // Handle takingApproveBy
+    if (takingApproveBool) {
+      filter.takingApproveBy = { $ne: null };
+    } else if (takingApproveBy === "false" || takingApproveBy === false) {
+      filter.takingApproveBy = null;
     }
 
     // Handle returnApproveBy
-    if (returnApproveBy === false) {
-      filter.returnApproveBy = null; // Filter records where returnApproveBy is null
-    } else if (returnApproveBy) {
-      filter.returnApproveBy = returnApproveBy; // Filter records with a specific returnApproveBy value
+    if (returnApproveBool) {
+      filter.returnApproveBy = { $ne: null };
+    } else if (returnApproveBy === "false" || returnApproveBy === false) {
+      filter.returnApproveBy = null;
     }
 
+    if (takingRequestDateBool) {
+      filter.takingRequestDate = { $ne: null };
+    } else if (takingRequestDate === "false" || takingRequestDate === false) {
+      filter.takingRequestDate = null;
+    }
+
+    if (takingApproveDateBool) {
+      filter.takingApproveDate = { $ne: null };
+    } else if (takingApproveDate === "false" || takingApproveDate === false) {
+      filter.takingApproveDate = null;
+    }
+    if (returnRequestDateBool) {
+      filter.returnRequestDate = { $ne: null };
+    } else if (returnRequestDate === "false" || returnRequestDate === false) {
+      filter.returnRequestDate = null;
+    }
+
+    if (returnApproveDateBool) {
+      filter.returnApproveDate = { $ne: null };
+    } else if (returnApproveDate === "false" || returnApproveDate === false) {
+      filter.returnApproveDate = null;
+    }
 
     // Build the sort object
     const sort = {};
@@ -191,12 +238,10 @@ exports.getTeacherBorrowingRequests = async (req, res, next) => {
     // Pagination
     const skip = (page - 1) * limit;
 
-    // Fetch book-teacher records with filters, sorting, and pagination
     const bookTeachers = await BookTeacher.find(filter)
       .sort(sort)
       .skip(skip)
       .limit(parseInt(limit))
-      .populate("bookId", "bookName bookAuthor") // Populate book details
       .populate("teacherId", "name email") // Populate teacher details
       .populate("takingApproveBy", "name email") // Populate admin details for taking approval
       .populate("returnApproveBy", "name email"); // Populate admin details for return approval
@@ -225,6 +270,10 @@ exports.getTeacherBorrowingRequestsByAdmin = async (req, res, next) => {
       bookNumber,
       takingApproveBy,
       returnApproveBy,
+      takingRequestDate,
+      takingApproveDate,
+      returnRequestDate,
+      returnApproveDate,
       sortBy,
       sortOrder,
       page = 1,
@@ -237,17 +286,54 @@ exports.getTeacherBorrowingRequestsByAdmin = async (req, res, next) => {
     if (bookId) filter.bookId = bookId;
     if (teacherId) filter.teacherId = teacherId;
     if (bookNumber) filter.bookNumber = bookNumber;
-    if (takingApproveBy === false) {
-      filter.takingApproveBy = null; // Filter records where takingApproveBy is null
-    } else if (takingApproveBy) {
-      filter.takingApproveBy = takingApproveBy; // Filter records with a specific takingApproveBy value
+    const takingApproveBool =
+      takingApproveBy === "true" || takingApproveBy === true;
+    const returnApproveBool =
+      returnApproveBy === "true" || returnApproveBy === true;
+    const takingRequestDateBool =
+      takingRequestDate === "true" || takingRequestDate === true;
+    const takingApproveDateBool =
+      takingApproveDate === "true" || takingApproveDate === true;
+    const returnRequestDateBool =
+      returnRequestDate === "true" || returnRequestDate === true;
+    const returnApproveDateBool =
+      returnApproveDate === "true" || returnApproveDate === true;
+
+    // Handle takingApproveBy
+    if (takingApproveBool) {
+      filter.takingApproveBy = { $ne: null };
+    } else if (takingApproveBy === "false" || takingApproveBy === false) {
+      filter.takingApproveBy = null;
     }
 
     // Handle returnApproveBy
-    if (returnApproveBy === false) {
-      filter.returnApproveBy = null; // Filter records where returnApproveBy is null
-    } else if (returnApproveBy) {
-      filter.returnApproveBy = returnApproveBy; // Filter records with a specific returnApproveBy value
+    if (returnApproveBool) {
+      filter.returnApproveBy = { $ne: null };
+    } else if (returnApproveBy === "false" || returnApproveBy === false) {
+      filter.returnApproveBy = null;
+    }
+
+    if (takingRequestDateBool) {
+      filter.takingRequestDate = { $ne: null };
+    } else if (takingRequestDate === "false" || takingRequestDate === false) {
+      filter.takingRequestDate = null;
+    }
+
+    if (takingApproveDateBool) {
+      filter.takingApproveDate = { $ne: null };
+    } else if (takingApproveDate === "false" || takingApproveDate === false) {
+      filter.takingApproveDate = null;
+    }
+    if (returnRequestDateBool) {
+      filter.returnRequestDate = { $ne: null };
+    } else if (returnRequestDate === "false" || returnRequestDate === false) {
+      filter.returnRequestDate = null;
+    }
+
+    if (returnApproveDateBool) {
+      filter.returnApproveDate = { $ne: null };
+    } else if (returnApproveDate === "false" || returnApproveDate === false) {
+      filter.returnApproveDate = null;
     }
 
     // Build the sort object
@@ -264,10 +350,9 @@ exports.getTeacherBorrowingRequestsByAdmin = async (req, res, next) => {
       .sort(sort)
       .skip(skip)
       .limit(parseInt(limit))
-      .populate("bookId", "bookName bookAuthor") // Populate book details
-      .populate("teacherId", "name email") // Populate teacher details
-      .populate("takingApproveBy", "name email") // Populate admin details for taking approval
-      .populate("returnApproveBy", "name email"); // Populate admin details for return approval
+      .populate("teacherId", "name avatar department post teacherId")
+      .populate("takingApproveBy", "name email")
+      .populate("returnApproveBy", "name email");
 
     // Count total documents for pagination
     const totalBookTeachers = await BookTeacher.countDocuments(filter);

@@ -80,19 +80,7 @@ exports.SignUpVerifyTeacher = async (req, res, next) => {
 };
 exports.registerTeacher = async (req, res, next) => {
   try {
-    const {
-      password,
-      confirmPassword,
-      verificationCode,
-      name,
-      email,
-      phone,
-      nId,
-      department,
-      post,
-      teacherId,
-      address,
-    } = req.body;
+    const { password, confirmPassword, verificationCode, email } = req.body;
 
     if (password !== confirmPassword) {
       throw createError(400, "Password and Confirm Password did not match.");
@@ -121,42 +109,14 @@ exports.registerTeacher = async (req, res, next) => {
       throw createError(400, "OTP has expired.");
     }
 
-    let avatar = {
-      public_id: "",
-      url: "",
-    };
-
-    if (req.file.path) {
-      await cloudinary.uploader.upload(
-        req.file.path,
-        { folder: "teachers" },
-        (err, res) => {
-          if (err) {
-            throw createError(500, "Failed to upload avatar to Cloudinary.");
-          }
-
-          avatar.public_id = res.public_id;
-          avatar.url = res.secure_url;
-        }
-      );
-    } else {
-      throw createError(400, "Avatar image is required.");
-    }
-
-    const teacher = await Teacher.create({
-      name,
+    const teacher = new Teacher({
       email,
-      phone,
-      nId,
-      teacherId,
       password,
-      avatar,
-      department,
-      post,
-      address,
       createDate,
       updateDate,
     });
+
+    await teacher.save({ validateBeforeSave: false });
 
     if (!teacher) {
       throw createError(401, "Unable to create teacher");
@@ -174,11 +134,11 @@ exports.registerTeacher = async (req, res, next) => {
               <h1 style="text-align: center; color: #d9534f; margin-bottom: 10px;">Library Management System</h1>
               <h2 style="text-align: center; color: #5cb85c;">Account Created Successfully!</h2>
               <p style="text-align: center; font-size: 18px; color: #333;">
-                Congratulations, <strong>${teacher.name}</strong>! 🎉 Your account has been successfully created.
+                Congratulations, 🎉 Your account has been successfully created.
               </p>
               <div style="text-align: center; margin: 10px 0;">
                 <p style="font-size: 16px; color: #555;">You can now log in and start managing your library resources.</p>
-                <a href="${process.env.clientUrl}/login" 
+                <a href="${process.env.CLIENT_URL_1}/login" 
                    style="display: inline-block; background-color: #0275d8; color: #ffffff; text-decoration: none; font-size: 18px; font-weight: bold; padding: 10px 20px; border-radius: 5px;">
                   Login Now
                 </a>
@@ -204,6 +164,62 @@ exports.registerTeacher = async (req, res, next) => {
     res.status(200).json({
       success: true,
       teacher,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+exports.addTeacherDetails = async (req, res, next) => {
+  try {
+    const { name, phone, nId, department, post, teacherId, address } = req.body;
+
+    let avatar = {
+      public_id: "",
+      url: "",
+    };
+
+    if (req.file.path) {
+      await cloudinary.uploader.upload(
+        req.file.path,
+        { folder: "teachers" },
+        (err, res) => {
+          if (err) {
+            throw createError(500, "Failed to upload avatar to Cloudinary.");
+          }
+
+          avatar.public_id = res.public_id;
+          avatar.url = res.secure_url;
+        }
+      );
+    } else {
+      throw createError(400, "Avatar image is required.");
+    }
+
+    const updatedTeacher = await Teacher.findByIdAndUpdate(
+      req.teacher.id,
+      {
+        name,
+        phone,
+        nId,
+        teacherId,
+        avatar,
+        department,
+        post,
+        address,
+      },
+      {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+      }
+    );
+
+    if (!updatedTeacher) {
+      throw createError(401, "Unable to add teacher details");
+    }
+
+    res.status(200).json({
+      success: true,
     });
   } catch (error) {
     next(error);
@@ -385,7 +401,7 @@ exports.forgateTeacherPassword = async (req, res, next) => {
         email: teacher.email,
       },
       process.env.JWT_PASSWORD_KEY,
-      10*60*1000
+      10 * 60 * 1000
     );
 
     const time = localTime(10);
@@ -505,7 +521,7 @@ exports.updateTeacherEmailRequest = async (req, res, next) => {
     const token = createJsonWebToken(
       { email, id: req.teacher.id },
       process.env.JWT_CHANGE_EMAIL_KEY,
-      10*60*1000
+      10 * 60 * 1000
     );
 
     const expirationTime = localTime(10);

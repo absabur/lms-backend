@@ -3,6 +3,8 @@ const Books = require("../models/bookModel");
 const { localTime } = require("../utils/localTime.js");
 const cloudinary = require("../config/cloudinary.js");
 const { makeSlug } = require("../utils/slug.js");
+const BookStudent = require("../models/bookStudentModel.js");
+const BookTeacher = require("../models/bookTeacherModel.js");
 
 // Create Book
 exports.createBook = async (req, res, next) => {
@@ -303,10 +305,27 @@ exports.getBookBySlug = async (req, res, next) => {
     if (!book) {
       throw createError(404, "Book not found");
     }
+    let bookOccupide = 0;
+    let bookingBooksStudent = await BookStudent.countDocuments({
+      "book._id": book[0]._id, // Replace with your target book ID
+      takingApproveBy: { $ne: null }, // Only if it's approved
+      returnApproveBy: null, // Not yet returned
+    });
+    let bookingBooksTeacher = await BookTeacher.countDocuments({
+      "book._id": book[0]._id, // Replace with your target book ID
+      takingApproveBy: { $ne: null }, // Only if it's approved
+      returnApproveBy: null, // Not yet returned
+    });
+
+    bookOccupide += bookingBooksStudent
+    bookOccupide += bookingBooksTeacher
+
+    available = book[0].quantity - bookOccupide
 
     res.status(200).json({
       success: true,
       data: book,
+      available
     });
   } catch (error) {
     next(error);

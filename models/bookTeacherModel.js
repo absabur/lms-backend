@@ -1,9 +1,8 @@
 const { Schema, model } = require("mongoose");
 
 const BookTeacherSchema = new Schema({
-  bookId: {
-    type: Schema.Types.ObjectId,
-    ref: "Books",
+  book: {
+    type: Object,
     required: true,
   },
   bookNumber: {
@@ -26,15 +25,19 @@ const BookTeacherSchema = new Schema({
   },
   takingRequestDate: {
     type: Object,
+    default: null
   },
   takingApproveDate: {
     type: Object,
+    default: null
   },
   returnRequestDate: {
     type: Object,
+    default: null
   },
   returnApproveDate: {
     type: Object,
+    default: null
   }
 });
 

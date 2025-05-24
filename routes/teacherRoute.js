@@ -12,19 +12,26 @@ const {
   resetTeacherPassword,
   updateTeacherEmailRequest,
   updateTeacherEmailConfirm,
+  addTeacherDetails,
 } = require("../controllers/teacherController");
 const { createLimiterAuth } = require("../utils/limiter");
 const { isTeacher } = require("../middleware/authentication");
 
 const teacherRouter = express.Router();
 
-teacherRouter.post("/signup", createLimiterAuth(), SignUpVerifyTeacher);
+teacherRouter.post("/getotp", createLimiterAuth(), SignUpVerifyTeacher);
 
 teacherRouter.post(
   "/register",
   createLimiterAuth(),
-  upload.single("image"),
   registerTeacher
+);
+teacherRouter.post(
+  "/add-profile-details",
+  createLimiterAuth(),
+  isTeacher,
+  upload.single("image"),
+  addTeacherDetails
 );
 
 teacherRouter.post("/login", createLimiterAuth(), loginTeacher);

@@ -11,6 +11,7 @@ const {
   resetStudentPassword,
   updateStudentEmailRequest,
   updateStudentEmailConfirm,
+  addStudentDetails,
 } = require("../controllers/studentController");
 const upload = require("../utils/multer");
 const { createLimiterAuth } = require("../utils/limiter");
@@ -18,12 +19,18 @@ const { isStudent } = require("../middleware/authentication");
 
 const studentRouter = express.Router();
 
-studentRouter.post("/signup", createLimiterAuth(), SignUpVerifyStudent);
+studentRouter.post("/getotp", createLimiterAuth(), SignUpVerifyStudent);
 studentRouter.post(
   "/register",
   createLimiterAuth(),
-  upload.single("image"),
   registerStudent
+);
+studentRouter.post(
+  "/add-profile-details",
+  createLimiterAuth(),
+  isStudent,
+  upload.single("image"),
+  addStudentDetails
 );
 studentRouter.post("/login", createLimiterAuth(), loginStudent);
 studentRouter.post("/logout", createLimiterAuth(), logoutStudent);
