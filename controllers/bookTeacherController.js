@@ -53,6 +53,27 @@ exports.cancelTakingRequestBookTeacher = async (req, res, next) => {
     next(error);
   }
 };
+exports.cancelTakingRequestBookTeacherByAdmin = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const bookTeacher = await BookTeacher.findOneAndDelete({
+      _id: id,
+      takingApproveBy: null,
+    });
+
+    if (!bookTeacher) {
+      throw createError("No borrowing request found");
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Book borrowing request cancelled",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 exports.approveTakingRequestBookTeacher = async (req, res, next) => {
   try {
@@ -63,7 +84,7 @@ exports.approveTakingRequestBookTeacher = async (req, res, next) => {
     const bookTeacher = await BookTeacher.findByIdAndUpdate(id, {
       takingApproveBy: admin,
       takingApproveDate: localTime(0),
-      bookNumber: bookNumber
+      bookNumber: bookNumber,
     });
 
     if (!bookTeacher) {

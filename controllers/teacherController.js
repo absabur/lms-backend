@@ -262,7 +262,13 @@ exports.loginTeacher = async (req, res, next) => {
 
 exports.logoutTeacher = async (req, res, next) => {
   try {
-    res.clearCookie("access_token");
+    res.clearCookie("access_token", {
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "",
+      secure: process.env.NODE_ENV === "production" ? true : false,
+      path: "/",
+    });
+
     res.status(200).json({
       success: true,
     });
@@ -416,7 +422,7 @@ exports.forgateTeacherPassword = async (req, res, next) => {
           <h2 style="font-size: 30px; font-weight: 700; text-align: center; color: green;">Hello ${teacher.name}</h2>
           <p style="margin: 0 auto; font-size: 22px; font-weight: 500; text-align: center; color: black;">This is a confirmation Email for reset password. We got a request from your Email address to reset password. <br /> If you are not this requested person then ignore this Email.</p>
           <p style="text-align: center;">
-            <a style="margin: 0 auto; text-align: center; background-color: #34eb34; font-size: 25px; box-shadow: 0 0 5px black; color: black; font-weight: 700; padding: 5px 10px; text-decoration: none;" href="${process.env.clientUrl}/reset-password/${token}" target="_blank">Click Here </a>
+            <a style="margin: 0 auto; text-align: center; background-color: #34eb34; font-size: 25px; box-shadow: 0 0 5px black; color: black; font-weight: 700; padding: 5px 10px; text-decoration: none;" href="${process.env.CLIENT_URL_2}/auth/reset-password/${token}" target="_blank">Click Here </a>
           </p>
           <p style="text-align: center; font-size: 18px; color: black;">to get reset password form.</p>
           <p style="text-align: center;">
@@ -436,7 +442,7 @@ exports.forgateTeacherPassword = async (req, res, next) => {
     // Respond with success message
     res.status(200).json({
       success: true,
-      message: `An email has been sent to ${teacher.email}. Please check the email to reset your password. ${token}`,
+      message: `An email has been sent to ${teacher.email}. Please check the email to reset your password.`,
     });
   } catch (error) {
     next(error);
@@ -538,7 +544,7 @@ exports.updateTeacherEmailRequest = async (req, res, next) => {
             We received a request to change the email associated with your account. If you did not request this change, please ignore this email.
           </p>
           <p style="text-align: center;">
-            <a style="margin: 0 auto; text-align: center; background-color: #34eb34; font-size: 25px; box-shadow: 0 0 5px black; color: black; font-weight: 700; padding: 5px 10px; text-decoration: none;" href="${process.env.clientUrl}/mail-update/${token}" target="_blank">Click Here</a>
+            <a style="margin: 0 auto; text-align: center; background-color: #34eb34; font-size: 25px; box-shadow: 0 0 5px black; color: black; font-weight: 700; padding: 5px 10px; text-decoration: none;" href="${process.env.CLIENT_URL_2}/mail-update/${token}" target="_blank">Click Here</a>
           </p>
           <p style="text-align: center; font-size: 18px; color: black;">to update your email address.</p>
           <p style="text-align: center;">
@@ -761,7 +767,7 @@ exports.registerTeacherByAdmin = async (req, res, next) => {
             <p style="text-align: center; font-size: 18px; color: #333;">Congratulations, <strong>${teacher.name}</strong>! 🎉 Your account has been successfully created.</p>
             <div style="text-align: center; margin: 10px 0;">
               <p style="font-size: 16px; color: #555;">You can now log in and start managing your library resources.</p>
-              <a href="${process.env.clientUrl}/login" style="display: inline-block; background-color: #0275d8; color: #ffffff; text-decoration: none; font-size: 18px; font-weight: bold; padding: 10px 20px; border-radius: 5px;">
+              <a href="${process.env.CLIENT_URL_2}/login" style="display: inline-block; background-color: #0275d8; color: #ffffff; text-decoration: none; font-size: 18px; font-weight: bold; padding: 10px 20px; border-radius: 5px;">
                 Login Now
               </a>
             </div>

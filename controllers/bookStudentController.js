@@ -53,6 +53,27 @@ exports.cancelTakingRequestBookStudent = async (req, res, next) => {
     next(error);
   }
 };
+exports.cancelTakingRequestBookStudentByAdmin = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+
+    const bookStudent = await BookStudent.findOneAndDelete({
+      _id: id,
+      takingApproveBy: null,
+    });
+
+    if (!bookStudent) {
+      throw createError("No borrowing request found");
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Book borrowing request cancelled",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 exports.approveTakingRequestBookStudent = async (req, res, next) => {
   try {
@@ -352,7 +373,10 @@ exports.getStudentBorrowingRequestsByAdmin = async (req, res, next) => {
       .sort(sort)
       .skip(skip)
       .limit(parseInt(limit))
-      .populate("studentId", "name avatar department session shift boardRoll addmissionRoll") // Populate student details
+      .populate(
+        "studentId",
+        "name avatar department session shift boardRoll addmissionRoll"
+      ) // Populate student details
       .populate("takingApproveBy", "name email") // Populate admin details for taking approval
       .populate("returnApproveBy", "name email"); // Populate admin details for return approval
 

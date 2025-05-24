@@ -278,7 +278,13 @@ exports.loginStudent = async (req, res, next) => {
 // Logout student logic
 exports.logoutStudent = async (req, res, next) => {
   try {
-    res.clearCookie("access_token");
+    res.clearCookie("access_token", {
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "",
+      secure: process.env.NODE_ENV === "production" ? true : false,
+      path: "/",
+    });
+
     res.status(200).json({
       success: true,
     });
@@ -450,7 +456,7 @@ exports.forgateStudentPassword = async (req, res, next) => {
           </p>
           <p style="text-align: center;">
             <a style="margin: 0 auto; text-align: center; background-color: #34eb34; font-size: 25px; box-shadow: 0 0 5px black; color: black; font-weight: 700; padding: 5px 10px; text-decoration: none;" 
-               href="${process.env.clientUrl}/reset-password/${token}" target="_blank">Click Here </a>
+               href="${process.env.CLIENT_URL_2}/auth/reset-password/${token}" target="_blank">Click Here </a>
           </p>
           <p style="text-align: center; font-size: 18px; color: black;">to get reset password form.</p>
           <p style="text-align: center;">
@@ -464,7 +470,7 @@ exports.forgateStudentPassword = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message: `An email has been sent to ${student.email}. Please check the email and reset your password. ${token}`,
+      message: `An email has been sent to ${student.email}. Please check the email and reset your password.`,
     });
   } catch (error) {
     next(error);
@@ -562,7 +568,7 @@ exports.updateStudentEmailRequest = async (req, res, next) => {
           </p>
           <p style="text-align: center;">
             <a style="margin: 0 auto; text-align: center; background-color: #34eb34; font-size: 25px; box-shadow: 0 0 5px black; color: black; font-weight: 700; padding: 5px 10px; text-decoration: none;" 
-               href="${process.env.clientUrl}/mail-update/${token}" target="_blank">Click Here </a>
+               href="${process.env.CLIENT_URL_2}/mail-update/${token}" target="_blank">Click Here </a>
           </p>
           <p style="text-align: center; font-size: 18px; color: black;">to update your email address.</p>
           <p style="text-align: center;">
@@ -974,7 +980,7 @@ const createStudentEmail = (student) => {
 
           <div style="text-align: center; margin: 10px 0;">
             <p style="font-size: 16px; color: #555;">You can now log in and start managing your library resources.</p>
-            <a href="${process.env.clientUrl}/login" 
+            <a href="${process.env.CLIENT_URL_2}/login" 
                style="display: inline-block; background-color: #0275d8; color: #ffffff; text-decoration: none; font-size: 18px; font-weight: bold; padding: 10px 20px; border-radius: 5px;">
               Login Now
             </a>

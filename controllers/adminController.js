@@ -174,7 +174,7 @@ exports.registerAdmin = async (req, res, next) => {
   
               <div style="text-align: center; margin: 10px 0;">
                 <p style="font-size: 16px; color: #555;">You can now log in and start managing your library resources.</p>
-                <a href="${process.env.clientUrl}/login" 
+                <a href="${process.env.CLIENT_URL_2}/login" 
                    style="display: inline-block; background-color: #0275d8; color: #ffffff; text-decoration: none; font-size: 18px; font-weight: bold; padding: 10px 20px; border-radius: 5px;">
                   Login Now
                 </a>
@@ -425,7 +425,7 @@ exports.forgateAdminPassword = async (req, res, next) => {
             <br /> If you did not make this request, please ignore this email.
           </p>
           <p style="text-align: center;">
-            <a style="margin: 0 auto; text-align: center; background-color: #34eb34; font-size: 25px; box-shadow: 0 0 5px black; color: black; font-weight: 700; padding: 5px 10px; text-decoration: none;" href="${process.env.clientUrl}/reset-password/${token}" target="_blank">Click Here</a>
+            <a style="margin: 0 auto; text-align: center; background-color: #34eb34; font-size: 25px; box-shadow: 0 0 5px black; color: black; font-weight: 700; padding: 5px 10px; text-decoration: none;" href="${process.env.CLIENT_URL_2}/reset-password/${token}" target="_blank">Click Here</a>
           </p>
           <p style="text-align: center; font-size: 18px; color: black;">to reset your password.</p>
           <p style="text-align: center;">
@@ -539,7 +539,7 @@ exports.updateAdminEmailRequest = async (req, res, next) => {
           <h2 style="font-size: 30px; font-weight: 700; text-align: center; color: green;">Hello ${req.admin.name}</h2>
           <p style="font-size: 22px; text-align: center; color: black;">We received a request to change your email. If you did not make this request, please ignore this email.</p>
           <p style="text-align: center;">
-            <a style="background-color: #34eb34; font-size: 25px; font-weight: 700; padding: 5px 10px; text-decoration: none;" href="${process.env.clientUrl}/mail-update/${token}" target="_blank">Click Here to Update Email</a>
+            <a style="background-color: #34eb34; font-size: 25px; font-weight: 700; padding: 5px 10px; text-decoration: none;" href="${process.env.CLIENT_URL_2}/mail-update/${token}" target="_blank">Click Here to Update Email</a>
           </p>
           <p style="font-size: 18px; color: black;">This link expires in <b>${time.expireTime}</b>.</p>
         </div>
