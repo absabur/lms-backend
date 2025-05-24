@@ -396,20 +396,14 @@ exports.updateStudentProfile = async (req, res, next) => {
     };
 
     if (req.file?.path) {
-      await cloudinary.uploader.upload(
-        req.file.path,
-        { folder: "students" },
-        async (err, res) => {
-          if (err) {
-            throw createError(500, "Failed to upload avatar to Cloudinary.");
-          }
-          await cloudinary.uploader.destroy(student.avatar.public_id);
-          updatedData.avatar = {
-            public_id: res.public_id,
-            url: res.secure_url,
-          };
-        }
-      );
+      const uploadedImage = await cloudinary.uploader.upload(req.file.path, {
+        folder: "admins",
+      });
+      updatedData.avatar = {
+        public_id: uploadedImage.public_id,
+        url: uploadedImage.secure_url,
+      };
+      await cloudinary.uploader.destroy(student.avatar.public_id);
     }
 
     const updatedStudent = await Student.findByIdAndUpdate(
@@ -947,20 +941,7 @@ exports.unbanStudent = async (req, res, next) => {
   }
 };
 
-// Helper function to handle avatar upload
-const uploadAvatar = async (filePath) => {
-  try {
-    const res = await cloudinary.uploader.upload(filePath, {
-      folder: "students",
-    });
-    return {
-      public_id: res.public_id,
-      url: res.secure_url,
-    };
-  } catch (error) {
-    throw createError(500, "Avatar upload failed.");
-  }
-};
+
 
 // Helper function to create student registration email
 const createStudentEmail = (student) => {

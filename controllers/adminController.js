@@ -273,7 +273,7 @@ exports.authenticated = async (req, res, next) => {
       throw createError(404, "Login with correct information.");
     }
     const exist = await Admin.findById(decoded.id);
-    
+
     if (!exist) {
       throw createError(401, "You are not a Admin.");
     }
@@ -358,22 +358,14 @@ exports.updateAdminProfile = async (req, res, next) => {
 
     // Upload new avatar if exists
     if (req.file?.path) {
-      await cloudinary.uploader.upload(
-        req.file.path,
-        { folder: "admins" },
-        async (err, res) => {
-          if (err) {
-            throw createError(500, "Failed to upload avatar to Cloudinary.");
-          }
-
-          await cloudinary.uploader.destroy(admin.avatar.public_id);
-
-          updatedData.avatar = {
-            public_id: res.public_id,
-            url: res.secure_url,
-          };
-        }
-      );
+      const uploadedImage = await cloudinary.uploader.upload(req.file.path, {
+        folder: "admins",
+      });
+      updatedData.avatar = {
+        public_id: uploadedImage.public_id,
+        url: uploadedImage.secure_url,
+      };
+      await cloudinary.uploader.destroy(admin.avatar.public_id);
     }
 
     const updatedAdmin = await Admin.findByIdAndUpdate(

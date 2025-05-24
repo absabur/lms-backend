@@ -21,30 +21,30 @@ const {
   getAllPosts,
   allValues
 } = require("../controllers/fixedValueController.js");
-const { isSuperAdmin } = require("../middleware/authentication.js")
+const { isAdmin } = require("../middleware/authentication.js")
 
 
-fixedValueRouter.post("/countries", isSuperAdmin, createCountry);
+fixedValueRouter.post("/countries", isAdmin, createCountry);
 fixedValueRouter.get("/countries", getAllCountries);
 
 
-fixedValueRouter.post("/languages", isSuperAdmin, createLanguage);
+fixedValueRouter.post("/languages", isAdmin, createLanguage);
 fixedValueRouter.get("/languages", getAllLanguages);
 
 
-fixedValueRouter.post("/shelves", isSuperAdmin, createShelf);
+fixedValueRouter.post("/shelves", isAdmin, createShelf);
 fixedValueRouter.get("/shelves", getAllShelves);
 
 
-fixedValueRouter.post("/departments", isSuperAdmin, createDepartment);
+fixedValueRouter.post("/departments", isAdmin, createDepartment);
 fixedValueRouter.get("/departments", getAllDepartments);
 
 
-fixedValueRouter.post("/sessions", isSuperAdmin, createSession);
+fixedValueRouter.post("/sessions", isAdmin, createSession);
 fixedValueRouter.get("/sessions", getAllSessions);
 
 
-fixedValueRouter.post("/shifts", isSuperAdmin, createShift);
+fixedValueRouter.post("/shifts", isAdmin, createShift);
 fixedValueRouter.get("/shifts", getAllShifts);
 
 
@@ -56,7 +56,7 @@ fixedValueRouter.post("/upazilas", createUpazila);
 fixedValueRouter.get("/upazilas", getAllUpazilas);
 
 
-fixedValueRouter.post("/posts", isSuperAdmin, createPost);
+fixedValueRouter.post("/posts", isAdmin, createPost);
 fixedValueRouter.get("/posts", getAllPosts);
 
 fixedValueRouter.get("/all-values", allValues);
