@@ -346,6 +346,7 @@ exports.updateTeacherProfile = async (req, res, next) => {
       post: post || teacher.post,
       address: address || teacher.address,
       updateDate: localTime(0),
+      isApproved: false,
     };
 
     if (req.file?.path) {
