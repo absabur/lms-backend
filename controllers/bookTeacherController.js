@@ -2,6 +2,7 @@ const createError = require("http-errors");
 const BookTeacher = require("../models/bookTeacherModel.js");
 const { localTime } = require("../utils/localTime.js");
 const Books = require("../models/bookModel.js");
+const Teacher = require("../models/teacherModel.js");
 
 exports.takingRequestBookTeacher = async (req, res, next) => {
   try {
@@ -24,6 +25,47 @@ exports.takingRequestBookTeacher = async (req, res, next) => {
     res.status(201).json({
       success: true,
       message: "Book borrowed request successfull",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+exports.assignBookDirectlyTeacher = async (req, res, next) => {
+  try {
+    const bookId = req.params.book;
+    const teacherId = req.params.teacher;
+    const bookNumber = req.params.bookNumber;
+    const admin = req.admin.id
+
+    if (!bookNumber) {
+      throw createError(404, "Book Number Required");
+    }
+
+    let exists = await Books.findById(bookId);
+    if (!exists) {
+      throw createError(404, "Book not found");
+    }
+    let existsstudent = await Teacher.findById(teacherId);
+    if (!existsstudent) {
+      throw createError(404, "Teacher not found");
+    }
+
+    const bookTeacher = new BookTeacher({
+      book: exists,
+      teacherId,
+      takingRequestDate: localTime(0),
+      takingApproveBy: admin,
+      takingApproveDate: localTime(0),
+      bookNumber,
+    });
+
+    await bookTeacher.save();
+
+    res.status(201).json({
+      success: true,
+      message: "A book successfully assigned",
     });
   } catch (error) {
     next(error);
@@ -94,6 +136,35 @@ exports.approveTakingRequestBookTeacher = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "Book borrowing request approved",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+exports.returnBookDirectlyTeacher = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const admin = req.admin.id
+
+    const bookTeacher = await BookTeacher.findOneAndUpdate(
+      { _id: id, takingApproveBy: { $ne: null } },
+      {
+        returnRequestDate: localTime(0),
+        returnApproveDate: localTime(0),
+        returnApproveBy: admin,
+      },
+      { new: true }
+    );
+
+    if (!bookTeacher) {
+      throw createError("No borrowing request found");
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Book return successfull",
     });
   } catch (error) {
     next(error);
