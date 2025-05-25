@@ -18,6 +18,7 @@ const {
   banAdmin,
   unbanAdmin,
   authenticated,
+  getDashboard,
 } = require("../controllers/adminController");
 const { createLimiterAuth } = require("../utils/limiter");
 const { isAdmin, isSuperAdmin } = require("../middleware/authentication");
@@ -48,6 +49,8 @@ adminRouter.post("/update-teacher/:id([0-9a-fA-F]{24})", isAdmin, upload.single(
 adminRouter.get("/approve-teacher/:id([0-9a-fA-F]{24})", isAdmin, approveTeacher);
 adminRouter.get("/ban-teacher/:id([0-9a-fA-F]{24})", isAdmin, banTeacher);
 adminRouter.get("/unban-teacher/:id([0-9a-fA-F]{24})", isAdmin, unbanTeacher);
+
+adminRouter.get("/dashboard", isAdmin, getDashboard);
 
 // Student-related routes
 adminRouter.get("/all-students", isAdmin, getAllStudent);

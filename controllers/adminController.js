@@ -7,7 +7,12 @@ const cloudinary = require("../config/cloudinary.js");
 const { jwtToken } = require("../utils/jwtToken.js");
 const jwt = require("jsonwebtoken");
 const Admin = require("../models/adminModel.js");
+const Teacher = require("../models/teacherModel.js");
+const Student = require("../models/studentModel.js");
+const Book = require("../models/bookModel.js");
 const { createJsonWebToken } = require("../utils/createToken.js");
+const BookStudent = require("../models/bookStudentModel.js");
+const BookTeacher = require("../models/bookTeacherModel.js");
 
 exports.SignUpVerifyAdmin = async (req, res, next) => {
   try {
@@ -709,6 +714,91 @@ exports.unbanAdmin = async (req, res, next) => {
       { new: true, runValidators: true, useFindAndModify: false }
     );
     res.status(200).json({ success: true });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get all admins with filters
+exports.getDashboard = async (req, res, next) => {
+  try {
+    const teachersCount = await Teacher.countDocuments();
+    const studentsCount = await Student.countDocuments();
+    const books = await Book.find();
+    let booksCount = books.reduce((acc, book) => acc + (book.quantity || 0), 0);
+
+    const currentBorrowStudentsCount = await BookStudent.countDocuments({
+      takingApproveBy: { $ne: null },
+      returnApproveBy: null,
+    });
+    const currentBorrowTeachersCount = await BookTeacher.countDocuments({
+      takingApproveBy: { $ne: null },
+      returnApproveBy: null,
+    });
+    const totalBorrowStudentsCount = await BookStudent.find({
+      takingApproveBy: { $ne: null },
+    });
+    const totalBorrowTeachersCount = await BookTeacher.find({
+      takingApproveBy: { $ne: null },
+    });
+
+    const monthCountStudent = {};
+    totalBorrowStudentsCount.forEach((entry) => {
+      const dateStr = entry.takingApproveDate?.date;
+      if (!dateStr) return;
+      const date = new Date(dateStr);
+      const month = date.toLocaleString("default", { month: "short" }); // e.g., 'May'
+      monthCountStudent[month] = (monthCountStudent[month] || 0) + 1;
+    });
+    const chartDataStudent = Object.keys(monthCountStudent).map((month) => ({
+      month,
+      borrowings: monthCountStudent[month],
+    }));
+
+    const monthCountTeacher = {};
+    totalBorrowTeachersCount.forEach((entry) => {
+      const dateStr = entry.takingApproveDate?.date;
+      if (!dateStr) return;
+      const date = new Date(dateStr);
+      const month = date.toLocaleString("default", { month: "short" }); // e.g., 'May'
+      monthCountTeacher[month] = (monthCountTeacher[month] || 0) + 1;
+    });
+    const chartDataTeacher = Object.keys(monthCountTeacher).map((month) => ({
+      month,
+      borrowings: monthCountTeacher[month],
+    }));
+
+    const combineMonthlyBorrowings = (students, teachers) => {
+      const map = {};
+
+      // Process student data
+      students.forEach(({ month, borrowings }) => {
+        if (!map[month]) map[month] = { month, students: 0, teachers: 0 };
+        map[month].students += borrowings;
+      });
+
+      // Process teacher data
+      teachers.forEach(({ month, borrowings }) => {
+        if (!map[month]) map[month] = { month, students: 0, teachers: 0 };
+        map[month].teachers += borrowings;
+      });
+
+      return Object.values(map);
+    };
+    const chartData = combineMonthlyBorrowings(
+      chartDataStudent,
+      chartDataTeacher
+    );
+
+    res.status(200).json({
+      success: true,
+      teachersCount,
+      studentsCount,
+      booksCount,
+      currentBorrowStudentsCount,
+      currentBorrowTeachersCount,
+      chartData,
+    });
   } catch (error) {
     next(error);
   }
