@@ -280,7 +280,7 @@ exports.getAllBooks = async (req, res, next) => {
       .populate("country", "name")
       .populate("language", "name")
       .populate("shelf", "name")
-      .populate("department", "name")
+      .populate("department", "name");
 
     // Count total documents for pagination
     const totalBooks = await Books.countDocuments(filter);
@@ -308,31 +308,14 @@ exports.getBookBySlug = async (req, res, next) => {
       .populate("language", "name")
       .populate("shelf", "name")
       .populate("department", "name");
-      
+
     if (!book) {
       throw createError(404, "Book not found");
     }
-    let bookOccupide = 0;
-    let bookingBooksStudent = await BookStudent.countDocuments({
-      "book._id": book[0]._id, // Replace with your target book ID
-      takingApproveBy: { $ne: null }, // Only if it's approved
-      returnApproveBy: null, // Not yet returned
-    });
-    let bookingBooksTeacher = await BookTeacher.countDocuments({
-      "book._id": book[0]._id, // Replace with your target book ID
-      takingApproveBy: { $ne: null }, // Only if it's approved
-      returnApproveBy: null, // Not yet returned
-    });
-
-    bookOccupide += bookingBooksStudent;
-    bookOccupide += bookingBooksTeacher;
-
-    available = book[0].quantity - bookOccupide;
 
     res.status(200).json({
       success: true,
       data: book,
-      available,
     });
   } catch (error) {
     next(error);

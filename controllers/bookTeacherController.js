@@ -31,46 +31,6 @@ exports.takingRequestBookTeacher = async (req, res, next) => {
   }
 };
 
-exports.assignBookDirectlyTeacher = async (req, res, next) => {
-  try {
-    const bookId = req.params.book;
-    const teacherId = req.params.teacher;
-    const bookNumber = req.params.bookNumber;
-    const admin = req.admin.id;
-
-    if (!bookNumber) {
-      throw createError(404, "Book Number Required");
-    }
-
-    let exists = await Books.findById(bookId);
-    if (!exists) {
-      throw createError(404, "Book not found");
-    }
-    let existsstudent = await Teacher.findById(teacherId);
-    if (!existsstudent) {
-      throw createError(404, "Teacher not found");
-    }
-
-    const bookTeacher = new BookTeacher({
-      book: exists._id,
-      teacherId,
-      takingRequestDate: localTime(0),
-      takingApproveBy: admin,
-      takingApproveDate: localTime(0),
-      bookNumber,
-    });
-
-    await bookTeacher.save();
-
-    res.status(201).json({
-      success: true,
-      message: "A book successfully assigned",
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
 exports.cancelTakingRequestBookTeacher = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -131,7 +91,14 @@ exports.approveTakingRequestBookTeacher = async (req, res, next) => {
     if (!bookTeacher) {
       throw createError("No borrowing request found");
     }
-
+    const book = await Books.findByIdAndUpdate(
+      bookTeacher?.book?._id,
+      {
+        $inc: { quantity: -1 },
+        $pull: { bookNumbers: bookNumber },
+      },
+      { new: true } // to return the updated document
+    );
     res.status(200).json({
       success: true,
       message: "Book borrowing request approved",
@@ -141,6 +108,54 @@ exports.approveTakingRequestBookTeacher = async (req, res, next) => {
   }
 };
 
+exports.assignBookDirectlyTeacher = async (req, res, next) => {
+  try {
+    const bookId = req.params.book;
+    const teacherId = req.params.teacher;
+    const bookNumber = req.params.bookNumber;
+    const admin = req.admin.id;
+
+    if (!bookNumber) {
+      throw createError(404, "Book Number Required");
+    }
+
+    let exists = await Books.findById(bookId);
+    if (!exists) {
+      throw createError(404, "Book not found");
+    }
+    let existsstudent = await Teacher.findById(teacherId);
+    if (!existsstudent) {
+      throw createError(404, "Teacher not found");
+    }
+
+    const bookTeacher = new BookTeacher({
+      book: exists._id,
+      teacherId,
+      takingRequestDate: localTime(0),
+      takingApproveBy: admin,
+      takingApproveDate: localTime(0),
+      bookNumber,
+    });
+
+    const book = await Books.findByIdAndUpdate(
+      exists?._id,
+      {
+        $inc: { quantity: -1 },
+        $pull: { bookNumbers: bookNumber },
+      },
+      { new: true }
+    );
+
+    await bookTeacher.save();
+
+    res.status(201).json({
+      success: true,
+      message: "A book successfully assigned",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 exports.returnBookDirectlyTeacher = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -159,6 +174,15 @@ exports.returnBookDirectlyTeacher = async (req, res, next) => {
     if (!bookTeacher) {
       throw createError("No borrowing request found");
     }
+
+    const book = await Books.findByIdAndUpdate(
+      bookTeacher?.book,
+      {
+        $inc: { quantity: 1 },
+        $addToSet: { bookNumbers: bookTeacher.bookNumber },
+      },
+      { new: true }
+    );
 
     res.status(200).json({
       success: true,
@@ -235,6 +259,15 @@ exports.approveReturnRequestBookTeacher = async (req, res, next) => {
     if (!bookTeacher) {
       throw createError("No borrowing request found");
     }
+
+    const book = await Books.findByIdAndUpdate(
+      bookTeacher?.book,
+      {
+        $inc: { quantity: 1 },
+        $addToSet: { bookNumbers: bookTeacher.bookNumber },
+      },
+      { new: true }
+    );
 
     res.status(200).json({
       success: true,

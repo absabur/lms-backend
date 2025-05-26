@@ -7,7 +7,7 @@ const BookTeacherSchema = new Schema({
     required: true,
   },
   bookNumber: {
-    type: Number,
+    type: String,
   },
   teacherId: {
     type: Schema.Types.ObjectId,

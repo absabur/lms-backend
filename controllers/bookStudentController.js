@@ -92,6 +92,15 @@ exports.approveTakingRequestBookStudent = async (req, res, next) => {
       throw createError("No borrowing request found");
     }
 
+    const book = await Books.findByIdAndUpdate(
+      bookStudent?.book?._id,
+      {
+        $inc: { quantity: -1 },
+        $pull: { bookNumbers: bookNumber },
+      },
+      { new: true } // to return the updated document
+    );
+
     res.status(200).json({
       success: true,
       message: "Book borrowing request approved",
@@ -129,6 +138,15 @@ exports.assignBookDirectlyStudent = async (req, res, next) => {
       takingApproveDate: localTime(0),
       bookNumber,
     });
+
+    const book = await Books.findByIdAndUpdate(
+      exists?._id,
+      {
+        $inc: { quantity: -1 },
+        $pull: { bookNumbers: bookNumber },
+      },
+      { new: true }
+    );
 
     await bookStudent.save();
 
@@ -209,6 +227,15 @@ exports.approveReturnRequestBookStudent = async (req, res, next) => {
       throw createError("No borrowing request found");
     }
 
+    const book = await Books.findByIdAndUpdate(
+      bookStudent?.book,
+      {
+        $inc: { quantity: 1 },
+        $addToSet: { bookNumbers: bookStudent.bookNumber },
+      },
+      { new: true }
+    );
+
     res.status(200).json({
       success: true,
       message: "Book return request approved",
@@ -236,6 +263,15 @@ exports.returnBookDirectlyStudent = async (req, res, next) => {
     if (!bookStudent) {
       throw createError("No borrowing request found");
     }
+
+    const book = await Books.findByIdAndUpdate(
+      bookStudent?.book,
+      {
+        $inc: { quantity: 1 },
+        $addToSet: { bookNumbers: bookStudent.bookNumber },
+      },
+      { new: true }
+    );
 
     res.status(200).json({
       success: true,
