@@ -15,7 +15,7 @@ exports.takingRequestBookStudent = async (req, res, next) => {
     }
 
     const bookStudent = new BookStudent({
-      book: exists,
+      book: exists._id,
       studentId,
       takingRequestDate: localTime(0),
     });
@@ -106,7 +106,7 @@ exports.assignBookDirectlyStudent = async (req, res, next) => {
     const bookId = req.params.book;
     const studentId = req.params.student;
     const bookNumber = req.params.bookNumber;
-    const admin = req.admin.id
+    const admin = req.admin.id;
 
     if (!bookNumber) {
       throw createError(404, "Book Number Required");
@@ -122,7 +122,7 @@ exports.assignBookDirectlyStudent = async (req, res, next) => {
     }
 
     const bookStudent = new BookStudent({
-      book: exists,
+      book: exists._id,
       studentId,
       takingRequestDate: localTime(0),
       takingApproveBy: admin,
@@ -221,7 +221,7 @@ exports.approveReturnRequestBookStudent = async (req, res, next) => {
 exports.returnBookDirectlyStudent = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const admin = req.admin.id
+    const admin = req.admin.id;
 
     const bookStudent = await BookStudent.findOneAndUpdate(
       { _id: id, takingApproveBy: { $ne: null } },
@@ -251,7 +251,6 @@ exports.getStudentBorrowingRequests = async (req, res, next) => {
     const studentId = req.student.id;
     const {
       bookId,
-      bookNumber,
       takingApproveBy,
       returnApproveBy,
       takingRequestDate,
@@ -267,9 +266,8 @@ exports.getStudentBorrowingRequests = async (req, res, next) => {
     // Build the filter object
     const filter = {};
 
-    if (bookId) filter.bookId = bookId;
+    if (bookId) filter.book = bookId;
     if (studentId) filter.studentId = studentId;
-    if (bookNumber) filter.bookNumber = bookNumber;
     const takingApproveBool =
       takingApproveBy === "true" || takingApproveBy === true;
     const returnApproveBool =
@@ -334,6 +332,10 @@ exports.getStudentBorrowingRequests = async (req, res, next) => {
       .sort(sort)
       .skip(skip)
       .limit(parseInt(limit))
+      .populate(
+        "book",
+        "images bookName slug bookAuthor department mrp bookNumbers"
+      ) // Populate student details
       .populate("studentId", "name email") // Populate student details
       .populate("takingApproveBy", "name email") // Populate admin details for taking approval
       .populate("returnApproveBy", "name email"); // Populate admin details for return approval
@@ -359,7 +361,6 @@ exports.getStudentBorrowingRequestsByAdmin = async (req, res, next) => {
     const {
       bookId,
       studentId,
-      bookNumber,
       takingApproveBy,
       returnApproveBy,
       takingRequestDate,
@@ -377,7 +378,6 @@ exports.getStudentBorrowingRequestsByAdmin = async (req, res, next) => {
 
     if (bookId) filter.bookId = bookId;
     if (studentId) filter.studentId = studentId;
-    if (bookNumber) filter.bookNumber = bookNumber;
     const takingApproveBool =
       takingApproveBy === "true" || takingApproveBy === true;
     const returnApproveBool =
@@ -442,6 +442,10 @@ exports.getStudentBorrowingRequestsByAdmin = async (req, res, next) => {
       .sort(sort)
       .skip(skip)
       .limit(parseInt(limit))
+      .populate(
+        "book",
+        "images bookName slug bookAuthor department mrp bookNumbers"
+      )
       .populate(
         "studentId",
         "name avatar department session shift boardRoll addmissionRoll"

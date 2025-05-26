@@ -15,7 +15,7 @@ exports.takingRequestBookTeacher = async (req, res, next) => {
     }
 
     const bookTeacher = new BookTeacher({
-      book: exists,
+      book: exists._id,
       teacherId,
       takingRequestDate: localTime(0),
     });
@@ -31,13 +31,12 @@ exports.takingRequestBookTeacher = async (req, res, next) => {
   }
 };
 
-
 exports.assignBookDirectlyTeacher = async (req, res, next) => {
   try {
     const bookId = req.params.book;
     const teacherId = req.params.teacher;
     const bookNumber = req.params.bookNumber;
-    const admin = req.admin.id
+    const admin = req.admin.id;
 
     if (!bookNumber) {
       throw createError(404, "Book Number Required");
@@ -53,7 +52,7 @@ exports.assignBookDirectlyTeacher = async (req, res, next) => {
     }
 
     const bookTeacher = new BookTeacher({
-      book: exists,
+      book: exists._id,
       teacherId,
       takingRequestDate: localTime(0),
       takingApproveBy: admin,
@@ -142,11 +141,10 @@ exports.approveTakingRequestBookTeacher = async (req, res, next) => {
   }
 };
 
-
 exports.returnBookDirectlyTeacher = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const admin = req.admin.id
+    const admin = req.admin.id;
 
     const bookTeacher = await BookTeacher.findOneAndUpdate(
       { _id: id, takingApproveBy: { $ne: null } },
@@ -252,7 +250,6 @@ exports.getTeacherBorrowingRequests = async (req, res, next) => {
     const teacherId = req.teacher.id;
     const {
       bookId,
-      bookNumber,
       takingApproveBy,
       returnApproveBy,
       takingRequestDate,
@@ -270,7 +267,6 @@ exports.getTeacherBorrowingRequests = async (req, res, next) => {
 
     if (bookId) filter.bookId = bookId;
     if (teacherId) filter.teacherId = teacherId;
-    if (bookNumber) filter.bookNumber = bookNumber;
     const takingApproveBool =
       takingApproveBy === "true" || takingApproveBy === true;
     const returnApproveBool =
@@ -334,6 +330,10 @@ exports.getTeacherBorrowingRequests = async (req, res, next) => {
       .sort(sort)
       .skip(skip)
       .limit(parseInt(limit))
+      .populate(
+        "book",
+        "images bookName slug bookAuthor department mrp bookNumbers"
+      )
       .populate("teacherId", "name email") // Populate teacher details
       .populate("takingApproveBy", "name email") // Populate admin details for taking approval
       .populate("returnApproveBy", "name email"); // Populate admin details for return approval
@@ -359,7 +359,6 @@ exports.getTeacherBorrowingRequestsByAdmin = async (req, res, next) => {
     const {
       bookId,
       teacherId,
-      bookNumber,
       takingApproveBy,
       returnApproveBy,
       takingRequestDate,
@@ -377,7 +376,6 @@ exports.getTeacherBorrowingRequestsByAdmin = async (req, res, next) => {
 
     if (bookId) filter.bookId = bookId;
     if (teacherId) filter.teacherId = teacherId;
-    if (bookNumber) filter.bookNumber = bookNumber;
     const takingApproveBool =
       takingApproveBy === "true" || takingApproveBy === true;
     const returnApproveBool =
@@ -442,6 +440,10 @@ exports.getTeacherBorrowingRequestsByAdmin = async (req, res, next) => {
       .sort(sort)
       .skip(skip)
       .limit(parseInt(limit))
+      .populate(
+        "book",
+        "images bookName slug bookAuthor department mrp bookNumbers"
+      )
       .populate("teacherId", "name avatar department post teacherId")
       .populate("takingApproveBy", "name email")
       .populate("returnApproveBy", "name email");
