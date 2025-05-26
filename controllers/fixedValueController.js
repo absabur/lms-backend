@@ -251,8 +251,7 @@ exports.getAllUpazilas = async (req, res, next) => {
     // Fetch upazilas with filters, sorting, and pagination
     const upazilas = await Upazila.find(filter)
       .sort(sort)
-      .populate("districtId", "name") // Populate district details
-      .populate("createdBy", "name email"); // Populate admin details
+      .populate("districtId", "name");
 
     // Count total documents for pagination
     const totalUpazilas = await Upazila.countDocuments(filter);
@@ -313,7 +312,7 @@ exports.allValues = async (req, res, next) => {
 
     const posts = await Post.find();
 
-    const upazilas = await Upazila.find();
+    const upazilas = await Upazila.find().populate("districtId", "name");
 
     res.status(200).json({
       countries,
@@ -324,7 +323,7 @@ exports.allValues = async (req, res, next) => {
       shifts,
       districts,
       posts,
-      upazilas
+      upazilas,
     });
   } catch (error) {
     next(error);

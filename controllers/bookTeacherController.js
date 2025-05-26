@@ -334,9 +334,6 @@ exports.getTeacherBorrowingRequests = async (req, res, next) => {
         "book",
         "images bookName slug bookAuthor department mrp bookNumbers"
       )
-      .populate("teacherId", "name email") // Populate teacher details
-      .populate("takingApproveBy", "name email") // Populate admin details for taking approval
-      .populate("returnApproveBy", "name email"); // Populate admin details for return approval
 
     // Count total documents for pagination
     const totalBookTeachers = await BookTeacher.countDocuments(filter);
@@ -445,8 +442,6 @@ exports.getTeacherBorrowingRequestsByAdmin = async (req, res, next) => {
         "images bookName slug bookAuthor department mrp bookNumbers"
       )
       .populate("teacherId", "name avatar department post teacherId")
-      .populate("takingApproveBy", "name email")
-      .populate("returnApproveBy", "name email");
 
     // Count total documents for pagination
     const totalBookTeachers = await BookTeacher.countDocuments(filter);
