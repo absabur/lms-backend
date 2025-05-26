@@ -4,7 +4,6 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 require("dotenv").config();
 
-
 const jwt = require("jsonwebtoken");
 const createError = require("http-errors");
 
@@ -23,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const clientUrls = [process.env.CLIENT_URL_1, process.env.CLIENT_URL_2];
-console.log(clientUrls)
+console.log(clientUrls);
 
 app.use(
   cors({
@@ -51,7 +50,7 @@ app.use("/api/fixed-values", fixedValueRouter);
 app.get("/api/authenticated", async (req, res, next) => {
   try {
     // 1. Get token from cookies or headers
-    const token = req.cookies.access_token || req.headers.access_token;
+    const token = req.cookies.access_token;
 
     if (!token || token === "null") {
       throw createError(401, "You must login first.");
@@ -66,22 +65,28 @@ app.get("/api/authenticated", async (req, res, next) => {
     // 3. Check role by user ID
     let role = "";
     const [teacher, student] = await Promise.all([
-      Teacher.findById(decoded.id),
-      Student.findById(decoded.id),
+      Teacher.findById(decoded.id)
+        .populate("post", "name")
+        .populate("department", "name"),
+      Student.findById(decoded.id)
+        .populate("department", "name")
+        .populate("session", "name")
+        .populate("shift", "name")
+        .populate("district", "name")
+        .populate("upazila", "name"),
     ]);
 
     let profile;
 
     if (teacher) {
       role = "teacher";
-      profile = teacher
+      profile = teacher;
     } else if (student) {
       role = "student";
-      profile = student
+      profile = student;
     } else {
       throw createError(404, "User not found.");
     }
-
 
     // 4. Respond with role
     res.status(200).json({

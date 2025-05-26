@@ -207,7 +207,6 @@ exports.registerAdmin = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "Registration successfully",
-      admin,
     });
   } catch (error) {
     next(error);
@@ -236,8 +235,6 @@ exports.loginAdmin = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      admin,
-      token,
     });
   } catch (error) {
     next(error);
@@ -266,8 +263,6 @@ exports.authenticated = async (req, res, next) => {
     let token;
     if (req.cookies.access_token !== undefined) {
       token = req.cookies.access_token;
-    } else {
-      token = req.headers.access_token;
     }
 
     if (!token || token === "null") {
@@ -383,7 +378,7 @@ exports.updateAdminProfile = async (req, res, next) => {
       }
     );
 
-    res.status(200).json({ success: true, admin: updatedAdmin });
+    res.status(200).json({ success: true });
   } catch (error) {
     next(error);
   }

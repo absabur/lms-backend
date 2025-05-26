@@ -30,25 +30,25 @@ const BooksSchema = new Schema({
     min: [0, "Number of Pages cannot be negative"],
   },
   country: {
-    type: String,
-    trim: true,
+    type: Schema.Types.ObjectId,
+    ref: "Country",
   },
   language: {
-    type: String,
-    trim: true,
+    type: Schema.Types.ObjectId,
+    ref: "Language",
   },
   mrp: {
     type: Number,
     required: [true, "Please Enter MRP"],
   },
   shelf: {
-    type: String,
-    trim: true,
+    type: Schema.Types.ObjectId,
+    ref: "Shelf",
   },
   department: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "Department",
     required: [true, "Please Enter department"],
-    trim: true,
   },
   quantity: {
     type: Number,

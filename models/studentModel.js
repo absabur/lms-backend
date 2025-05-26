@@ -59,29 +59,29 @@ const studentSchema = new Schema({
     unique: [true, "registration already in student"],
   },
   department: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "Department",
     required: [true, "Please enter department."],
-    trim: true,
   },
   session: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "Session",
     required: [true, "Please enter session."],
-    trim: true,
   },
   shift: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "Shift",
     required: [true, "Please enter shift."],
-    trim: true,
   },
   district: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "District",
     required: [true, "Please enter district."],
-    trim: true,
   },
   upazila: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "Upazila",
     required: [true, "Please enter upazila."],
-    trim: true,
   },
   union: {
     type: String,
@@ -96,7 +96,7 @@ const studentSchema = new Schema({
   address: {
     type: String,
     required: [true, "Please enter address."],
-    trim: true
+    trim: true,
   },
   password: {
     type: String,

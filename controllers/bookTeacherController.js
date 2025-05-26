@@ -330,10 +330,14 @@ exports.getTeacherBorrowingRequests = async (req, res, next) => {
       .sort(sort)
       .skip(skip)
       .limit(parseInt(limit))
-      .populate(
-        "book",
-        "images bookName slug bookAuthor department mrp bookNumbers"
-      )
+      .populate({
+        path: "book",
+        select: "images bookName slug bookAuthor department mrp bookNumbers",
+        populate: {
+          path: "department", // the field inside `book` you want to populate
+          select: "name ", // adjust this to the fields you want from department
+        },
+      });
 
     // Count total documents for pagination
     const totalBookTeachers = await BookTeacher.countDocuments(filter);
@@ -437,11 +441,35 @@ exports.getTeacherBorrowingRequestsByAdmin = async (req, res, next) => {
       .sort(sort)
       .skip(skip)
       .limit(parseInt(limit))
-      .populate(
-        "book",
-        "images bookName slug bookAuthor department mrp bookNumbers"
-      )
-      .populate("teacherId", "name avatar department post teacherId")
+      .populate({
+        path: "book",
+        select:
+          "images bookName slug bookAuthor department shelf mrp bookNumbers",
+        populate: [
+          {
+            path: "department", // the field inside `book` you want to populate
+            select: "name", // adjust this to the fields you want from department
+          },
+          {
+            path: "shelf", // the field inside `book` you want to populate
+            select: "name", // adjust this to the fields you want from department
+          },
+        ],
+      })
+      .populate({
+        path: "teacherId",
+        select: "name avatar department post teacherId",
+        populate: [
+          {
+            path: "department",
+            select: "name", // adjust based on your schema
+          },
+          {
+            path: "post",
+            select: "name", // adjust based on your schema
+          },
+        ],
+      });
 
     // Count total documents for pagination
     const totalBookTeachers = await BookTeacher.countDocuments(filter);

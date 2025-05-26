@@ -85,7 +85,6 @@ exports.createBook = async (req, res, next) => {
     res.status(201).json({
       success: true,
       message: "Book created successfully",
-      data: savedBook,
     });
   } catch (error) {
     console.log(error);
@@ -195,7 +194,6 @@ exports.updateBook = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "Book updated successfully",
-      data: updatedBook,
     });
   } catch (error) {
     next(error);
@@ -278,7 +276,11 @@ exports.getAllBooks = async (req, res, next) => {
     const books = await Books.find(filter)
       .sort(sort)
       .skip(skip)
-      .limit(parseInt(limit));
+      .limit(parseInt(limit))
+      .populate("country", "name")
+      .populate("language", "name")
+      .populate("shelf", "name")
+      .populate("department", "name")
 
     // Count total documents for pagination
     const totalBooks = await Books.countDocuments(filter);
@@ -301,7 +303,12 @@ exports.getBookBySlug = async (req, res, next) => {
   try {
     const slug = req.params.slug;
 
-    const book = await Books.find({ slug: slug });
+    const book = await Books.find({ slug: slug })
+      .populate("country", "name")
+      .populate("language", "name")
+      .populate("shelf", "name")
+      .populate("department", "name");
+      
     if (!book) {
       throw createError(404, "Book not found");
     }
@@ -317,15 +324,15 @@ exports.getBookBySlug = async (req, res, next) => {
       returnApproveBy: null, // Not yet returned
     });
 
-    bookOccupide += bookingBooksStudent
-    bookOccupide += bookingBooksTeacher
+    bookOccupide += bookingBooksStudent;
+    bookOccupide += bookingBooksTeacher;
 
-    available = book[0].quantity - bookOccupide
+    available = book[0].quantity - bookOccupide;
 
     res.status(200).json({
       success: true,
       data: book,
-      available
+      available,
     });
   } catch (error) {
     next(error);

@@ -48,11 +48,11 @@ fixedValueRouter.post("/shifts", isAdmin, createShift);
 fixedValueRouter.get("/shifts", getAllShifts);
 
 
-fixedValueRouter.post("/districts", createDistrict);
+fixedValueRouter.post("/districts", isAdmin, createDistrict);
 fixedValueRouter.get("/districts", getAllDistricts);
 
 
-fixedValueRouter.post("/upazilas", createUpazila);
+fixedValueRouter.post("/upazilas", isAdmin, createUpazila);
 fixedValueRouter.get("/upazilas", getAllUpazilas);
 
 
@@ -60,7 +60,5 @@ fixedValueRouter.post("/posts", isAdmin, createPost);
 fixedValueRouter.get("/posts", getAllPosts);
 
 fixedValueRouter.get("/all-values", allValues);
-
-
 
 module.exports = fixedValueRouter;

@@ -332,10 +332,14 @@ exports.getStudentBorrowingRequests = async (req, res, next) => {
       .sort(sort)
       .skip(skip)
       .limit(parseInt(limit))
-      .populate(
-        "book",
-        "images bookName slug bookAuthor department mrp bookNumbers"
-      )
+      .populate({
+        path: "book",
+        select: "images bookName slug bookAuthor department mrp bookNumbers",
+        populate: {
+          path: "department", // the field inside `book` you want to populate
+          select: "name", // adjust this to the fields you want from department
+        },
+      });
 
     // Count total documents for pagination
     const totalBookStudents = await BookStudent.countDocuments(filter);
@@ -439,14 +443,39 @@ exports.getStudentBorrowingRequestsByAdmin = async (req, res, next) => {
       .sort(sort)
       .skip(skip)
       .limit(parseInt(limit))
-      .populate(
-        "book",
-        "images bookName slug bookAuthor department mrp bookNumbers"
-      )
-      .populate(
-        "studentId",
-        "name avatar department session shift boardRoll addmissionRoll"
-      )
+      .populate({
+        path: "book",
+        select:
+          "images bookName slug bookAuthor department shelf mrp bookNumbers",
+        populate: [
+          {
+            path: "department", // the field inside `book` you want to populate
+            select: "name", // adjust this to the fields you want from department
+          },
+          {
+            path: "shelf", // the field inside `book` you want to populate
+            select: "name", // adjust this to the fields you want from department
+          },
+        ],
+      })
+      .populate({
+        path: "studentId",
+        select: "name avatar department session shift boardRoll addmissionRoll",
+        populate: [
+          {
+            path: "department",
+            select: "name", // adjust as needed
+          },
+          {
+            path: "session",
+            select: "name", // adjust as needed
+          },
+          {
+            path: "shift",
+            select: "name", // adjust as needed
+          },
+        ],
+      });
 
     // Count total documents for pagination
     const totalBookStudents = await BookStudent.countDocuments(filter);

@@ -163,7 +163,6 @@ exports.registerTeacher = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      teacher,
     });
   } catch (error) {
     next(error);
@@ -252,8 +251,6 @@ exports.loginTeacher = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      teacher,
-      token,
     });
   } catch (error) {
     next(error);
@@ -279,7 +276,9 @@ exports.logoutTeacher = async (req, res, next) => {
 
 exports.getTeacherProfile = async (req, res, next) => {
   try {
-    const teacher = await Teacher.findById(req.teacher.id).select("-password");
+    const teacher = await Teacher.findById(req.teacher.id)
+      .populate("post", name)
+      .populate("department", name);
     if (!teacher) {
       throw createError(404, "Teacher not found.");
     }
@@ -346,7 +345,7 @@ exports.updateTeacherProfile = async (req, res, next) => {
       post: post || teacher.post,
       address: address || teacher.address,
       updateDate: localTime(0),
-      isApproved: false,
+      isApproved: true,
     };
 
     if (req.file?.path) {
@@ -381,7 +380,6 @@ exports.updateTeacherProfile = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      teacher: updatedTeacher,
     });
   } catch (error) {
     next(error);
@@ -666,7 +664,8 @@ exports.getAllTeacher = async (req, res, next) => {
       .sort(sort)
       .skip(skip)
       .limit(parseInt(limit))
-      .select("-password"); // Exclude password field
+      .populate("post", name)
+      .populate("department", name);
 
     // Count total documents for pagination
     const totalTeachers = await Teacher.countDocuments(filter);
@@ -687,7 +686,9 @@ exports.getAllTeacher = async (req, res, next) => {
 // Function to get teacher details by ID
 exports.getTeacherById = async (req, res, next) => {
   try {
-    const teacher = await Teacher.findById(req.params.id);
+    const teacher = await Teacher.findById(req.params.id)
+      .populate("post", "name")
+      .populate("department", "name");
     if (!teacher) {
       throw createError(404, "Teacher not found.");
     }
@@ -788,7 +789,6 @@ exports.registerTeacherByAdmin = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      teacher,
     });
   } catch (error) {
     next(error);
@@ -844,7 +844,7 @@ exports.updateTeacherProfileByAdmin = async (req, res, next) => {
       }
     );
 
-    res.status(200).json({ success: true, teacher: updatedTeacher });
+    res.status(200).json({ success: true });
   } catch (error) {
     next(error);
   }

@@ -163,7 +163,6 @@ exports.registerStudent = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      student,
     });
   } catch (error) {
     next(error);
@@ -267,8 +266,6 @@ exports.loginStudent = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      student,
-      token,
     });
   } catch (error) {
     next(error);
@@ -296,7 +293,12 @@ exports.logoutStudent = async (req, res, next) => {
 // Get student profile
 exports.getStudentProfile = async (req, res, next) => {
   try {
-    const student = await Student.findById(req.student.id).select("-password");
+    const student = await Student.findById(req.student.id)
+      .populate("department", "name")
+      .populate("session", "name")
+      .populate("shift", "name")
+      .populate("district", "name")
+      .populate("upazila", "name");
 
     if (!student) {
       return next(createError(404, "Student not found."));
@@ -392,7 +394,7 @@ exports.updateStudentProfile = async (req, res, next) => {
       village: village || student.village,
       address: address || student.address,
       updateDate: localTime(0),
-      isApproved: false,
+      isApproved: true,
     };
 
     if (req.file?.path) {
@@ -416,7 +418,7 @@ exports.updateStudentProfile = async (req, res, next) => {
       }
     );
 
-    res.status(200).json({ success: true, student: updatedStudent });
+    res.status(200).json({ success: true });
   } catch (error) {
     next(error);
   }
@@ -694,7 +696,11 @@ exports.getAllStudent = async (req, res, next) => {
       .sort(sort)
       .skip(skip)
       .limit(parseInt(limit))
-      .select("-password"); // Exclude password field
+      .populate("department", "name")
+      .populate("session", "name")
+      .populate("shift", "name")
+      .populate("district", "name")
+      .populate("upazila", "name");
 
     // Count total documents for pagination
     const totalStudents = await Student.countDocuments(filter);
@@ -715,7 +721,12 @@ exports.getAllStudent = async (req, res, next) => {
 // Get student by ID
 exports.getStudentById = async (req, res, next) => {
   try {
-    const student = await Student.findById(req.params.id);
+    const student = await Student.findById(req.params.id)
+      .populate("department", "name")
+      .populate("session", "name")
+      .populate("shift", "name")
+      .populate("district", "name")
+      .populate("upazila", "name");
     if (!student) {
       throw createError(404, "Student not found.");
     }
@@ -809,7 +820,6 @@ exports.registerStudentByAdmin = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      student,
     });
   } catch (error) {
     next(error);
@@ -877,7 +887,6 @@ exports.updateStudentProfileByAdmin = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      student: updatedStudent,
     });
   } catch (error) {
     next(error);
@@ -940,8 +949,6 @@ exports.unbanStudent = async (req, res, next) => {
     next(error);
   }
 };
-
-
 
 // Helper function to create student registration email
 const createStudentEmail = (student) => {

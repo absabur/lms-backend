@@ -34,14 +34,14 @@ const teacherSchema = new Schema({
     unique: [true, "registration already in teacher"],
   },
   post: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "Post",
     required: [true, "Please enter Post."],
-    trim: true,
   },
   department: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "Department",
     required: [true, "Please enter Department."],
-    trim: true,
   },
   address: {
     type: String,
