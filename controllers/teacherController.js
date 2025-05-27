@@ -634,8 +634,8 @@ exports.getAllTeacher = async (req, res, next) => {
     if (name) filter.name = { $regex: name, $options: "i" };
     if (email) filter.email = { $regex: email, $options: "i" };
     if (phone) filter.phone = { $regex: phone, $options: "i" };
-    if (post) filter.post = { $regex: post, $options: "i" };
-    if (department) filter.department = { $regex: department, $options: "i" };
+    if (post) filter.post = post;
+    if (department) filter.department = department;
     if (isApproved) filter.isApproved = isApproved === "true";
     if (isBan) filter.isBan = isBan === "true";
 

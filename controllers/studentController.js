@@ -653,11 +653,11 @@ exports.getAllStudent = async (req, res, next) => {
       filter.mothersName = { $regex: mothersName, $options: "i" };
     if (email) filter.email = { $regex: email, $options: "i" };
     if (phone) filter.phone = { $regex: phone, $options: "i" };
-    if (department) filter.department = { $regex: department, $options: "i" };
-    if (session) filter.session = { $regex: session, $options: "i" };
-    if (shift) filter.shift = { $regex: shift, $options: "i" };
-    if (district) filter.district = { $regex: district, $options: "i" };
-    if (upazila) filter.upazila = { $regex: upazila, $options: "i" };
+    if (department) filter.department = department;
+    if (session) filter.session = session;
+    if (shift) filter.shift = shift;
+    if (district) filter.district = district;
+    if (upazila) filter.upazila = upazila;
     if (union) filter.union = { $regex: union, $options: "i" };
     if (village) filter.village = { $regex: village, $options: "i" };
     if (isApproved) filter.isApproved = isApproved === "true";

@@ -220,7 +220,6 @@ exports.getAllBooks = async (req, res, next) => {
       sortOrder,
       page = 1,
       limit = 10,
-      search,
     } = req.query;
 
     // Build the filter object
@@ -230,10 +229,10 @@ exports.getAllBooks = async (req, res, next) => {
     if (bookAuthor) filter.bookAuthor = { $regex: bookAuthor, $options: "i" };
     if (publisher) filter.publisher = { $regex: publisher, $options: "i" };
     if (edition) filter.edition = { $regex: edition, $options: "i" };
-    if (language) filter.language = { $regex: language, $options: "i" };
-    if (department) filter.department = { $regex: department, $options: "i" };
-    if (shelf) filter.shelf = { $regex: shelf, $options: "i" };
-    if (country) filter.country = { $regex: country, $options: "i" };
+    if (language) filter.language = language;
+    if (department) filter.department = department;
+    if (shelf) filter.shelf = shelf;
+    if (country) filter.country = country;
 
     // Filter by MRP range
     if (mrpMin || mrpMax) {
@@ -247,20 +246,6 @@ exports.getAllBooks = async (req, res, next) => {
       filter.quantity = {};
       if (quantityMin) filter.quantity.$gte = parseInt(quantityMin);
       if (quantityMax) filter.quantity.$lte = parseInt(quantityMax);
-    }
-
-    // Search across multiple fields
-    if (search) {
-      filter.$or = [
-        { bookName: { $regex: search, $options: "i" } },
-        { bookAuthor: { $regex: search, $options: "i" } },
-        { publisher: { $regex: search, $options: "i" } },
-        { edition: { $regex: search, $options: "i" } },
-        { language: { $regex: search, $options: "i" } },
-        { department: { $regex: search, $options: "i" } },
-        { shelf: { $regex: search, $options: "i" } },
-        { country: { $regex: search, $options: "i" } },
-      ];
     }
 
     // Build the sort object
