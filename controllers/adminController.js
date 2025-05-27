@@ -13,6 +13,7 @@ const Book = require("../models/bookModel.js");
 const { createJsonWebToken } = require("../utils/createToken.js");
 const BookStudent = require("../models/bookStudentModel.js");
 const BookTeacher = require("../models/bookTeacherModel.js");
+const { Department } = require("../models/fixedValueModel.js");
 
 exports.SignUpVerifyAdmin = async (req, res, next) => {
   try {
@@ -718,10 +719,23 @@ exports.unbanAdmin = async (req, res, next) => {
 exports.getDashboard = async (req, res, next) => {
   try {
     const teachersCount = await Teacher.countDocuments();
-    const studentsCount = await Student.countDocuments();
+    const studentsCount = await Student.countDocuments(); // Only get department name
     const books = await Book.find();
-    let booksCount = books.reduce((acc, book) => acc + (book.quantity || 0), 0);
 
+    const departments = await Department.find();
+    const deptMap = departments.reduce((acc, dept) => {
+      acc[dept._id.toString()] = dept.name;
+      return acc;
+    }, {});
+
+    const bookCountByDepartment = books.reduce((acc, book) => {
+      const deptName = deptMap[book.department.toString()];
+      if (!acc[deptName]) acc[deptName] = 0;
+      acc[deptName]++;
+      return acc;
+    }, {});
+
+    let booksCount = books.reduce((acc, book) => acc + (book.quantity || 0), 0);
     const currentBorrowStudentsCount = await BookStudent.countDocuments({
       takingApproveBy: { $ne: null },
       returnApproveBy: null,
@@ -790,8 +804,12 @@ exports.getDashboard = async (req, res, next) => {
       teachersCount,
       studentsCount,
       booksCount,
+      uniqueBooksCount: books.length,
       currentBorrowStudentsCount,
       currentBorrowTeachersCount,
+      totalBorrowStudentsCount: totalBorrowStudentsCount.length,
+      totalBorrowTeachersCount: totalBorrowTeachersCount.length,
+      bookCountByDepartment,
       chartData,
     });
   } catch (error) {
