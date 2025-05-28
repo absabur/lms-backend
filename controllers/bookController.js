@@ -218,6 +218,7 @@ exports.getAllBooks = async (req, res, next) => {
       quantityMax,
       sortBy,
       sortOrder,
+      search,
       page = 1,
       limit = 10,
     } = req.query;
@@ -233,6 +234,14 @@ exports.getAllBooks = async (req, res, next) => {
     if (department) filter.department = department;
     if (shelf) filter.shelf = shelf;
     if (country) filter.country = country;
+    if (search) {
+      filter.$or = [
+        { bookName: { $regex: search, $options: "i" } },
+        { bookAuthor: { $regex: search, $options: "i" } },
+        { publisher: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+      ];
+    }
 
     // Filter by MRP range
     if (mrpMin || mrpMax) {
