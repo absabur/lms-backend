@@ -15,7 +15,7 @@ const {
   addTeacherDetails,
 } = require("../controllers/teacherController");
 const { createLimiterAuth } = require("../utils/limiter");
-const { isTeacher } = require("../middleware/authentication");
+const { isTeacher, isTeacherForCompleteProfile } = require("../middleware/authentication");
 
 const teacherRouter = express.Router();
 
@@ -29,7 +29,7 @@ teacherRouter.post(
 teacherRouter.post(
   "/add-profile-details",
   createLimiterAuth(),
-  isTeacher,
+  isTeacherForCompleteProfile,
   upload.single("image"),
   addTeacherDetails
 );

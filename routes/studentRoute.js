@@ -15,7 +15,7 @@ const {
 } = require("../controllers/studentController");
 const upload = require("../utils/multer");
 const { createLimiterAuth } = require("../utils/limiter");
-const { isStudent } = require("../middleware/authentication");
+const { isStudent, isStudentForCompleteProfile } = require("../middleware/authentication");
 
 const studentRouter = express.Router();
 
@@ -28,7 +28,7 @@ studentRouter.post(
 studentRouter.post(
   "/add-profile-details",
   createLimiterAuth(),
-  isStudent,
+  isStudentForCompleteProfile,
   upload.single("image"),
   addStudentDetails
 );

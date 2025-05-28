@@ -199,7 +199,7 @@ exports.addStudentDetails = async (req, res, next) => {
       avatar.public_id = uploadedImage.public_id;
       avatar.url = uploadedImage.secure_url;
     } else {
-      return next(createError(400, "Avatar image is required."));
+      return next(createError(400, "Profile image is required"));
     }
     const updatedStudent = await Student.findByIdAndUpdate(
       req.student.id,
@@ -777,7 +777,7 @@ exports.registerStudentByAdmin = async (req, res, next) => {
       avatar.public_id = uploadedImage.public_id;
       avatar.url = uploadedImage.secure_url;
     } else {
-      return next(createError(400, "Avatar image is required."));
+      return next(createError(400, "Profile image is required"));
     }
 
     const student = await Student.create({
@@ -812,11 +812,11 @@ exports.registerStudentByAdmin = async (req, res, next) => {
 
     const emailData = createStudentEmail(student);
 
-    try {
-      await sendEmailWithNode(emailData);
-    } catch (error) {
-      throw createError(500, "Failed to send verification email.");
-    }
+    // try {
+    //   await sendEmailWithNode(emailData);
+    // } catch (error) {
+    //   throw createError(500, "Failed to send verification email.");
+    // }
 
     res.status(200).json({
       success: true,

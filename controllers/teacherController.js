@@ -191,7 +191,7 @@ exports.addTeacherDetails = async (req, res, next) => {
         }
       );
     } else {
-      throw createError(400, "Avatar image is required.");
+      throw createError(400, "Profile image is required");
     }
 
     const updatedTeacher = await Teacher.findByIdAndUpdate(
@@ -733,7 +733,7 @@ exports.registerTeacherByAdmin = async (req, res, next) => {
       avatar.public_id = uploadResult.public_id;
       avatar.url = uploadResult.secure_url;
     } else {
-      throw createError(400, "Avatar image is required.");
+      throw createError(400, "Profile image is required");
     }
 
     const teacher = await Teacher.create({
@@ -781,11 +781,11 @@ exports.registerTeacherByAdmin = async (req, res, next) => {
       `,
     };
 
-    try {
-      await sendEmailWithNode(emailData);
-    } catch (error) {
-      throw createError(500, "Failed to send verification email.");
-    }
+    // try {
+    //   await sendEmailWithNode(emailData);
+    // } catch (error) {
+    //   throw createError(500, "Failed to send verification email.");
+    // }
 
     res.status(200).json({
       success: true,

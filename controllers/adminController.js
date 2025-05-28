@@ -144,7 +144,7 @@ exports.registerAdmin = async (req, res, next) => {
         }
       );
     } else {
-      throw createError(400, "Avatar image is required.");
+      throw createError(400, "Profile image is required");
     }
 
     const admin = await Admin.create({

@@ -36,27 +36,27 @@ const studentSchema = new Schema({
     type: String,
     required: [true, "Please enter email."],
     trim: true,
-    unique: [true, "email already in student"],
+    unique: [true, "Email already in use"],
     validate: [validator.isEmail, "Please Enter a valid Email"],
   },
   phone: {
     type: String,
     required: [true, "Please enter phone."],
     trim: true,
-    unique: [true, "phone already in student"],
+    unique: [true, "Phone already in use"],
     minlength: [11, "Phone number must be atleast 11 charecter."],
   },
   addmissionRoll: {
     type: Number,
-    unique: [true, "addmision roll already in student"],
+    unique: [true, "Addmision roll already in use"],
   },
   boardRoll: {
     type: Number,
-    unique: [true, "board roll already in student"],
+    unique: [true, "Board roll already in use"],
   },
   registration: {
     type: Number,
-    unique: [true, "registration already in student"],
+    unique: [true, "Registration number already in use"],
   },
   department: {
     type: Schema.Types.ObjectId,
@@ -107,7 +107,7 @@ const studentSchema = new Schema({
   avatar: {
     public_id: {
       type: String,
-      required: true,
+      required: [true, "Profile image is required"],
     },
     url: {
       type: String,

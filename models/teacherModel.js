@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const teacherSchema = new Schema({
   name: {
     type: String,
-    required: [true, "Please enter Your name."],
+    required: [true, "Please enter your name."],
     trim: true,
     minlength: [3, "Teacher Name must be atleast 3 charecter."],
     maxlength: [50, "Teacher Name allowed max 50 charecter."],
@@ -15,23 +15,23 @@ const teacherSchema = new Schema({
     type: String,
     required: [true, "Please enter email."],
     trim: true,
-    unique: [true, "email already in teacher"],
+    unique: [true, "Email already in use"],
     validate: [validator.isEmail, "Please Enter a valid Email"],
   },
   phone: {
     type: String,
     required: [true, "Please enter phone."],
     trim: true,
-    unique: [true, "phone already in teacher"],
+    unique: [true, "Phone already in use"],
     minlength: [11, "Phone number must be atleast 11 charecter."],
   },
   nId: {
     type: Number,
-    unique: [true, "addmision roll already in teacher"],
+    unique: [true, "NID already in use"],
   },
   teacherId: {
     type: Number,
-    unique: [true, "registration already in teacher"],
+    unique: [true, "TeacherId already in use"],
   },
   post: {
     type: Schema.Types.ObjectId,
