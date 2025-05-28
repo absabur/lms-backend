@@ -115,7 +115,8 @@ exports.createDepartment = async (req, res, next) => {
 
 exports.getAllDepartments = async (req, res, next) => {
   try {
-    const departments = await Department.find();
+    let name = req.query.name;
+    const departments = await Department.find({ name });
     res.status(200).json({ departments });
   } catch (error) {
     next(error);
@@ -296,25 +297,7 @@ exports.getAllPosts = async (req, res, next) => {
 
 exports.allValues = async (req, res, next) => {
   try {
-    const countries = await Country.find();
-
-    const languages = await Language.find();
-
-    const shelves = await Shelf.find();
-
-    const departments = await Department.find();
-
-    const sessions = await Session.find();
-
-    const shifts = await Shift.find();
-
-    const districts = await District.find();
-
-    const posts = await Post.find();
-
-    const upazilas = await Upazila.find().populate("districtId", "name");
-
-    res.status(200).json({
+    const {
       countries,
       languages,
       shelves,
@@ -324,7 +307,22 @@ exports.allValues = async (req, res, next) => {
       districts,
       posts,
       upazilas,
-    });
+    } = req.query;
+
+    const results = {};
+
+    if (countries) results.countries = await Country.find();
+    if (languages) results.languages = await Language.find();
+    if (shelves) results.shelves = await Shelf.find();
+    if (departments) results.departments = await Department.find();
+    if (sessions) results.sessions = await Session.find();
+    if (shifts) results.shifts = await Shift.find();
+    if (districts) results.districts = await District.find();
+    if (posts) results.posts = await Post.find();
+    if (upazilas)
+      results.upazilas = await Upazila.find().populate("districtId", "name");
+    
+    res.status(200).json(results);
   } catch (error) {
     next(error);
   }

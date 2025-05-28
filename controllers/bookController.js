@@ -3,8 +3,8 @@ const Books = require("../models/bookModel");
 const { localTime } = require("../utils/localTime.js");
 const cloudinary = require("../config/cloudinary.js");
 const { makeSlug } = require("../utils/slug.js");
-const BookStudent = require("../models/bookStudentModel.js");
-const BookTeacher = require("../models/bookTeacherModel.js");
+const { Department } = require("../models/fixedValueModel.js");
+const { default: mongoose } = require("mongoose");
 
 // Create Book
 exports.createBook = async (req, res, next) => {
@@ -226,12 +226,23 @@ exports.getAllBooks = async (req, res, next) => {
     // Build the filter object
     const filter = {};
 
+    let departmentId = "";
+    const isObjectId = mongoose.Types.ObjectId.isValid(department);
+    if (department && !isObjectId) {
+      const departmentDoc = await Department.findOne({ name: department });
+      if (!departmentDoc) {
+        throw createError(400, "Department Not Found");
+      }
+      departmentId = departmentDoc._id;
+    }
+
     if (bookName) filter.bookName = { $regex: bookName, $options: "i" };
     if (bookAuthor) filter.bookAuthor = { $regex: bookAuthor, $options: "i" };
     if (publisher) filter.publisher = { $regex: publisher, $options: "i" };
     if (edition) filter.edition = { $regex: edition, $options: "i" };
     if (language) filter.language = language;
     if (department) filter.department = department;
+    if (departmentId) filter.department = departmentId;
     if (shelf) filter.shelf = shelf;
     if (country) filter.country = country;
     if (search) {

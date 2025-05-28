@@ -75,7 +75,6 @@ const DepartmentSchema = new Schema({
 });
 
 const Department = model("Department", DepartmentSchema);
-module.exports = Department
 
 const SessionSchema = new Schema({
   name: {
