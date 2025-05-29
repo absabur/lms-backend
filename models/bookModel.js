@@ -55,6 +55,11 @@ const BooksSchema = new Schema({
     required: [true, "Please Enter Quantity"],
     min: [0, "Quantity cannot be negative"],
   },
+  total: {
+    type: Number,
+    required: [true, "Please Enter Quantity"],
+    min: [0, "Quantity cannot be negative"],
+  },
   bookNumbers: [
     {
       type: String,

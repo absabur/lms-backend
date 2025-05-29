@@ -1,5 +1,7 @@
 const createError = require("http-errors");
 const Books = require("../models/bookModel");
+const BookStudent = require("../models/bookStudentModel");
+const BookTeacher = require("../models/bookTeacherModel");
 const { localTime } = require("../utils/localTime.js");
 const cloudinary = require("../config/cloudinary.js");
 const { makeSlug } = require("../utils/slug.js");
@@ -70,6 +72,7 @@ exports.createBook = async (req, res, next) => {
       mrp,
       shelf,
       department,
+      total: quantity,
       quantity,
       images,
       description,
@@ -182,6 +185,7 @@ exports.updateBook = async (req, res, next) => {
     book.mrp = mrp || book.mrp;
     book.shelf = shelf || book.shelf;
     book.department = department || book.department;
+    book.total = book.total;
     book.quantity = quantity || book.quantity;
     book.description = description || book.description;
     book.bookNumbers = bookNumbersArray || book.bookNumbers;
@@ -321,6 +325,46 @@ exports.getBookBySlug = async (req, res, next) => {
     res.status(200).json({
       success: true,
       data: book,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+exports.mostBorrowBook = async (req, res, next) => {
+  try {
+    const mostReadByStudent = await BookStudent.aggregate([
+      { $group: { _id: "$book", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 1 },
+      {
+        $lookup: {
+          from: "books", // Make sure this matches your actual collection name
+          localField: "_id",
+          foreignField: "_id",
+          as: "book",
+        },
+      },
+      { $unwind: "$book" },
+    ]);
+    const mostReadByTeacher = await BookTeacher.aggregate([
+      { $group: { _id: "$book", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 1 },
+      {
+        $lookup: {
+          from: "books", // Make sure this matches your actual collection name
+          localField: "_id",
+          foreignField: "_id",
+          as: "book",
+        },
+      },
+      { $unwind: "$book" },
+    ]);
+
+    res.status(200).json({
+      success: true,
+      mostReadByStudent,
+      mostReadByTeacher,
     });
   } catch (error) {
     next(error);
