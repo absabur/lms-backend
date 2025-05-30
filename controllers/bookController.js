@@ -124,7 +124,8 @@ exports.updateBook = async (req, res, next) => {
 
     let bookNumbersArray = book.bookNumbers;
     if (bookNumbers) {
-      bookNumbersArray = bookNumbers.split(", ").map((item) => item.trim());
+      bookNumbersArray = bookNumbers.split(",").map((item) => item.trim());
+      
       if (quantity) {
         if (bookNumbersArray.length != quantity) {
           throw createError(400, "Book numbers should be equal to quantity.");

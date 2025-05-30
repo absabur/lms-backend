@@ -735,7 +735,9 @@ exports.getDashboard = async (req, res, next) => {
       return acc;
     }, {});
 
-    let booksCount = books.reduce((acc, book) => acc + (book.quantity || 0), 0);
+    let availabeBooksCount = books.reduce((acc, book) => acc + (book.quantity || 0), 0);
+    let totalBooksCount = books.reduce((acc, book) => acc + (book.total || 0), 0);
+    
     const currentBorrowStudentsCount = await BookStudent.countDocuments({
       takingApproveBy: { $ne: null },
       returnApproveBy: null,
@@ -803,7 +805,8 @@ exports.getDashboard = async (req, res, next) => {
       success: true,
       teachersCount,
       studentsCount,
-      booksCount,
+      availabeBooksCount,
+      totalBooksCount,
       uniqueBooksCount: books.length,
       currentBorrowStudentsCount,
       currentBorrowTeachersCount,
