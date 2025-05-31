@@ -188,7 +188,7 @@ exports.registerTeacher = async (req, res, next) => {
             </p>
             <div style="text-align: center; margin: 10px 0;">
               <p style="font-size: 16px; color: #555;">You can now log in and start managing your library resources.</p>
-              <a href="${process.env.CLIENT_URL_1}/login" 
+              <a href="${process.env.CLIENT_URL_1}/auth/login" 
                  style="display: inline-block; background-color: #0275d8; color: #ffffff; text-decoration: none; font-size: 18px; font-weight: bold; padding: 10px 20px; border-radius: 5px;">
                 Login Now
               </a>
@@ -429,18 +429,24 @@ exports.forgateTeacherPassword = async (req, res, next) => {
       email,
       subject: "Reset Password",
       html: `
-        <div style="background-color: rgba(175, 175, 175, 0.455); width: 100%; min-width: 350px; padding: 1rem; box-sizing: border-box;">
-          <p style="font-size: 25px; font-weight: 500; text-align: center; color: tomato;">ABS E-Commerce</p>
-          <h2 style="font-size: 30px; font-weight: 700; text-align: center; color: green;">Hello ${teacher.name}</h2>
-          <p style="margin: 0 auto; font-size: 22px; font-weight: 500; text-align: center; color: black;">This is a confirmation Email for reset password. We got a request from your Email address to reset password. <br /> If you are not this requested person then ignore this Email.</p>
-          <p style="text-align: center;">
-            <a style="margin: 0 auto; text-align: center; background-color: #34eb34; font-size: 25px; box-shadow: 0 0 5px black; color: black; font-weight: 700; padding: 5px 10px; text-decoration: none;" href="${process.env.CLIENT_URL_2}/auth/reset-password/${token}" target="_blank">Click Here </a>
-          </p>
-          <p style="text-align: center; font-size: 18px; color: black;">to get reset password form.</p>
-          <p style="text-align: center;">
-            <b style="color: red; font-size: 20px;">This Email will expire in <span style="color: black;">${time.expireTime}</span>, Reset Password before this time.</b>
-          </p>
-        </div>
+          <div style="background-color: #f4f4f4; width: 100%; min-width: 350px; padding: 10px; box-sizing: border-box; font-family: Arial, sans-serif;">
+            <div style="max-width: 500px; margin: 0 auto; background: #ffffff; padding: 10px; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);">
+              <h1 style="text-align: center; color: #d9534f;">Library Management System</h1>
+              <div style="text-align: center; margin: 10px 0;">
+                <a href="${process.env.CLIENT_URL_1}/auth/reset-password/${token}" 
+                   style="display: inline-block; background-color: #0275d8; color: #ffffff; text-decoration: none; font-size: 18px; font-weight: bold; padding: 10px 20px; border-radius: 5px;">
+                  Reset Password
+                </a>
+              </div>
+              <p style="text-align: center; font-size: 16px; color: #555;">
+                If you are not the requested person then ignore this email.
+              </p>
+              <hr style="border: none; border-top: 1px solid #ddd; margin: 10px 0;">
+              <p style="text-align: center; font-size: 14px; color: #777;">
+                Thank you for joining us! 📚<br> Library Management System Team
+              </p>
+            </div>
+          </div>
       `,
     };
 
@@ -799,7 +805,7 @@ exports.registerTeacherByAdmin = async (req, res, next) => {
             <p style="text-align: center; font-size: 18px; color: #333;">Congratulations, <strong>${teacher.name}</strong>! 🎉 Your account has been successfully created.</p>
             <div style="text-align: center; margin: 10px 0;">
               <p style="font-size: 16px; color: #555;">You can now log in and start managing your library resources.</p>
-              <a href="${process.env.CLIENT_URL_2}/login" style="display: inline-block; background-color: #0275d8; color: #ffffff; text-decoration: none; font-size: 18px; font-weight: bold; padding: 10px 20px; border-radius: 5px;">
+              <a href="${process.env.CLIENT_URL_2}/auth/login" style="display: inline-block; background-color: #0275d8; color: #ffffff; text-decoration: none; font-size: 18px; font-weight: bold; padding: 10px 20px; border-radius: 5px;">
                 Login Now
               </a>
             </div>
@@ -811,11 +817,11 @@ exports.registerTeacherByAdmin = async (req, res, next) => {
       `,
     };
 
-    // try {
-    //   await sendEmailWithNode(emailData);
-    // } catch (error) {
-    //   throw createError(500, "Failed to send verification email.");
-    // }
+    try {
+      await sendEmailWithNode(emailData);
+    } catch (error) {
+      throw createError(500, "Failed to send verification email.");
+    }
 
     res.status(200).json({
       success: true,

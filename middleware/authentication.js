@@ -54,7 +54,7 @@ exports.isStudent = async (req, res, next) => {
     if (!exist.isApproved) {
       throw createError(401, "Your account is not approved.");
     }
-    if (exist.ban) {
+    if (exist.isBan) {
       throw createError(
         402,
         "Unfortunately you are ban now, please contact to author."
@@ -191,7 +191,7 @@ exports.isTeacher = async (req, res, next) => {
     if (!exist.isApproved) {
       throw createError(401, "Your account is not approved.");
     }
-    if (exist.ban) {
+    if (exist.isBan) {
       throw createError(
         402,
         "Unfortunately you are ban now, please contact to author."
