@@ -80,7 +80,19 @@ exports.SignUpVerifyTeacher = async (req, res, next) => {
 };
 exports.registerTeacher = async (req, res, next) => {
   try {
-    const { password, confirmPassword, verificationCode, email } = req.body;
+    const {
+      password,
+      confirmPassword,
+      verificationCode,
+      email,
+      name,
+      phone,
+      nId,
+      department,
+      post,
+      teacherId,
+      address,
+    } = req.body;
 
     if (password !== confirmPassword) {
       throw createError(400, "Password and Confirm Password did not match.");
@@ -88,6 +100,23 @@ exports.registerTeacher = async (req, res, next) => {
 
     if (!verificationCode) {
       throw createError(400, "Invalid or expired verification code.");
+    }
+
+    const orConditions = [];
+    if (email) orConditions.push({ email });
+    if (phone) orConditions.push({ phone });
+    if (nId) orConditions.push({ nId });
+    if (teacherId) orConditions.push({ teacherId });
+
+    if (orConditions.length > 0) {
+      const existing = await Teacher.findOne({ $or: orConditions });
+
+      if (existing) {
+        throw createError(
+          400,
+          "Teacher already exists with same email/phone/nId/teacherId"
+        );
+      }
     }
 
     const otp = await Otp.findOne({ email, otp: verificationCode });
@@ -109,11 +138,32 @@ exports.registerTeacher = async (req, res, next) => {
       throw createError(400, "OTP has expired.");
     }
 
+    // Upload avatar from file if present
+    let avatar = { public_id: "", url: "" };
+    if (req.file?.path) {
+      const uploadedImage = await cloudinary.uploader.upload(req.file.path, {
+        folder: "teachers",
+      });
+      avatar.public_id = uploadedImage.public_id;
+      avatar.url = uploadedImage.secure_url;
+    } else {
+      throw createError(400, "Profile image is required");
+    }
+
+    // Create teacher with all details
     const teacher = new Teacher({
       email,
       password,
       createDate,
       updateDate,
+      name,
+      phone,
+      nId,
+      department,
+      post,
+      teacherId,
+      address,
+      avatar,
     });
 
     await teacher.save({ validateBeforeSave: false });
@@ -129,92 +179,36 @@ exports.registerTeacher = async (req, res, next) => {
       subject:
         "Welcome to Library Management System - Account Created Successfully",
       html: `
-          <div style="background-color: #f4f4f4; width: 100%; min-width: 350px; padding: 10px; box-sizing: border-box; font-family: Arial, sans-serif;">
-            <div style="max-width: 500px; margin: 0 auto; background: #ffffff; padding: 10px; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);">
-              <h1 style="text-align: center; color: #d9534f; margin-bottom: 10px;">Library Management System</h1>
-              <h2 style="text-align: center; color: #5cb85c;">Account Created Successfully!</h2>
-              <p style="text-align: center; font-size: 18px; color: #333;">
-                Congratulations, 🎉 Your account has been successfully created.
-              </p>
-              <div style="text-align: center; margin: 10px 0;">
-                <p style="font-size: 16px; color: #555;">You can now log in and start managing your library resources.</p>
-                <a href="${process.env.CLIENT_URL_1}/login" 
-                   style="display: inline-block; background-color: #0275d8; color: #ffffff; text-decoration: none; font-size: 18px; font-weight: bold; padding: 10px 20px; border-radius: 5px;">
-                  Login Now
-                </a>
-              </div>
-              <p style="text-align: center; font-size: 16px; color: #555;">
-                If you did not create this account, please contact our support team immediately.
-              </p>
-              <hr style="border: none; border-top: 1px solid #ddd; margin: 10px 0;">
-              <p style="text-align: center; font-size: 14px; color: #777;">
-                Thank you for joining us! 📚<br> Library Management System Team
-              </p>
+        <div style="background-color: #f4f4f4; width: 100%; min-width: 350px; padding: 10px; box-sizing: border-box; font-family: Arial, sans-serif;">
+          <div style="max-width: 500px; margin: 0 auto; background: #ffffff; padding: 10px; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);">
+            <h1 style="text-align: center; color: #d9534f; margin-bottom: 10px;">Library Management System</h1>
+            <h2 style="text-align: center; color: #5cb85c;">Account Created Successfully!</h2>
+            <p style="text-align: center; font-size: 18px; color: #333;">
+              Congratulations, 🎉 Your account has been successfully created.
+            </p>
+            <div style="text-align: center; margin: 10px 0;">
+              <p style="font-size: 16px; color: #555;">You can now log in and start managing your library resources.</p>
+              <a href="${process.env.CLIENT_URL_1}/login" 
+                 style="display: inline-block; background-color: #0275d8; color: #ffffff; text-decoration: none; font-size: 18px; font-weight: bold; padding: 10px 20px; border-radius: 5px;">
+                Login Now
+              </a>
             </div>
+            <p style="text-align: center; font-size: 16px; color: #555;">
+              If you did not create this account, please contact our support team immediately.
+            </p>
+            <hr style="border: none; border-top: 1px solid #ddd; margin: 10px 0;">
+            <p style="text-align: center; font-size: 14px; color: #777;">
+              Thank you for joining us! 📚<br> Library Management System Team
+            </p>
           </div>
-        `,
+        </div>
+      `,
     };
 
     try {
       await sendEmailWithNode(emailData);
     } catch (error) {
       throw createError(500, "Failed to send verification email.");
-    }
-
-    res.status(200).json({
-      success: true,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-exports.addTeacherDetails = async (req, res, next) => {
-  try {
-    const { name, phone, nId, department, post, teacherId, address } = req.body;
-
-    let avatar = {
-      public_id: "",
-      url: "",
-    };
-
-    if (req.file.path) {
-      await cloudinary.uploader.upload(
-        req.file.path,
-        { folder: "teachers" },
-        (err, res) => {
-          if (err) {
-            throw createError(500, "Failed to upload avatar to Cloudinary.");
-          }
-
-          avatar.public_id = res.public_id;
-          avatar.url = res.secure_url;
-        }
-      );
-    } else {
-      throw createError(400, "Profile image is required");
-    }
-
-    const updatedTeacher = await Teacher.findByIdAndUpdate(
-      req.teacher.id,
-      {
-        name,
-        phone,
-        nId,
-        teacherId,
-        avatar,
-        department,
-        post,
-        address,
-      },
-      {
-        new: true,
-        runValidators: true,
-        useFindAndModify: false,
-      }
-    );
-
-    if (!updatedTeacher) {
-      throw createError(401, "Unable to add teacher details");
     }
 
     res.status(200).json({
@@ -334,6 +328,22 @@ exports.updateTeacherProfile = async (req, res, next) => {
         400,
         "Unable to update profile. Teacher does not exist."
       );
+    }
+    const orConditions = [];
+    if (email) orConditions.push({ email });
+    if (phone) orConditions.push({ phone });
+    if (nId) orConditions.push({ nId });
+    if (teacherId) orConditions.push({ teacherId });
+
+    if (orConditions.length > 0) {
+      const existing = await Teacher.findOne({ $or: orConditions });
+
+      if (existing) {
+        throw createError(
+          400,
+          "Teacher already exists with same email/phone/nId/teacherId"
+        );
+      }
     }
 
     const updatedData = {
@@ -717,6 +727,23 @@ exports.registerTeacherByAdmin = async (req, res, next) => {
       address,
     } = req.body;
 
+    const orConditions = [];
+    if (email) orConditions.push({ email });
+    if (phone) orConditions.push({ phone });
+    if (nId) orConditions.push({ nId });
+    if (teacherId) orConditions.push({ teacherId });
+
+    if (orConditions.length > 0) {
+      const existing = await Teacher.findOne({ $or: orConditions });
+
+      if (existing) {
+        throw createError(
+          400,
+          "Teacher already exists with same email/phone/nId/teacherId"
+        );
+      }
+    }
+
     if (password !== confirmPassword) {
       throw createError(400, "Password and Confirm Password did not match.");
     }
@@ -807,6 +834,22 @@ exports.updateTeacherProfileByAdmin = async (req, res, next) => {
         400,
         "Unable to update Profile. Teacher does not exist."
       );
+    }
+    const orConditions = [];
+    if (email) orConditions.push({ email });
+    if (phone) orConditions.push({ phone });
+    if (nId) orConditions.push({ nId });
+    if (teacherId) orConditions.push({ teacherId });
+
+    if (orConditions.length > 0) {
+      const existing = await Teacher.findOne({ $or: orConditions });
+
+      if (existing) {
+        throw createError(
+          400,
+          "Teacher already exists with same email/phone/nId/teacherId"
+        );
+      }
     }
 
     const updatedData = {

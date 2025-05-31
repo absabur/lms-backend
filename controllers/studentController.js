@@ -79,14 +79,55 @@ exports.SignUpVerifyStudent = async (req, res, next) => {
 // Register student logic
 exports.registerStudent = async (req, res, next) => {
   try {
-    const { password, confirmPassword, verificationCode, email } = req.body;
+    const {
+      password,
+      confirmPassword,
+      verificationCode,
+      email,
+      name,
+      banglaName,
+      fathersName,
+      mothersName,
+      phone,
+      addmissionRoll,
+      boardRoll,
+      registration,
+      department,
+      session,
+      shift,
+      district,
+      upazila,
+      union,
+      village,
+      address,
+    } = req.body;
 
+    const orConditions = [];
+    if (email) orConditions.push({ email });
+    if (phone) orConditions.push({ phone });
+    if (addmissionRoll) orConditions.push({ addmissionRoll });
+    if (boardRoll) orConditions.push({ boardRoll });
+    if (registration) orConditions.push({ registration });
+
+    if (orConditions.length > 0) {
+      const existing = await Student.findOne({ $or: orConditions });
+
+      if (existing) {
+        throw createError(
+          400,
+          "Student already exists with same email/phone/roll/registration"
+        );
+      }
+    }
+
+    // Password match check
     if (password !== confirmPassword) {
       return next(
         createError(400, "Password and Confirm Password did not match.")
       );
     }
 
+    // Verification code check
     if (!verificationCode) {
       return next(createError(400, "Invalid or expired verification code."));
     }
@@ -109,21 +150,56 @@ exports.registerStudent = async (req, res, next) => {
       return next(createError(400, "OTP has expired."));
     }
 
+    // Check profile image
+    if (!req.file?.path) {
+      return next(createError(400, "Profile image is required"));
+    }
+
+    // Upload avatar image
+    const uploadedImage = await cloudinary.uploader.upload(req.file.path, {
+      folder: "students",
+    });
+
+    const avatar = {
+      public_id: uploadedImage.public_id,
+      url: uploadedImage.secure_url,
+    };
+
+    // Create new student with all details
     const student = new Student({
       email,
       password,
       createDate,
       updateDate,
+      name,
+      banglaName,
+      fathersName,
+      mothersName,
+      phone,
+      addmissionRoll,
+      boardRoll,
+      registration,
+      department,
+      session,
+      shift,
+      district,
+      upazila,
+      union,
+      village,
+      address,
+      avatar,
     });
 
-    await student.save({ validateBeforeSave: false });
+    await student.save({ validateBeforeSave: true });
 
     if (!student) {
       return next(createError(401, "Unable to create student"));
     }
 
+    // Delete OTP after successful registration
     await Otp.deleteOne({ email, otp: verificationCode });
 
+    // Send welcome email
     const emailData = {
       email,
       subject:
@@ -155,86 +231,15 @@ exports.registerStudent = async (req, res, next) => {
         `,
     };
 
-    try {
-      await sendEmailWithNode(emailData);
-    } catch (error) {
-      return next(createError(500, "Failed to send verification email."));
-    }
+    // try {
+    //   await sendEmailWithNode(emailData);
+    // } catch (error) {
+    //   return next(createError(500, "Failed to send verification email."));
+    // }
 
     res.status(200).json({
       success: true,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-exports.addStudentDetails = async (req, res, next) => {
-  try {
-    const {
-      name,
-      banglaName,
-      fathersName,
-      mothersName,
-      phone,
-      addmissionRoll,
-      boardRoll,
-      registration,
-      department,
-      session,
-      shift,
-      district,
-      upazila,
-      union,
-      village,
-      address,
-    } = req.body;
-
-    let avatar = { public_id: "", url: "" };
-
-    if (req.file?.path) {
-      const uploadedImage = await cloudinary.uploader.upload(req.file.path, {
-        folder: "students",
-      });
-      avatar.public_id = uploadedImage.public_id;
-      avatar.url = uploadedImage.secure_url;
-    } else {
-      return next(createError(400, "Profile image is required"));
-    }
-    const updatedStudent = await Student.findByIdAndUpdate(
-      req.student.id,
-      {
-        name,
-        phone,
-        registration,
-        session,
-        shift,
-        avatar,
-        banglaName,
-        fathersName,
-        mothersName,
-        addmissionRoll,
-        boardRoll,
-        department,
-        district,
-        upazila,
-        union,
-        village,
-        address,
-      },
-      {
-        new: true,
-        runValidators: true,
-        useFindAndModify: false,
-      }
-    );
-
-    if (!updatedStudent) {
-      return next(createError(401, "Unable to add student details"));
-    }
-
-    res.status(200).json({
-      success: true,
+      studentId: student._id,
     });
   } catch (error) {
     next(error);
@@ -367,6 +372,24 @@ exports.updateStudentProfile = async (req, res, next) => {
       village,
       address,
     } = req.body;
+
+    const orConditions = [];
+    if (email) orConditions.push({ email });
+    if (phone) orConditions.push({ phone });
+    if (addmissionRoll) orConditions.push({ addmissionRoll });
+    if (boardRoll) orConditions.push({ boardRoll });
+    if (registration) orConditions.push({ registration });
+
+    if (orConditions.length > 0) {
+      const existing = await Student.findOne({ $or: orConditions });
+
+      if (existing) {
+        throw createError(
+          400,
+          "Student already exists with same email/phone/roll/registration"
+        );
+      }
+    }
 
     const student = await Student.findById(req.student.id);
     if (!student) {
@@ -768,6 +791,24 @@ exports.registerStudentByAdmin = async (req, res, next) => {
       throw createError(400, "Password and Confirm Password do not match.");
     }
 
+    const orConditions = [];
+    if (email) orConditions.push({ email });
+    if (phone) orConditions.push({ phone });
+    if (addmissionRoll) orConditions.push({ addmissionRoll });
+    if (boardRoll) orConditions.push({ boardRoll });
+    if (registration) orConditions.push({ registration });
+
+    if (orConditions.length > 0) {
+      const existing = await Student.findOne({ $or: orConditions });
+
+      if (existing) {
+        throw createError(
+          400,
+          "Student already exists with same email/phone/roll/registration"
+        );
+      }
+    }
+
     let avatar = { public_id: "", url: "" };
 
     if (req.file?.path) {
@@ -832,6 +873,24 @@ exports.updateStudentProfileByAdmin = async (req, res, next) => {
     const student = await Student.findById(req.params.id);
     if (!student) {
       throw createError(400, "Student not found.");
+    }
+
+    const orConditions = [];
+    if (req.body.email) orConditions.push({ email });
+    if (req.body.phone) orConditions.push({ phone });
+    if (req.body.addmissionRoll) orConditions.push({ addmissionRoll });
+    if (req.body.boardRoll) orConditions.push({ boardRoll });
+    if (req.body.registration) orConditions.push({ registration });
+
+    if (orConditions.length > 0) {
+      const existing = await Student.findOne({ $or: orConditions });
+
+      if (existing) {
+        throw createError(
+          400,
+          "Student already exists with same email/phone/roll/registration"
+        );
+      }
     }
 
     let updatedData = {

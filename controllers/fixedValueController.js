@@ -219,7 +219,7 @@ exports.createUpazila = async (req, res, next) => {
       createdBy: adminId,
       createdDate: localTime(0),
     });
-    await newUpazila.save();
+    await newUpazila.save({validateBeforeSave: true});
     res
       .status(201)
       .json({ message: "Upazila created successfully", upazila: newUpazila });

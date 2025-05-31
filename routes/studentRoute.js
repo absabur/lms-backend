@@ -11,11 +11,10 @@ const {
   resetStudentPassword,
   updateStudentEmailRequest,
   updateStudentEmailConfirm,
-  addStudentDetails,
 } = require("../controllers/studentController");
 const upload = require("../utils/multer");
 const { createLimiterAuth } = require("../utils/limiter");
-const { isStudent, isStudentForCompleteProfile } = require("../middleware/authentication");
+const { isStudent } = require("../middleware/authentication");
 
 const studentRouter = express.Router();
 
@@ -23,15 +22,10 @@ studentRouter.post("/getotp", createLimiterAuth(), SignUpVerifyStudent);
 studentRouter.post(
   "/register",
   createLimiterAuth(),
+  upload.single("image"),
   registerStudent
 );
-studentRouter.post(
-  "/add-profile-details",
-  createLimiterAuth(),
-  isStudentForCompleteProfile,
-  upload.single("image"),
-  addStudentDetails
-);
+
 studentRouter.post("/login", createLimiterAuth(), loginStudent);
 studentRouter.post("/logout", createLimiterAuth(), logoutStudent);
 studentRouter.get("/profile", isStudent, getStudentProfile);
@@ -46,7 +40,11 @@ studentRouter.post(
 
 studentRouter.post("/forgate-password", forgateStudentPassword);
 
-studentRouter.post("/reset-password", createLimiterAuth(), resetStudentPassword);
+studentRouter.post(
+  "/reset-password",
+  createLimiterAuth(),
+  resetStudentPassword
+);
 
 studentRouter.post(
   "/email-update-request",
@@ -54,6 +52,11 @@ studentRouter.post(
   updateStudentEmailRequest
 );
 
-studentRouter.post("/email-update", createLimiterAuth(), isStudent, updateStudentEmailConfirm);
+studentRouter.post(
+  "/email-update",
+  createLimiterAuth(),
+  isStudent,
+  updateStudentEmailConfirm
+);
 
 module.exports = studentRouter;
