@@ -336,7 +336,10 @@ exports.updateTeacherProfile = async (req, res, next) => {
     if (teacherId) orConditions.push({ teacherId });
 
     if (orConditions.length > 0) {
-      const existing = await Teacher.findOne({ $or: orConditions });
+      const existing = await Teacher.findOne({
+        $or: orConditions,
+        _id: { $ne: req.teacher.id },
+      });
 
       if (existing) {
         throw createError(
@@ -842,7 +845,10 @@ exports.updateTeacherProfileByAdmin = async (req, res, next) => {
     if (teacherId) orConditions.push({ teacherId });
 
     if (orConditions.length > 0) {
-      const existing = await Teacher.findOne({ $or: orConditions });
+      const existing = await Teacher.findOne({
+        $or: orConditions,
+        _id: { $ne: req.params.id }, // 👈 Exclude current user
+      });
 
       if (existing) {
         throw createError(

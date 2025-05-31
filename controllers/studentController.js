@@ -381,7 +381,10 @@ exports.updateStudentProfile = async (req, res, next) => {
     if (registration) orConditions.push({ registration });
 
     if (orConditions.length > 0) {
-      const existing = await Student.findOne({ $or: orConditions });
+      const existing = await Student.findOne({
+        $or: orConditions,
+        _id: { $ne: req.student.id },
+      });
 
       if (existing) {
         throw createError(
@@ -876,14 +879,20 @@ exports.updateStudentProfileByAdmin = async (req, res, next) => {
     }
 
     const orConditions = [];
-    if (req.body.email) orConditions.push({ email });
-    if (req.body.phone) orConditions.push({ phone });
-    if (req.body.addmissionRoll) orConditions.push({ addmissionRoll });
-    if (req.body.boardRoll) orConditions.push({ boardRoll });
-    if (req.body.registration) orConditions.push({ registration });
+    if (req.body.email) orConditions.push({ email: req.body.email });
+    if (req.body.phone) orConditions.push({ phone: req.body.phone });
+    if (req.body.addmissionRoll)
+      orConditions.push({ addmissionRoll: req.body.addmissionRoll });
+    if (req.body.boardRoll)
+      orConditions.push({ boardRoll: req.body.boardRoll });
+    if (req.body.registration)
+      orConditions.push({ registration: req.body.registration });
 
     if (orConditions.length > 0) {
-      const existing = await Student.findOne({ $or: orConditions });
+      const existing = await Student.findOne({
+        $or: orConditions,
+        _id: { $ne: req.params.id },
+      });
 
       if (existing) {
         throw createError(
