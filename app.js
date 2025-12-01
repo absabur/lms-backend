@@ -17,6 +17,7 @@ const takingBookTeacherRouter = require("./routes/bookTeacherRoute.js");
 const fixedValueRouter = require("./routes/fixedValueRoute.js");
 const Teacher = require("./models/teacherModel.js");
 const Student = require("./models/studentModel.js");
+const { connectDB } = require("./middleware/authentication.js");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -33,21 +34,21 @@ app.use(
 
 app.use(cookieParser());
 
-app.use("/api/admin", adminRouter);
+app.use("/api/admin", connectDB, adminRouter);
 
-app.use("/api/book", bookRouter);
+app.use("/api/book", connectDB, bookRouter);
 
-app.use("/api/student", studentRouter);
+app.use("/api/student", connectDB, studentRouter);
 
-app.use("/api/teacher", teacherRouter);
+app.use("/api/teacher", connectDB, teacherRouter);
 
-app.use("/api/take-book/student", takingBookStudentRouter);
+app.use("/api/take-book/student", connectDB, takingBookStudentRouter);
 
-app.use("/api/take-book/teacher", takingBookTeacherRouter);
+app.use("/api/take-book/teacher", connectDB, takingBookTeacherRouter);
 
-app.use("/api/fixed-values", fixedValueRouter);
+app.use("/api/fixed-values", connectDB, fixedValueRouter);
 
-app.get("/api/authenticated", async (req, res, next) => {
+app.get("/api/authenticated", connectDB, async (req, res, next) => {
   try {
     // 1. Get token from cookies or headers
     const token = req.cookies.access_token;

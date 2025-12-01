@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const Student = require("../models/studentModel.js");
 const Admin = require("../models/adminModel.js");
 const Teacher = require("../models/teacherModel.js");
+const connectDB = require("../config/db.js");
 
 exports.isStudentForCompleteProfile = async (req, res, next) => {
   try {
@@ -198,6 +199,15 @@ exports.isTeacher = async (req, res, next) => {
       );
     }
     req.teacher = exist;
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.connectDB = async (req, res, next) => {
+  try {
+    await connectDB();
     next();
   } catch (error) {
     next(error);
