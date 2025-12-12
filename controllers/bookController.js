@@ -225,7 +225,7 @@ exports.getAllBooks = async (req, res, next) => {
       sortOrder,
       search,
       page = 1,
-      limit = 10,
+      limit = 12,
     } = req.query;
 
     // Build the filter object

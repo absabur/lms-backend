@@ -198,7 +198,7 @@ exports.registerTeacher = async (req, res, next) => {
             </p>
             <hr style="border: none; border-top: 1px solid #ddd; margin: 10px 0;">
             <p style="text-align: center; font-size: 14px; color: #777;">
-              Thank you for joining us! 📚<br> Library Management System Team
+              Thank you for joining us! <br> Library Management System Team
             </p>
           </div>
         </div>
@@ -443,7 +443,7 @@ exports.forgateTeacherPassword = async (req, res, next) => {
               </p>
               <hr style="border: none; border-top: 1px solid #ddd; margin: 10px 0;">
               <p style="text-align: center; font-size: 14px; color: #777;">
-                Thank you for joining us! 📚<br> Library Management System Team
+                Thank you for joining us! <br> Library Management System Team
               </p>
             </div>
           </div>
@@ -811,7 +811,7 @@ exports.registerTeacherByAdmin = async (req, res, next) => {
             </div>
             <p style="text-align: center; font-size: 16px; color: #555;">If you did not create this account, please contact our support team immediately.</p>
             <hr style="border: none; border-top: 1px solid #ddd; margin: 10px 0;">
-            <p style="text-align: center; font-size: 14px; color: #777;">Thank you for joining us! 📚<br> Library Management System Team</p>
+            <p style="text-align: center; font-size: 14px; color: #777;">Thank you for joining us! <br> Library Management System Team</p>
           </div>
         </div>
       `,
