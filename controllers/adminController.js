@@ -715,103 +715,145 @@ exports.unbanAdmin = async (req, res, next) => {
   }
 };
 
-// Get all admins with filters
 exports.getDashboard = async (req, res, next) => {
   try {
-    const teachersCount = await Teacher.countDocuments();
-    const studentsCount = await Student.countDocuments(); // Only get department name
-    const books = await Book.find();
+    // Execute all independent database queries in PARALLEL using Promise.all
+    const [
+      teachersCount,
+      studentsCount,
+      currentBorrowStudentsCount,
+      currentBorrowTeachersCount,
+      departments,
+      bookStats,
+      rawStudentBorrows,
+      rawTeacherBorrows,
+    ] = await Promise.all([
+      Teacher.countDocuments(),
+      Student.countDocuments(),
 
-    const departments = await Department.find();
+      // Count currently borrowed books
+      BookStudent.countDocuments({
+        takingApproveBy: { $ne: null },
+        returnApproveBy: null,
+      }),
+      BookTeacher.countDocuments({
+        takingApproveBy: { $ne: null },
+        returnApproveBy: null,
+      }),
+
+      // Get Departments for mapping names
+      Department.find().lean(),
+
+      // HEAVY LIFTING: Calculate book totals and department groupings in DB, not JS
+      Book.aggregate([
+        {
+          $facet: {
+            totals: [
+              {
+                $group: {
+                  _id: null,
+                  totalQuantity: { $sum: "$total" },
+                  availableQuantity: { $sum: "$quantity" },
+                  count: { $sum: 1 },
+                },
+              },
+            ],
+            byDept: [
+              {
+                $group: {
+                  _id: "$department", // Group by Dept ID
+                  count: { $sum: 1 },
+                },
+              },
+            ],
+          },
+        },
+      ]),
+
+      // Fetch ONLY the date fields needed for the chart (much lighter payload)
+      BookStudent.find({ takingApproveBy: { $ne: null } })
+        .select("takingApproveDate.date")
+        .lean(),
+      BookTeacher.find({ takingApproveBy: { $ne: null } })
+        .select("takingApproveDate.date")
+        .lean(),
+    ]);
+
+    // --- Process Book Data ---
+    const bookTotals = bookStats[0].totals[0] || {
+      totalQuantity: 0,
+      availableQuantity: 0,
+      count: 0,
+    };
+    const bookDeptCounts = bookStats[0].byDept;
+
+    // Map Department IDs to Names
     const deptMap = departments.reduce((acc, dept) => {
       acc[dept._id.toString()] = dept.name;
       return acc;
     }, {});
 
-    const bookCountByDepartment = books.reduce((acc, book) => {
-      const deptName = deptMap[book.department.toString()];
-      if (!acc[deptName]) acc[deptName] = 0;
-      acc[deptName]++;
+    // Reconstruct bookCountByDepartment object using the Aggregation result
+    const bookCountByDepartment = bookDeptCounts.reduce((acc, entry) => {
+      const deptName = deptMap[entry._id.toString()];
+      // Only add if dept exists in map (handles deleted depts edge case)
+      if (deptName) {
+        acc[deptName] = entry.count;
+      }
       return acc;
     }, {});
 
-    let availabeBooksCount = books.reduce((acc, book) => acc + (book.quantity || 0), 0);
-    let totalBooksCount = books.reduce((acc, book) => acc + (book.total || 0), 0);
-    
-    const currentBorrowStudentsCount = await BookStudent.countDocuments({
-      takingApproveBy: { $ne: null },
-      returnApproveBy: null,
-    });
-    const currentBorrowTeachersCount = await BookTeacher.countDocuments({
-      takingApproveBy: { $ne: null },
-      returnApproveBy: null,
-    });
-    const totalBorrowStudentsCount = await BookStudent.find({
-      takingApproveBy: { $ne: null },
-    });
-    const totalBorrowTeachersCount = await BookTeacher.find({
-      takingApproveBy: { $ne: null },
-    });
+    // --- Process Chart Data (Helper Function) ---
+    // Reusing your logic, but now processing the lightweight 'raw' arrays
+    const processChartData = (data) => {
+      const monthCount = {};
+      data.forEach((entry) => {
+        const dateStr = entry.takingApproveDate?.date;
+        if (!dateStr) return;
+        const date = new Date(dateStr);
+        const month = date.toLocaleString("default", { month: "short" });
+        monthCount[month] = (monthCount[month] || 0) + 1;
+      });
+      return Object.keys(monthCount).map((month) => ({
+        month,
+        borrowings: monthCount[month],
+      }));
+    };
 
-    const monthCountStudent = {};
-    totalBorrowStudentsCount.forEach((entry) => {
-      const dateStr = entry.takingApproveDate?.date;
-      if (!dateStr) return;
-      const date = new Date(dateStr);
-      const month = date.toLocaleString("default", { month: "short" }); // e.g., 'May'
-      monthCountStudent[month] = (monthCountStudent[month] || 0) + 1;
-    });
-    const chartDataStudent = Object.keys(monthCountStudent).map((month) => ({
-      month,
-      borrowings: monthCountStudent[month],
-    }));
+    const chartDataStudent = processChartData(rawStudentBorrows);
+    const chartDataTeacher = processChartData(rawTeacherBorrows);
 
-    const monthCountTeacher = {};
-    totalBorrowTeachersCount.forEach((entry) => {
-      const dateStr = entry.takingApproveDate?.date;
-      if (!dateStr) return;
-      const date = new Date(dateStr);
-      const month = date.toLocaleString("default", { month: "short" }); // e.g., 'May'
-      monthCountTeacher[month] = (monthCountTeacher[month] || 0) + 1;
-    });
-    const chartDataTeacher = Object.keys(monthCountTeacher).map((month) => ({
-      month,
-      borrowings: monthCountTeacher[month],
-    }));
-
+    // Combine logic (kept exactly as yours)
     const combineMonthlyBorrowings = (students, teachers) => {
       const map = {};
-
-      // Process student data
       students.forEach(({ month, borrowings }) => {
         if (!map[month]) map[month] = { month, students: 0, teachers: 0 };
         map[month].students += borrowings;
       });
-
-      // Process teacher data
       teachers.forEach(({ month, borrowings }) => {
         if (!map[month]) map[month] = { month, students: 0, teachers: 0 };
         map[month].teachers += borrowings;
       });
-
       return Object.values(map);
     };
+
     const chartData = combineMonthlyBorrowings(
       chartDataStudent,
       chartDataTeacher
     );
 
+    // --- Final Response ---
     res.status(200).json({
       success: true,
       teachersCount,
       studentsCount,
-      availabeBooksCount,
-      totalBooksCount,
-      uniqueBooksCount: books.length,
+      availabeBooksCount: bookTotals.availableQuantity || 0,
+      totalBooksCount: bookTotals.totalQuantity || 0,
+      uniqueBooksCount: bookTotals.count || 0,
       currentBorrowStudentsCount,
       currentBorrowTeachersCount,
-      totalBorrowStudentsCount: totalBorrowStudentsCount.length,
-      totalBorrowTeachersCount: totalBorrowTeachersCount.length,
+      totalBorrowStudentsCount: rawStudentBorrows.length,
+      totalBorrowTeachersCount: rawTeacherBorrows.length,
       bookCountByDepartment,
       chartData,
     });
